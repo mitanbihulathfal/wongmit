@@ -69,6 +69,10 @@
     position: relative;
     overflow: hidden;
   }
+  .rekap-page .rekap-filter-card .re-filter-row{
+    margin-left: 0;
+    margin-right: 0;
+  }
   .rekap-page .rekap-filter-card::before{
     content: "";
     position: absolute;
@@ -172,10 +176,10 @@
 
   /* ----- REKAP : 4. SUMMARY CARD (untuk #rekapSummary nanti) ----- */
   .rekap-page .rekap-summary-shell{
-    min-height: 108px;
+    min-height: 24px;
     display: grid;
     align-items: start;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
   }
   .rekap-page .rekap-summary-row{
     display: grid;
@@ -375,7 +379,8 @@
     --rekap-table-sticky-left-kls: 60px;
     border: 1px solid #edf1f5;
     border-radius: 16px;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     background: #fff;
     position: relative;
     isolation: isolate;
@@ -539,8 +544,8 @@
 
     /* Summary card mobile: 2 kolom */
     .rekap-page .rekap-summary-shell{
-      min-height: 96px;
-      margin-bottom: 16px;
+      min-height: 16px;
+      margin-bottom: 10px;
     }
     .rekap-page .rekap-summary-row{
       grid-template-columns: repeat(2, 1fr);
@@ -598,6 +603,7 @@
     .rekap-page #rekapTableWrapper{
       -webkit-overflow-scrolling: touch;
       scrollbar-width: thin;
+      touch-action: pan-x pan-y;
     }
     .rekap-page #rekapTableWrapper thead th{
       padding: 12px 12px;
