@@ -68,10 +68,17 @@
   .rekap-page .rekap-filter-card{
     position: relative;
     overflow: hidden;
+    padding-top: 16px;
   }
   .rekap-page .rekap-filter-card .re-filter-row{
     margin-left: 0;
     margin-right: 0;
+    margin-top: 0;
+    row-gap: 14px;
+  }
+  .rekap-page .rekap-filter-card .form-label{
+    display: block;
+    margin-bottom: 8px;
   }
   .rekap-page .rekap-filter-card::before{
     content: "";
@@ -176,21 +183,23 @@
 
   /* ----- REKAP : 4. SUMMARY CARD (untuk #rekapSummary nanti) ----- */
   .rekap-page .rekap-summary-shell{
-    min-height: 24px;
-    display: grid;
-    align-items: start;
-    margin-bottom: 12px;
+    min-height: 0;
+    display: block;
+    margin: 0;
   }
   .rekap-page .rekap-summary-row{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 14px;
-    min-height: inherit;
     align-content: start;
   }
   .rekap-page #rekapSummary{
     animation: rekap-summary-enter .24s ease both;
     transform-origin: top center;
+  }
+  .rekap-page #rekapSummary:not([style*="display:none"]){
+    min-height: 88px;
+    margin-bottom: 12px;
   }
   .rekap-page .rekap-summary-card{
     background: #fff;
@@ -404,6 +413,10 @@
     vertical-align: middle;
     position: relative;
     z-index: 1;
+    text-align: center;
+  }
+  .rekap-page #rekapTableWrapper thead th:nth-child(2){
+    text-align: left;
   }
   .rekap-page #rekapTableWrapper tbody td{
     border-bottom: 1px solid #eef2f7;
@@ -450,15 +463,29 @@
     font-weight: 600;
     font-size: 12px;
   }
+  .rekap-page #tableRekapAbsensi > tr > td[colspan="9"]{
+    padding: 34px 20px 40px;
+    text-align: center;
+    white-space: normal;
+  }
+  .rekap-page .rekap-empty{
+    width: min(420px, calc(100vw - 72px));
+    max-width: 100%;
+    margin: 0 auto;
+    position: sticky;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
   /* FUTURE Sprint Rekap 2B: 7-Level badge color-coded Keterangan (Sempurna s/d Tindak Lanjut) */
 
   .rekap-page .rekap-section-header{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 18px;
+    gap: 8px;
+    margin-bottom: 12px;
   }
   .rekap-page .rekap-section-header h5{
     margin: 0;
@@ -539,17 +566,20 @@
     }
     .rekap-page .form-label{
       font-size: 13px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     /* Summary card mobile: 2 kolom */
     .rekap-page .rekap-summary-shell{
-      min-height: 16px;
-      margin-bottom: 10px;
+      min-height: 0;
+      margin: 0;
     }
     .rekap-page .rekap-summary-row{
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
+    }
+    .rekap-page #rekapSummary:not([style*="display:none"]){
+      margin-bottom: 8px;
     }
     .rekap-page .rekap-summary-card{
       padding: 12px 14px;
@@ -579,7 +609,8 @@
 
     /* Empty state mobile */
     .rekap-page .rekap-empty{
-      padding: 32px 12px;
+      padding: 28px 12px;
+      width: min(100%, 340px);
     }
     .rekap-page .rekap-empty-icon{
       border-radius: 20px;
@@ -614,6 +645,14 @@
       padding: 10px 12px;
       font-size: 13px;
       white-space: nowrap;
+    }
+    .rekap-page #tableRekapAbsensi > tr > td[colspan="9"]{
+      padding: 24px 12px 30px;
+      white-space: normal;
+    }
+    .rekap-page .rekap-section-header{
+      gap: 6px;
+      margin-bottom: 10px;
     }
   }
 
