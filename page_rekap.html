@@ -1,0 +1,279 @@
+<div class="card card-summary">
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+    <div>
+
+      <h4 class="fw-bold mb-1">
+
+        <i class="fa-solid fa-clipboard-check"></i>
+
+        Rekap Absensi
+
+      </h4>
+
+      <div class="text-muted">
+
+        Rekap kehadiran siswa berdasarkan periode
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="card card-summary mt-3">
+
+  <div class="row g-3">
+
+    <div class="col-lg-2">
+
+      <label class="form-label">
+        Tanggal Awal
+      </label>
+
+      <input
+        type="date"
+        id="tanggalAwalRekap"
+        class="form-control">
+
+    </div>
+
+    <div class="col-lg-2">
+
+      <label class="form-label">
+        Tanggal Akhir
+      </label>
+
+      <input
+        type="date"
+        id="tanggalAkhirRekap"
+        class="form-control">
+
+    </div>
+
+    <div class="col-lg-2">
+
+      <label class="form-label">
+        Guru
+      </label>
+
+      <select
+        id="filterGuruRekap"
+        class="form-select">
+
+        <option value="">
+          Semua Guru
+        </option>
+
+      </select>
+
+    </div>
+
+    <div class="col-lg-2">
+
+      <label class="form-label">
+        Kelas
+      </label>
+
+      <select
+        id="filterKelasRekap"
+        class="form-select">
+
+        <option value="">
+          Semua Kelas
+        </option>
+
+      </select>
+
+    </div>
+
+    <div class="col-lg-2">
+
+      <label class="form-label">
+        Mapel
+      </label>
+
+      <select
+        id="filterMapelRekap"
+        class="form-select">
+
+        <option value="">
+          Semua Mapel
+        </option>
+
+      </select>
+
+    </div>
+
+    <div class="col-lg-2 d-grid">
+
+      <label class="form-label">
+        &nbsp;
+      </label>
+
+      <button
+        class="btn btn-primary"
+        id="btnTampilkanRekap"
+        onclick="tampilkanRekap()">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        Tampilkan
+
+      </button>
+
+    </div>
+
+    <div class="col-lg-2 d-grid">
+
+      <label class="form-label">
+        &nbsp;
+      </label>
+
+      <button
+        class="btn btn-success"
+        id="btnExportRekap">
+
+        <i class="fa-solid fa-file-excel"></i>
+
+        Export
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="card card-summary mt-3">
+
+  <h5 class="fw-bold mb-3">
+
+    Hasil Rekap
+
+  </h5>
+
+  <div
+    id="rekapSummary"
+    style="display:none;">
+
+  </div>
+
+  <div
+    id="loadingRekap"
+    class="text-center py-5"
+    style="display:none;">
+
+    <div
+      class="spinner-border text-primary"
+      role="status">
+
+      <span class="visually-hidden">
+        Loading...
+      </span>
+
+    </div>
+
+    <div class="mt-3">
+
+      Memuat data rekap...
+
+    </div>
+
+  </div>
+
+  <div
+    id="rekapTableWrapper"
+    class="table-responsive">
+
+    <table
+      class="table table-hover align-middle mb-0">
+
+      <thead>
+
+        <tr>
+
+          <th width="60">
+            No
+          </th>
+
+          <th>
+            Nama Siswa
+          </th>
+
+          <th width="80">
+            KLS
+          </th>
+
+          <th width="70">
+            H
+          </th>
+
+          <th width="70">
+            S
+          </th>
+
+          <th width="70">
+            I
+          </th>
+
+          <th width="70">
+            A
+          </th>
+
+          <th width="90">
+            %
+          </th>
+
+          <th width="150">
+            Ket
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody
+        id="tableRekapAbsensi">
+
+        <tr>
+
+          <td
+            colspan="9"
+            class="text-center py-5">
+
+            <div class="py-4">
+
+              <i
+                class="fa-solid fa-table-list fa-2x text-secondary mb-3"></i>
+
+              <div>
+
+                Belum ada data rekap.
+
+              </div>
+
+              <small class="text-muted">
+
+                Pilih filter kemudian klik
+                <strong>Tampilkan</strong>
+
+              </small>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

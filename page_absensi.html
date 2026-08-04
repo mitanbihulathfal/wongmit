@@ -1,0 +1,504 @@
+<div class="card card-summary">
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+<div>
+
+  <h3 class="fw-bold mb-1">
+
+    <i class="fa-solid fa-calendar-check"></i>
+
+    Absensi Harian
+
+  </h3>
+
+  <div class="text-muted">
+
+    Kelola kehadiran siswa
+
+  </div>
+
+</div>
+
+  </div>
+
+</div>
+
+<div class="card card-summary mt-3">
+
+  <div
+    class="row g-3 align-items-end"
+    id="filterAbsensi">
+
+    <div class="col-lg-4 col-md-4">
+
+      <div class="mobile-field">
+
+        <label class="form-label">
+
+          Kelas
+
+        </label>
+
+        <select
+          id="filterKelasAbsensi"
+          class="form-select"
+          onchange="loadStudentsByClass()">
+
+          <option value="">
+
+            Pilih Kelas
+
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <div class="col-lg-3 col-md-4">
+
+      <div class="mobile-field">
+
+        <label class="form-label">
+
+          Tanggal
+
+        </label>
+
+        <input
+          type="date"
+          id="tanggalAbsensi"
+          class="form-control"
+          onchange="
+            updateHariAbsensi();
+            loadExistingAttendance();
+          ">
+
+      </div>
+
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+
+      <div class="mobile-field">
+
+        <label class="form-label">
+
+          Hari
+
+        </label>
+
+        <input
+          type="text"
+          id="hariAbsensi"
+          class="form-control"
+          readonly>
+
+      </div>
+
+    </div>
+
+    <div class="col-lg-3">
+
+      <div class="mobile-field">
+
+        <label class="form-label">
+
+          Cari
+
+        </label>
+
+        <input
+          type="text"
+          id="cariSiswaAbsensi"
+          class="form-control"
+          placeholder="Cari siswa..."
+          onkeyup="filterSiswaAbsensi()">
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="row mt-3">
+
+  <div class="col-md-6">
+
+    <div class="card card-summary p-3 h-100">
+
+      <div class="text-muted mb-1">
+
+        <i
+          class="fa-solid fa-clock text-primary">
+        </i>
+
+        Absensi Terakhir
+
+      </div>
+
+      <div
+        id="infoAbsenWaktu"
+        class="fw-bold fs-5">
+
+        --/--/---- --:--:--
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="col-md-6">
+
+    <div class="card card-summary p-3 h-100">
+
+      <div class="text-muted mb-1">
+
+        <i
+          class="fa-solid fa-user text-success">
+        </i>
+
+        Diinput Oleh
+
+      </div>
+
+      <div
+        id="infoAbsenOleh"
+        class="fw-bold fs-5">
+
+        ---
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="d-flex justify-content-end gap-2 mt-2 flex-wrap">
+
+<button
+ class="btn btn-success"
+ id="btnHadirSemua"
+ onclick="hadirSemua()">
+
+<i class="fa-solid fa-check-double"></i>
+
+Hadir Semua
+
+  </button>
+
+<button
+ class="btn btn-primary"
+ id="btnSimpanAbsensi"
+ onclick="simpanAbsensi()">
+
+  <i
+    class="fa-solid fa-floppy-disk">
+  </i>
+
+  Simpan
+
+</button>
+
+</div>
+
+<div class="card card-summary mt-2">
+
+  <!-- DESKTOP -->
+
+  <div
+    class="table-responsive desktop-only">
+
+    <table
+      class="table table-hover align-middle mb-0">
+
+      <thead>
+
+        <tr>
+
+          <th width="60">
+
+            No
+
+          </th>
+
+          <th>
+
+            Nama Siswa
+
+          </th>
+
+          <th>
+
+            Status
+
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="tableAbsensi">
+
+        <tr>
+
+          <td
+            colspan="3"
+            class="text-center py-4">
+
+            Pilih kelas terlebih dahulu
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <div
+    id="mobileAbsensiContainer"
+    class="d-none">
+  </div>
+
+</div>
+
+<div
+  class="d-flex justify-content-end gap-2 mt-2 flex-wrap"
+  id="toolbarAbsensiBottom">
+
+  <button
+    class="btn btn-success"
+    id="btnHadirSemuaBottom"
+    onclick="hadirSemua()">
+
+    <i class="fa-solid fa-check-double"></i>
+
+    Hadir Semua
+
+  </button>
+
+  <button
+    class="btn btn-primary"
+    id="btnSimpanAbsensiBottom"
+    onclick="simpanAbsensi()">
+
+    <i class="fa-solid fa-floppy-disk"></i>
+
+    Simpan
+
+  </button>
+
+</div>
+
+<!-- MODAL REVISI ABSENSI -->
+
+<div
+  class="modal fade"
+  id="modalRevisiAbsensi"
+  tabindex="-1">
+
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5 class="modal-title">
+
+          Revisi Absensi
+
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal">
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        Anda akan membuka kembali
+        absensi yang sudah tersimpan.
+
+        <br><br>
+
+        Apakah Anda ingin
+        melanjutkan revisi absensi?
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+
+          Batal
+
+        </button>
+
+        <button
+          class="btn btn-warning"
+          id="btnLanjutkanRevisi"
+          onclick="konfirmasiRevisiAbsensi()">
+
+          Lanjutkan
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL WARNING ABSENSI -->
+
+<div
+  class="modal fade"
+  id="modalWarningAbsensi"
+  tabindex="-1">
+
+  <div
+    class="modal-dialog modal-dialog-centered">
+
+    <div class="modal-content">
+
+      <div class="modal-body text-center p-4">
+
+        <div
+          class="mb-3"
+          style="
+            font-size:60px;
+            color:#dc3545;
+          ">
+
+          <i
+            class="fa-solid fa-circle-exclamation">
+          </i>
+
+        </div>
+
+        <h5 class="fw-bold">
+
+          Ada siswa yang belum diabsen!
+
+        </h5>
+
+        <div class="text-muted">
+
+          Lengkapi status kehadiran
+          yang masih kosong.
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer justify-content-center">
+
+        <button
+          class="btn btn-danger"
+          data-bs-dismiss="modal">
+
+          Lengkapi
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL KONFIRMASI SIMPAN REVISI -->
+
+<div
+  class="modal fade"
+  id="modalKonfirmasiRevisi"
+  tabindex="-1">
+
+  <div
+    class="modal-dialog modal-dialog-centered">
+
+    <div class="modal-content">
+
+      <div class="modal-body text-center p-4">
+
+        <div
+          class="mb-3"
+          style="
+            font-size:60px;
+            color:#f0ad4e;
+          ">
+
+          <i
+            class="fa-solid fa-pen-to-square">
+          </i>
+
+        </div>
+
+        <h5 class="fw-bold">
+
+          Simpan Revisi Absensi
+
+        </h5>
+
+        <div class="text-muted">
+
+          Yakin ingin menyimpan
+          revisi absensi ini?
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer justify-content-center">
+
+        <button
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+
+          Kembali Edit
+
+        </button>
+
+        <button
+          class="btn btn-danger"
+          onclick="batalkanPerubahanRevisi()">
+
+          Batalkan
+
+        </button>
+
+        <button
+          class="btn btn-warning"
+          id="btnYaSimpanRevisi"
+          onclick="simpanRevisiFinal()">
+
+          Ya, Simpan
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

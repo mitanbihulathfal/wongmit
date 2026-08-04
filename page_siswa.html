@@ -1,0 +1,431 @@
+<div class="topbar">
+
+  <div class="d-flex justify-content-between align-items-center">
+
+    <div>
+      <h3 class="fw-bold mb-1">
+        Data Siswa
+      </h3>
+
+      <div class="text-muted">
+        Kelola data siswa aktif
+      </div>
+    </div>
+
+    <div class="btn-group">
+
+      <button
+        class="btn btn-primary"
+        onclick="showTambahSiswa()">
+
+        <i class="fa-solid fa-plus"></i>
+        Tambah Siswa
+
+      </button>
+
+      <button
+        class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+        data-bs-toggle="dropdown">
+
+        <span class="visually-hidden">
+          Toggle Dropdown
+        </span>
+
+      </button>
+
+      <ul class="dropdown-menu dropdown-menu-end">
+
+        <li>
+
+          <a
+            class="dropdown-item"
+            href="javascript:void(0)"
+            onclick="showTambahSiswa()">
+
+            <i class="fa-solid fa-user-plus me-2"></i>
+
+            Tambah Manual
+
+          </a>
+
+        </li>
+
+        <li>
+
+          <a
+            class="dropdown-item"
+            href="javascript:void(0)"
+            onclick="showImportSiswa()">
+
+            <i class="fa-solid fa-file-import me-2"></i>
+
+            Import Massal
+
+          </a>
+
+        </li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="card card-summary p-4">
+
+  <div class="row mb-3">
+
+    <div class="col-md-4">
+
+      <input
+        type="text"
+        class="form-control"
+        id="searchSiswa"
+        placeholder="Cari Nama atau NISN..."
+        onkeyup="filterSiswa()">
+
+    </div>
+
+    <div class="col-md-3">
+
+      <select
+        class="form-select"
+        id="filterKelas"
+        onchange="filterSiswa()">
+
+        <option value="">
+          Semua Kelas
+        </option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+    <div
+      class="table-responsive"
+      style="
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+      ">
+
+      <table
+        class="table table-striped table-hover"
+        style="min-width:760px;">
+
+      <thead class="table-light">
+      <tr>
+
+      <th onclick="sortTable(0)" style="cursor:pointer">
+      ID <span class="sort-icon" data-column="0">↕</span>
+      </th>
+
+      <th onclick="sortTable(1)" style="cursor:pointer">
+      NISN <span class="sort-icon" data-column="1">↕</span>
+      </th>
+
+      <th onclick="sortTable(2)" style="cursor:pointer">
+      Nama <span class="sort-icon" data-column="2">↕</span>
+      </th>
+
+      <th onclick="sortTable(3)" style="cursor:pointer">
+      Tempat Lahir <span class="sort-icon" data-column="3">↕</span>
+      </th>
+
+      <th onclick="sortTable(4)" style="cursor:pointer">
+      Tanggal Lahir <span class="sort-icon" data-column="4">↕</span>
+      </th>
+
+      <th onclick="sortTable(5)" style="cursor:pointer">
+      JK <span class="sort-icon" data-column="5">↕</span>
+      </th>
+
+      <th onclick="sortTable(6)" style="cursor:pointer">
+      Kelas <span class="sort-icon" data-column="6">↕</span>
+      </th>
+
+      <th onclick="sortTable(7)" style="cursor:pointer">
+      Status <span class="sort-icon" data-column="7">↕</span>
+      </th>
+
+      <th>Aksi</th>
+
+      </tr>
+      </thead>
+
+      <tbody id="tableSiswa">
+
+        <tr>
+          <td colspan="7" class="text-center">
+            Memuat data...
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<!-- MODAL TAMBAH SISWA -->
+
+<div
+  class="modal fade"
+  id="modalSiswa"
+  tabindex="-1">
+
+  <div class="modal-dialog modal-lg">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5 class="modal-title">
+          Tambah Siswa
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal">
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label>ID</label>
+            <input
+              type="text"
+              class="form-control"
+              id="idSiswa">
+          </div>
+
+          <div class="col-md-6">
+            <label>NISN</label>
+            <input
+              type="text"
+              class="form-control"
+              id="nisn">
+          </div>
+
+          <div class="col-md-12">
+            <label>Nama Siswa</label>
+            <input
+              type="text"
+              class="form-control"
+              id="namaSiswa">
+          </div>
+
+          <div class="col-md-4">
+            <label>JK</label>
+
+            <select
+              class="form-select"
+              id="jk">
+
+              <option value="L">Laki-laki</option>
+              <option value="P">Perempuan</option>
+
+            </select>
+
+          </div>
+
+          <div class="col-md-4">
+            <label>Tempat Lahir</label>
+            <input
+              type="text"
+              class="form-control"
+              id="tempatLahir">
+          </div>
+
+          <div class="col-md-4">
+            <label>Tanggal Lahir</label>
+            <input
+              type="date"
+              class="form-control"
+              id="tanggalLahir">
+          </div>
+
+          <div class="col-md-6">
+            <label>Kelas</label>
+            <input
+              type="text"
+              class="form-control"
+              id="kelas">
+          </div>
+
+          <div class="col-md-6">
+            <label>Status</label>
+
+            <select
+              class="form-select"
+              id="status">
+
+              <option value="Aktif">Aktif</option>
+              <option value="Lulus">Lulus</option>
+              <option value="Mutasi">Mutasi</option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+
+          Batal
+
+        </button>
+
+        <button
+          id="btnSimpanSiswa"
+          class="btn btn-success"
+          onclick="simpanSiswa()">
+
+          Simpan
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL IMPORT MASSAL SISWA -->
+
+<div
+  class="modal fade"
+  id="modalImportSiswa"
+  tabindex="-1">
+
+  <div class="modal-dialog modal-xl">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5 class="modal-title">
+
+          <i class="fa-solid fa-file-import"></i>
+
+          Import Massal Siswa
+
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal">
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <a
+          href="javascript:void(0)"
+          onclick="downloadTemplateSiswa()">
+
+          <i class="fa-solid fa-download"></i>
+
+          Download Template
+
+        </a>
+
+        <div
+          id="dropAreaSiswa"
+          class="border rounded text-center p-5 mt-3"
+          style="
+            border-style:dashed !important;
+            cursor:pointer;
+            background:#fafafa;">
+
+          <i
+            class="fa-solid fa-cloud-arrow-up fa-3x text-primary mb-3">
+          </i>
+
+          <h5>
+            Klik atau Drag & Drop file Excel di sini
+          </h5>
+
+          <div class="text-muted">
+            Format yang didukung: .xlsx
+          </div>
+
+          <input
+            type="file"
+            id="fileImportSiswa"
+            accept=".xlsx"
+            hidden>
+
+        </div>
+
+        <div
+          id="namaFileSiswa"
+          class="text-center mt-3 text-muted">
+
+          Belum ada file dipilih.
+
+        </div>
+
+        <hr>
+
+        <div
+          id="previewImportSiswa">
+
+          <div class="text-muted text-center py-4">
+
+            Preview data akan muncul di sini.
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+
+          Tutup
+
+        </button>
+
+        <button
+          id="btnUploadSiswa"
+          class="btn btn-primary"
+          onclick="uploadImportSiswa()">
+
+          <i class="fa-solid fa-upload"></i>
+
+          Upload
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

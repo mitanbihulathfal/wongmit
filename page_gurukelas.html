@@ -1,0 +1,148 @@
+<div class="topbar">
+
+  <div class="d-flex justify-content-between align-items-center">
+
+    <div>
+
+      <h3 class="fw-bold mb-1">
+        Relasi Guru Kelas
+      </h3>
+
+      <div class="text-muted">
+        Pengaturan kelas yang diajar guru
+      </div>
+
+    </div>
+
+    <button
+      class="btn btn-primary"
+      onclick="showTambahGuruKelas()">
+
+      <i class="fa-solid fa-plus"></i>
+      Tambah Relasi
+
+    </button>
+
+  </div>
+
+</div>
+
+<div class="card card-summary p-4">
+
+  <div class="table-responsive">
+
+    <table class="table table-striped table-hover">
+
+      <thead>
+
+        <tr>
+          <th>Guru</th>
+          <th>Kelas</th>
+          <th>Aksi</th>
+        </tr>
+
+      </thead>
+
+      <tbody id="tableGuruKelas">
+
+        <tr>
+          <td colspan="3" class="text-center">
+            Memuat data...
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div
+  class="modal fade"
+  id="modalGuruKelas"
+  tabindex="-1">
+
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5 class="modal-title">
+          Relasi Guru Kelas
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal">
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <div class="mb-3">
+
+          <label>Guru</label>
+
+          <select
+            class="form-select"
+            id="guruRelasi">
+
+            <option>
+              Memuat guru...
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="mb-3">
+
+          <label>Kelas</label>
+
+          <select
+            class="form-select"
+            id="kelasRelasi">
+
+            <option>
+              Memuat kelas...
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+
+          Batal
+
+        </button>
+
+        <button
+          id="btnSimpanGuruKelas"
+          class="btn btn-success"
+          onclick="simpanGuruKelas()">
+
+          Simpan
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
