@@ -1,32 +1,81 @@
-# ARCHITECTURE
+# WONG MIT - ARCHITECTURE
 
-## Backend
-
-Code.js
-
-Semua logika Apps Script berada pada file ini.
-
-Jangan melakukan refactor besar tanpa izin.
+Versi : 2.0
+Status : ACTIVE
+Last Update : Agustus 2026
 
 ---
 
-## Frontend
+# TUJUAN
 
-index.html
+Dokumen ini menjelaskan arsitektur resmi aplikasi WONG MIT.
 
-Sebagai shell aplikasi SPA.
+Seluruh perubahan struktur project harus mengikuti dokumen ini.
 
-Semua page dimuat melalui:
+Perubahan besar pada arsitektur hanya boleh dilakukan setelah melalui proses audit dan persetujuan pengguna.
 
-getPage()
+---
+
+# ARSITEKTUR UMUM
+
+WONG MIT menggunakan arsitektur:
+
+Google Apps Script (Backend)
 
 ↓
 
-loadPage()
+HTML Service
+
+↓
+
+Single Page Application (SPA)
+
+↓
+
+Google Spreadsheet (Database)
 
 ---
 
-## Routing
+# BACKEND
+
+Seluruh backend berada pada project Google Apps Script.
+
+Backend bertanggung jawab terhadap:
+
+- Login
+- Session
+- Validasi
+- Membaca Spreadsheet
+- Menulis Spreadsheet
+- Rekapitulasi
+- Export
+- Utility
+
+Backend tidak bertugas mengatur tampilan.
+
+---
+
+# FRONTEND
+
+Frontend menggunakan:
+
+HTML
+
+CSS
+
+Bootstrap 5
+
+JavaScript Vanilla
+
+Tidak menggunakan framework seperti React, Vue, Angular, dan sejenisnya.
+
+---
+
+# POLA SPA
+
+Aplikasi menggunakan konsep Single Page Application.
+
+Flow:
 
 Login
 
@@ -36,20 +85,285 @@ Dashboard
 
 ↓
 
-Menu
+Sidebar
 
 ↓
 
-Page HTML
+Klik Menu
+
+↓
+
+loadPage()
+
+↓
+
+HTML dimuat secara dinamis
+
+↓
+
+JavaScript halaman dijalankan
+
+Halaman tidak melakukan reload penuh.
 
 ---
 
-## Prinsip
+# PEMISAHAN TUGAS
 
-- Jangan mengubah arsitektur tanpa izin.
+Backend
 
-- Jangan memindahkan fungsi antar file.
+- Mengolah data
+- Membaca Spreadsheet
+- Menulis Spreadsheet
+- Validasi
 
-- Jangan mengubah flow SPA.
+Frontend
 
-- Pertahankan kompatibilitas dengan Apps Script.
+- Menampilkan UI
+- Mengelola event
+- Render data
+- Loading
+- Empty State
+- UX
+
+Prinsip:
+
+Business Logic berada di Backend.
+
+Presentation Logic berada di Frontend.
+
+---
+
+# DATABASE
+
+Database utama adalah Google Spreadsheet.
+
+Spreadsheet menjadi satu-satunya sumber data (Single Source of Truth).
+
+Frontend tidak boleh menyimpan data permanen.
+
+---
+
+# ENGINE
+
+Satu fitur hanya memiliki satu engine utama.
+
+Contoh:
+
+Rekap Absensi
+
+↓
+
+getRekap()
+
+Bukan:
+
+getRekapGuru()
+
+getRekapUmum()
+
+getRekapWali()
+
+Prinsip ini diterapkan untuk mengurangi duplikasi.
+
+---
+
+# REUSABLE
+
+Setiap utility harus dapat digunakan kembali.
+
+Apabila sudah ada fungsi yang memiliki tujuan sama:
+
+Gunakan fungsi tersebut.
+
+Jangan membuat fungsi baru dengan logika yang sama.
+
+---
+
+# CSS
+
+CSS menggunakan pendekatan scoped.
+
+Setiap halaman memiliki namespace sendiri.
+
+Contoh:
+
+rekap-
+
+pengaturan-
+
+dashboard-
+
+guru-
+
+kelas-
+
+siswa-
+
+absensi-
+
+Tidak diperbolehkan membuat CSS global tanpa alasan yang kuat.
+
+---
+
+# HTML
+
+Struktur HTML setiap halaman mengikuti pola berikut:
+
+SECTION HEADER
+
+↓
+
+SECTION FILTER
+
+↓
+
+SECTION ACTION
+
+↓
+
+SECTION SUMMARY
+
+↓
+
+SECTION DATA
+
+↓
+
+SECTION LOADING
+
+↓
+
+SECTION EMPTY STATE
+
+↓
+
+SECTION MODAL (jika diperlukan)
+
+Urutan dibuat konsisten agar mudah dipelihara.
+
+---
+
+# JAVASCRIPT
+
+Prinsip utama:
+
+- Hindari duplikasi
+- Hindari magic number
+- Hindari inline style yang berlebihan
+- Hindari query selector berulang
+- Gunakan event yang sudah ada apabila memungkinkan
+
+---
+
+# RESPONSIVE
+
+Semua halaman wajib mendukung:
+
+Desktop
+
+Tablet
+
+Mobile
+
+Prioritas desain:
+
+Desktop terlebih dahulu.
+
+Kemudian disempurnakan untuk Mobile.
+
+---
+
+# GLOBAL COMPONENT
+
+Beberapa komponen dirancang menjadi standar seluruh aplikasi.
+
+Contoh:
+
+Loading
+
+Empty State
+
+Summary Card
+
+Konfirmasi
+
+Toast / Notifikasi
+
+Komponen tersebut harus memiliki tampilan yang konsisten.
+
+---
+
+# GLOBAL LOADER
+
+Roadmap aplikasi akan memiliki satu Global Loader resmi WONG MIT.
+
+Halaman Rekap menjadi pondasi visual pertama.
+
+Implementasi global dilakukan setelah desain dinyatakan stabil.
+
+---
+
+# PENGEMBANGAN
+
+Setiap perubahan dilakukan melalui Sprint.
+
+Flow:
+
+Audit
+
+↓
+
+Implementasi
+
+↓
+
+Review
+
+↓
+
+Testing Desktop
+
+↓
+
+Testing Mobile
+
+↓
+
+LOLOS
+
+↓
+
+Baru lanjut Sprint berikutnya.
+
+---
+
+# LARANGAN
+
+Jangan mengubah:
+
+- Struktur SPA
+- Routing
+- Flow aplikasi
+- Struktur database
+- ID penting
+- Event penting
+
+tanpa persetujuan pengguna.
+
+---
+
+# TUJUAN AKHIR
+
+Arsitektur WONG MIT harus:
+
+✓ Stabil
+
+✓ Mudah dipelihara
+
+✓ Mudah dikembangkan
+
+✓ Minim duplikasi
+
+✓ Konsisten
+
+✓ Siap digunakan dalam jangka panjang.

@@ -1,59 +1,123 @@
 # ROADMAP
 
-## Pengaturan
+Roadmap resmi pengembangan WONG MIT.
 
-- Sprint 2D-3
-- Sprint 2D-4
-- Sprint 2D-5
+Dokumen ini hanya berisi target besar proyek.
 
----
-
-## Rekap
-
-Sprint Rekap 2A-2
-(UI Modern)
-
-↓
-
-Sprint Rekap 2B
-
-↓
-
-Sprint Rekap 2C
-
-↓
-
-Sprint Rekap 3
+Detail teknis sprint terdapat pada SPRINT.md.
 
 ---
 
-## Dashboard
+# FASE 1
 
-Sprint Dashboard berikutnya
+FOUNDATION
+
+Status
+
+SELESAI
+
+Meliputi
+
+- Dashboard
+- Data Guru
+- Data Siswa
+- Data Kelas
+- Relasi Guru Kelas
+- Guru Mengajar
+- Pengaturan
 
 ---
 
-## Absensi
+# FASE 2
 
-Sprint berikutnya
+ABSENSI
+
+Status
+
+SELESAI
+
+Meliputi
+
+- Absensi Harian
+- Revisi Absensi
+- Pondasi Rekap
 
 ---
 
-Semua sprint harus:
+# FASE 3
 
-Audit
-↓
+REKAP MODERN
 
-Implementasi
+Status
 
-↓
+SEDANG BERJALAN
 
-Testing
+Progress
 
-↓
+✅ Sprint Rekap 2A-1
 
-LOLOS
+✅ Sprint Rekap 2A-2
 
-↓
+✅ Sprint Rekap 2A-3
 
-Baru lanjut sprint berikutnya.
+⬜ Sprint Rekap 2B
+
+⬜ Sprint Rekap 2C
+
+⬜ Sprint Rekap 3
+
+---
+
+# FASE 4
+
+EXPORT
+
+Belum dimulai
+
+Target
+
+- Export Excel
+- Export Rekap
+- Penyempurnaan Format
+
+---
+
+# FASE 5
+
+OPTIMIZATION
+
+Belum dimulai
+
+Target
+
+- Optimasi Backend
+- Optimasi Database
+- Optimasi Loading
+- Optimasi Responsive
+
+---
+
+# FASE 6
+
+RELEASE CANDIDATE
+
+Belum dimulai
+
+Target
+
+- Audit UI
+- Audit Backend
+- Audit Database
+- Audit Security
+
+---
+
+# FASE 7
+
+STABLE VERSION
+
+Target
+
+WONG MIT v1.0 Stable
+
+Siap digunakan sebagai aplikasi operasional sekolah.

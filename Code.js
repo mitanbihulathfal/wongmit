@@ -1,6 +1,6 @@
 const SS = SpreadsheetApp.getActiveSpreadsheet();
 
-function doGet(){
+function doGet() {
 
   const output =
 
@@ -49,7 +49,7 @@ function getAppInfo() {
 
 }
 
-function getDashboardData(){
+function getDashboardData() {
 
   const siswaSheet =
     SS.getSheetByName("Siswa");
@@ -72,7 +72,7 @@ function getDashboardData(){
     .getDataRange()
     .getValues()
     .slice(1)
-    .forEach(function(row){
+    .forEach(function (row) {
 
       config[row[0]] = row[1];
 
@@ -80,7 +80,7 @@ function getDashboardData(){
 
   const totalSiswa =
     Math.max(
-      siswaSheet.getLastRow()-1,
+      siswaSheet.getLastRow() - 1,
       0
     );
 
@@ -92,7 +92,7 @@ function getDashboardData(){
 
   let totalGuru = 0;
 
-  for(
+  for (
 
     let i = 1;
 
@@ -100,7 +100,7 @@ function getDashboardData(){
 
     i++
 
-  ){
+  ) {
 
     const role =
 
@@ -108,11 +108,11 @@ function getDashboardData(){
         dataGuru[i][2]
       ).trim();
 
-    if(
+    if (
 
       role !== "Admin"
 
-    ){
+    ) {
 
       totalGuru++;
 
@@ -122,7 +122,7 @@ function getDashboardData(){
 
   const totalKelas =
     Math.max(
-      kelasSheet.getLastRow()-1,
+      kelasSheet.getLastRow() - 1,
       0
     );
 
@@ -141,7 +141,7 @@ function getDashboardData(){
   const kelasSudahAbsen =
     new Set();
 
-  for(let i=1;i<dataAbsensi.length;i++){
+  for (let i = 1; i < dataAbsensi.length; i++) {
 
     const tanggal = Utilities.formatDate(
       new Date(dataAbsensi[i][0]),
@@ -149,7 +149,7 @@ function getDashboardData(){
       "yyyy-MM-dd"
     );
 
-    if(tanggal===hariIni){
+    if (tanggal === hariIni) {
 
       kelasSudahAbsen.add(
         String(dataAbsensi[i][3]).trim()
@@ -159,7 +159,7 @@ function getDashboardData(){
 
   }
 
-  return{
+  return {
 
     totalSiswa,
     totalGuru,
@@ -171,9 +171,9 @@ function getDashboardData(){
     totalDiabsen:
       totalKelas,
 
-    izin:0,
-    sakit:0,
-    alpa:0,
+    izin: 0,
+    sakit: 0,
+    alpa: 0,
 
     tahunAjaran:
       config.tahun_ajaran,
@@ -185,7 +185,7 @@ function getDashboardData(){
 
 }
 
-function getDashboardAttendanceSummary(){
+function getDashboardAttendanceSummary() {
 
   const sheet =
     SS.getSheetByName("Absensi");
@@ -195,7 +195,7 @@ function getDashboardAttendanceSummary(){
 
   const kelasData =
     kelasSheet
-      .getRange(2,1,kelasSheet.getLastRow()-1,1)
+      .getRange(2, 1, kelasSheet.getLastRow() - 1, 1)
       .getValues()
       .flat();
 
@@ -213,10 +213,10 @@ function getDashboardAttendanceSummary(){
 
   const hasil = [];
 
-  kelasData.forEach(function(kelas){
+  kelasData.forEach(function (kelas) {
 
     const dataKelas =
-      absensi.filter(function(r){
+      absensi.filter(function (r) {
 
         const tgl =
           Utilities.formatDate(
@@ -225,18 +225,18 @@ function getDashboardAttendanceSummary(){
             "yyyy-MM-dd"
           );
 
-        return tgl===hariIni &&
-               String(r[3]).trim()===String(kelas).trim();
+        return tgl === hariIni &&
+          String(r[3]).trim() === String(kelas).trim();
 
       });
 
-    if(dataKelas.length===0){
+    if (dataKelas.length === 0) {
 
       hasil.push({
 
-        kelas:kelas,
+        kelas: kelas,
 
-        status:"Belum diabsen"
+        status: "Belum diabsen"
 
       });
 
@@ -244,14 +244,14 @@ function getDashboardAttendanceSummary(){
 
     }
 
-    let hadir=0;
-    let sakit=0;
-    let izin=0;
-    let alpa=0;
+    let hadir = 0;
+    let sakit = 0;
+    let izin = 0;
+    let alpa = 0;
 
-    dataKelas.forEach(function(r){
+    dataKelas.forEach(function (r) {
 
-      switch(r[4]){
+      switch (r[4]) {
 
         case "Hadir":
           hadir++;
@@ -275,23 +275,23 @@ function getDashboardAttendanceSummary(){
 
     hasil.push({
 
-      kelas:kelas,
+      kelas: kelas,
 
-      hadir:hadir,
+      hadir: hadir,
 
-      sakit:sakit,
+      sakit: sakit,
 
-      izin:izin,
+      izin: izin,
 
-      alpa:alpa,
+      alpa: alpa,
 
-      total:dataKelas.length
+      total: dataKelas.length
 
     });
 
   });
 
-  hasil.sort(function(a,b){
+  hasil.sort(function (a, b) {
 
     return String(a.kelas).localeCompare(
 
@@ -301,7 +301,7 @@ function getDashboardAttendanceSummary(){
 
       {
 
-        numeric:true
+        numeric: true
 
       }
 
@@ -317,7 +317,7 @@ function getDashboardAttendanceSummary(){
    PENGATURAN AKADEMIK
 ========================= */
 
-function getAcademicSettings(){
+function getAcademicSettings() {
 
   const sheet =
 
@@ -333,7 +333,7 @@ function getAcademicSettings(){
 
   const hasil = {};
 
-  for(
+  for (
 
     let i = 1;
 
@@ -341,7 +341,7 @@ function getAcademicSettings(){
 
     i++
 
-  ){
+  ) {
 
     const key =
 
@@ -355,7 +355,7 @@ function getAcademicSettings(){
 
   }
 
-  return{
+  return {
 
     tahunAjaran:
 
@@ -373,7 +373,7 @@ function getAcademicSettings(){
 
 }
 
-function saveAcademicSettings(data){
+function saveAcademicSettings(data) {
 
   const sheet =
 
@@ -389,18 +389,18 @@ function saveAcademicSettings(data){
 
   const map = {};
 
-  values.forEach(function(row,index){
+  values.forEach(function (row, index) {
 
     map[row[0]] = index + 1;
 
   });
 
-  function updateValue(key,value){
+  function updateValue(key, value) {
 
-    if(map[key]){
+    if (map[key]) {
 
       sheet
-        .getRange(map[key],2)
+        .getRange(map[key], 2)
         .setValue(value);
 
     }
@@ -463,26 +463,26 @@ function addStudent(data) {
 
 }
 
-function getStudentById(id){
+function getStudentById(id) {
 
   const sheet = SS.getSheetByName("Siswa");
 
   const data = sheet.getDataRange().getValues();
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(String(data[i][0]).trim() == String(id).trim()){
+    if (String(data[i][0]).trim() == String(id).trim()) {
 
       return JSON.stringify({
-        rowIndex : i + 1,
-        id : data[i][0],
-        nisn : data[i][1],
-        nama : data[i][2],
-        jk : data[i][3],
-        tempatLahir : data[i][4],
-        tanggalLahir : data[i][5],
-        kelas : data[i][6],
-        status : data[i][7]
+        rowIndex: i + 1,
+        id: data[i][0],
+        nisn: data[i][1],
+        nama: data[i][2],
+        jk: data[i][3],
+        tempatLahir: data[i][4],
+        tanggalLahir: data[i][5],
+        kelas: data[i][6],
+        status: data[i][7]
       });
 
     }
@@ -493,15 +493,15 @@ function getStudentById(id){
 
 }
 
-function updateStudent(data){
+function updateStudent(data) {
 
   const sheet = SS.getSheetByName("Siswa");
 
   const allData = sheet.getDataRange().getValues();
 
-  for(let i = 1; i < allData.length; i++){
+  for (let i = 1; i < allData.length; i++) {
 
-    if(String(allData[i][0]) === String(data.id)){
+    if (String(allData[i][0]) === String(data.id)) {
 
       sheet.getRange(i + 1, 1, 1, 8).setValues([[
         data.id,
@@ -524,15 +524,15 @@ function updateStudent(data){
 
 }
 
-function deleteStudent(id){
+function deleteStudent(id) {
 
   const sheet = SS.getSheetByName("Siswa");
 
   const data = sheet.getDataRange().getValues();
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(String(data[i][0]) === String(id)){
+    if (String(data[i][0]) === String(id)) {
 
       sheet.deleteRow(i + 1);
 
@@ -550,7 +550,7 @@ function deleteStudent(id){
    MASTER SISWA (UTILITY)
 ========================= */
 
-function getMasterSiswa(){
+function getMasterSiswa() {
 
   const sheet =
     SS.getSheetByName(
@@ -567,7 +567,7 @@ function getMasterSiswa(){
    MASTER ABSENSI (UTILITY)
 ========================= */
 
-function getMasterAbsensi(){
+function getMasterAbsensi() {
 
   const sheet =
     SS.getSheetByName(
@@ -580,30 +580,30 @@ function getMasterAbsensi(){
 
 }
 
-function getTeachers(sessionId){
+function getTeachers(sessionId) {
 
-    const allowed =
+  const allowed =
 
-      checkRole(
+    checkRole(
 
-        sessionId,
+      sessionId,
 
-        [
+      [
 
-          "Admin",
-          "KepalaSekolah"
+        "Admin",
+        "KepalaSekolah"
 
-        ]
+      ]
 
-      );
+    );
 
-    if(!allowed){
+  if (!allowed) {
 
-      throw new Error(
-        "Akses ditolak"
-      );
+    throw new Error(
+      "Akses ditolak"
+    );
 
-    }
+  }
 
   const sheet =
     SS.getSheetByName("Guru");
@@ -619,12 +619,12 @@ function getTeachers(sessionId){
    GURU DROPDOWN REKAP (UTILITY)
 ========================= */
 
-function getGuruDropdownRekap(sessionId){
+function getGuruDropdownRekap(sessionId) {
 
   const role =
     getRoleBySession(sessionId);
 
-  if(!role){
+  if (!role) {
 
     throw new Error(
       "Akses ditolak"
@@ -652,19 +652,19 @@ function getGuruDropdownRekap(sessionId){
     "Nama Guru"
   ]);
 
-  for(
+  for (
     let i = 1;
     i < data.length;
     i++
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         data[i][5]
       ) !== "Aktif"
 
-    ){
+    ) {
 
       continue;
 
@@ -686,11 +686,11 @@ function getGuruDropdownRekap(sessionId){
 
 }
 
-function getAllClassesRekap(sessionId){
+function getAllClassesRekap(sessionId) {
 
   const role = getRoleBySession(sessionId);
 
-  if(!role){
+  if (!role) {
 
     throw new Error(
       "Session tidak valid"
@@ -717,7 +717,7 @@ function getAllClassesRekap(sessionId){
     "Nama Kelas"
   ]);
 
-  for(
+  for (
 
     let i = 1;
 
@@ -725,9 +725,9 @@ function getAllClassesRekap(sessionId){
 
     i++
 
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         data[i][3]
@@ -737,7 +737,7 @@ function getAllClassesRekap(sessionId){
 
       "Aktif"
 
-    ){
+    ) {
 
       continue;
 
@@ -759,15 +759,15 @@ function getAllClassesRekap(sessionId){
 
 }
 
-function addTeacher(sessionId,data){
+function addTeacher(sessionId, data) {
 
   const allowed =
     checkRole(
       sessionId,
-      ["Admin","KepalaSekolah"]
+      ["Admin", "KepalaSekolah"]
     );
 
-  if(!allowed){
+  if (!allowed) {
     throw new Error("Akses ditolak");
   }
 
@@ -787,7 +787,7 @@ function addTeacher(sessionId,data){
 
 }
 
-function getTeacherById(id){
+function getTeacherById(id) {
 
   const sheet =
     SS.getSheetByName("Guru");
@@ -795,20 +795,20 @@ function getTeacherById(id){
   const data =
     sheet.getDataRange().getValues();
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(String(data[i][0]).trim() === String(id).trim()){
+    if (String(data[i][0]).trim() === String(id).trim()) {
 
       return {
 
-        rowIndex : i + 1,
+        rowIndex: i + 1,
 
-        id       : data[i][0],
-        namaGuru : data[i][1],
-        username : data[i][2],
-        password : data[i][3],
-        role     : data[i][4],
-        status   : data[i][5]
+        id: data[i][0],
+        namaGuru: data[i][1],
+        username: data[i][2],
+        password: data[i][3],
+        role: data[i][4],
+        status: data[i][5]
 
       };
 
@@ -820,7 +820,7 @@ function getTeacherById(id){
 
 }
 
-function getNamaGuruById(idGuru){
+function getNamaGuruById(idGuru) {
 
   const sheet =
     SS.getSheetByName(
@@ -832,13 +832,13 @@ function getNamaGuruById(idGuru){
       .getDataRange()
       .getValues();
 
-  for(
+  for (
     let i = 1;
     i < data.length;
     i++
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         data[i][0]
@@ -850,7 +850,7 @@ function getNamaGuruById(idGuru){
         idGuru
       ).trim()
 
-    ){
+    ) {
 
       return data[i][1];
 
@@ -866,27 +866,27 @@ function updateTeacher(
   sessionId,
   rowIndex,
   data
-){
+) {
 
   const allowed =
     checkRole(
       sessionId,
-      ["Admin","KepalaSekolah"]
+      ["Admin", "KepalaSekolah"]
     );
 
-  if(!allowed){
+  if (!allowed) {
     throw new Error("Akses ditolak");
   }
 
   const sheet =
     SS.getSheetByName("Guru");
 
-  sheet.getRange(rowIndex,1).setValue(data.id);
-  sheet.getRange(rowIndex,2).setValue(data.namaGuru);
-  sheet.getRange(rowIndex,3).setValue(data.username);
-  sheet.getRange(rowIndex,4).setValue(data.password);
-  sheet.getRange(rowIndex,5).setValue(data.role);
-  sheet.getRange(rowIndex,6).setValue(data.status);
+  sheet.getRange(rowIndex, 1).setValue(data.id);
+  sheet.getRange(rowIndex, 2).setValue(data.namaGuru);
+  sheet.getRange(rowIndex, 3).setValue(data.username);
+  sheet.getRange(rowIndex, 4).setValue(data.password);
+  sheet.getRange(rowIndex, 5).setValue(data.role);
+  sheet.getRange(rowIndex, 6).setValue(data.status);
 
   return true;
 
@@ -895,15 +895,15 @@ function updateTeacher(
 function deleteTeacher(
   sessionId,
   id
-){
+) {
 
   const allowed =
     checkRole(
       sessionId,
-      ["Admin","KepalaSekolah"]
+      ["Admin", "KepalaSekolah"]
     );
 
-  if(!allowed){
+  if (!allowed) {
     throw new Error("Akses ditolak");
   }
 
@@ -913,12 +913,12 @@ function deleteTeacher(
   const data =
     sheet.getDataRange().getValues();
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(
+    if (
       String(data[i][0]).trim() ===
       String(id).trim()
-    ){
+    ) {
 
       sheet.deleteRow(i + 1);
 
@@ -932,15 +932,15 @@ function deleteTeacher(
 
 }
 
-function getClasses(sessionId){
+function getClasses(sessionId) {
 
   const allowed =
     checkRole(
       sessionId,
-      ["Admin","KepalaSekolah"]
+      ["Admin", "KepalaSekolah"]
     );
 
-  if(!allowed){
+  if (!allowed) {
     throw new Error("Akses ditolak");
   }
 
@@ -965,18 +965,18 @@ function getClasses(sessionId){
     "Status"
   ]);
 
-  for(let i = 1; i < kelasData.length; i++){
+  for (let i = 1; i < kelasData.length; i++) {
 
     const idWali =
       String(kelasData[i][2]);
 
     let namaWali = "-";
 
-    for(let j = 1; j < guruData.length; j++){
+    for (let j = 1; j < guruData.length; j++) {
 
-      if(
+      if (
         String(guruData[j][0]) === idWali
-      ){
+      ) {
 
         namaWali = guruData[j][1];
         break;
@@ -1000,7 +1000,7 @@ function getClasses(sessionId){
 
 }
 
-function getWaliKelasOptions(){
+function getWaliKelasOptions() {
 
   const sheet =
     SS.getSheetByName("Guru");
@@ -1010,17 +1010,17 @@ function getWaliKelasOptions(){
 
   const hasil = [];
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
     const role =
       String(data[i][4]);
 
-    if(role.includes("WaliKelas")){
+    if (role.includes("WaliKelas")) {
 
       hasil.push({
 
-        id   : data[i][0],
-        nama : data[i][1]
+        id: data[i][0],
+        nama: data[i][1]
 
       });
 
@@ -1035,15 +1035,15 @@ function getWaliKelasOptions(){
 function addClass(
   sessionId,
   data
-){
+) {
 
   const allowed =
     checkRole(
       sessionId,
-      ["Admin","KepalaSekolah"]
+      ["Admin", "KepalaSekolah"]
     );
 
-  if(!allowed){
+  if (!allowed) {
     throw new Error("Akses ditolak");
   }
 
@@ -1063,7 +1063,7 @@ function addClass(
 
 }
 
-function getClassById(id){
+function getClassById(id) {
 
   const sheet =
     SS.getSheetByName("Kelas");
@@ -1071,21 +1071,21 @@ function getClassById(id){
   const data =
     sheet.getDataRange().getValues();
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(
+    if (
       String(data[i][0]).trim() ===
       String(id).trim()
-    ){
+    ) {
 
       return {
 
-        rowIndex : i + 1,
+        rowIndex: i + 1,
 
-        id        : data[i][0],
-        namaKelas : data[i][1],
-        waliKelas : data[i][2],
-        status    : data[i][3]
+        id: data[i][0],
+        namaKelas: data[i][1],
+        waliKelas: data[i][2],
+        status: data[i][3]
 
       };
 
@@ -1101,31 +1101,31 @@ function updateClass(
   sessionId,
   rowIndex,
   data
-){
+) {
 
   const allowed =
     checkRole(
       sessionId,
-      ["Admin","KepalaSekolah"]
+      ["Admin", "KepalaSekolah"]
     );
 
-  if(!allowed){
+  if (!allowed) {
     throw new Error("Akses ditolak");
   }
 
   const sheet =
     SS.getSheetByName("Kelas");
 
-  sheet.getRange(rowIndex,1)
+  sheet.getRange(rowIndex, 1)
     .setValue(data.id);
 
-  sheet.getRange(rowIndex,2)
+  sheet.getRange(rowIndex, 2)
     .setValue(data.namaKelas);
 
-  sheet.getRange(rowIndex,3)
+  sheet.getRange(rowIndex, 3)
     .setValue(data.waliKelas);
 
-  sheet.getRange(rowIndex,4)
+  sheet.getRange(rowIndex, 4)
     .setValue(data.status);
 
   return true;
@@ -1135,15 +1135,15 @@ function updateClass(
 function deleteClass(
   sessionId,
   id
-){
+) {
 
   const allowed =
     checkRole(
       sessionId,
-      ["Admin","KepalaSekolah"]
+      ["Admin", "KepalaSekolah"]
     );
 
-  if(!allowed){
+  if (!allowed) {
     throw new Error("Akses ditolak");
   }
 
@@ -1153,12 +1153,12 @@ function deleteClass(
   const data =
     sheet.getDataRange().getValues();
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(
+    if (
       String(data[i][0]).trim() ===
       String(id).trim()
-    ){
+    ) {
 
       sheet.deleteRow(i + 1);
 
@@ -1172,7 +1172,7 @@ function deleteClass(
 
 }
 
-function getGuruOptions(){
+function getGuruOptions() {
 
   const sheet =
     SS.getSheetByName("Guru");
@@ -1182,7 +1182,7 @@ function getGuruOptions(){
 
   const hasil = [];
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
     const role =
       String(data[i][4]);
@@ -1195,15 +1195,15 @@ function getGuruOptions(){
       role.includes("WaliKelas") ||
       role.includes("GuruMapel");
 
-    if(
+    if (
       bolehMengajar &&
       status === "Aktif"
-    ){
+    ) {
 
       hasil.push({
 
-        id   : data[i][0],
-        nama : data[i][1]
+        id: data[i][0],
+        nama: data[i][1]
 
       });
 
@@ -1215,7 +1215,7 @@ function getGuruOptions(){
 
 }
 
-function getKelasOptions(){
+function getKelasOptions() {
 
   const sheet =
     SS.getSheetByName("Kelas");
@@ -1225,14 +1225,14 @@ function getKelasOptions(){
 
   const hasil = [];
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(data[i][3] === "Aktif"){
+    if (data[i][3] === "Aktif") {
 
       hasil.push({
 
-        id   : data[i][0],
-        nama : data[i][1]
+        id: data[i][0],
+        nama: data[i][1]
 
       });
 
@@ -1247,15 +1247,15 @@ function getKelasOptions(){
 function addGuruKelas(
   sessionId,
   data
-){
+) {
 
   const allowed =
     checkRole(
       sessionId,
-      ["Admin","KepalaSekolah"]
+      ["Admin", "KepalaSekolah"]
     );
 
-  if(!allowed){
+  if (!allowed) {
     throw new Error(
       "Akses ditolak"
     );
@@ -1267,9 +1267,9 @@ function addGuruKelas(
   const dataSheet =
     sheet.getDataRange().getValues();
 
-  for(let i = 1; i < dataSheet.length; i++){
+  for (let i = 1; i < dataSheet.length; i++) {
 
-    if(
+    if (
 
       String(dataSheet[i][0]) ===
       String(data.idGuru)
@@ -1279,7 +1279,7 @@ function addGuruKelas(
       String(dataSheet[i][1]) ===
       String(data.kelas)
 
-    ){
+    ) {
 
       throw new Error(
         "Guru sudah terdaftar pada kelas tersebut"
@@ -1302,15 +1302,15 @@ function addGuruKelas(
 
 function getGuruKelas(
   sessionId
-){
+) {
 
   const allowed =
     checkRole(
       sessionId,
-      ["Admin","KepalaSekolah"]
+      ["Admin", "KepalaSekolah"]
     );
 
-  if(!allowed){
+  if (!allowed) {
     throw new Error(
       "Akses ditolak"
     );
@@ -1330,16 +1330,16 @@ function getGuruKelas(
 
   const hasil = [];
 
-  for(let i = 1; i < dataRelasi.length; i++){
+  for (let i = 1; i < dataRelasi.length; i++) {
 
     let namaGuru = "-";
 
-    for(let j = 1; j < dataGuru.length; j++){
+    for (let j = 1; j < dataGuru.length; j++) {
 
-      if(
+      if (
         String(dataGuru[j][0]) ===
         String(dataRelasi[i][0])
-      ){
+      ) {
 
         namaGuru = dataGuru[j][1];
         break;
@@ -1350,9 +1350,9 @@ function getGuruKelas(
 
     hasil.push({
 
-      idGuru : dataRelasi[i][0],
-      guru   : namaGuru,
-      kelas  : dataRelasi[i][1]
+      idGuru: dataRelasi[i][0],
+      guru: namaGuru,
+      kelas: dataRelasi[i][1]
 
     });
 
@@ -1366,15 +1366,15 @@ function deleteGuruKelas(
   sessionId,
   idGuru,
   kelas
-){
+) {
 
   const allowed =
     checkRole(
       sessionId,
-      ["Admin","KepalaSekolah"]
+      ["Admin", "KepalaSekolah"]
     );
 
-  if(!allowed){
+  if (!allowed) {
     throw new Error(
       "Akses ditolak"
     );
@@ -1386,9 +1386,9 @@ function deleteGuruKelas(
   const data =
     sheet.getDataRange().getValues();
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(
+    if (
 
       String(data[i][0]) ===
       String(idGuru)
@@ -1398,7 +1398,7 @@ function deleteGuruKelas(
       String(data[i][1]) ===
       String(kelas)
 
-    ){
+    ) {
 
       sheet.deleteRow(i + 1);
 
@@ -1412,7 +1412,7 @@ function deleteGuruKelas(
 
 }
 
-function checkLogin(username,password){
+function checkLogin(username, password) {
 
   const sheet =
     SS.getSheetByName("Guru");
@@ -1420,16 +1420,16 @@ function checkLogin(username,password){
   const data =
     sheet.getDataRange().getValues();
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
     const status =
       String(data[i][5]);
 
-    if(
+    if (
       String(data[i][2]) === username &&
       String(data[i][3]) === password &&
       status === "Aktif"
-    ){
+    ) {
 
       const sessionId =
         createSession(
@@ -1439,15 +1439,15 @@ function checkLogin(username,password){
 
       return {
 
-        success : true,
+        success: true,
 
-        sessionId : sessionId,
+        sessionId: sessionId,
 
-        idGuru : data[i][0],
+        idGuru: data[i][0],
 
-        namaGuru : data[i][1],
+        namaGuru: data[i][1],
 
-        role : data[i][4]
+        role: data[i][4]
 
       };
 
@@ -1457,13 +1457,13 @@ function checkLogin(username,password){
 
   return {
 
-    success : false
+    success: false
 
   };
 
 }
 
-function createSession(idGuru,namaGuru){
+function createSession(idGuru, namaGuru) {
 
   const sheet =
     SS.getSheetByName("Session");
@@ -1490,7 +1490,7 @@ function createSession(idGuru,namaGuru){
 
 }
 
-function checkSession(sessionId){
+function checkSession(sessionId) {
 
   const sheet =
     SS.getSheetByName("Session");
@@ -1498,9 +1498,9 @@ function checkSession(sessionId){
   const data =
     sheet.getDataRange().getValues();
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(
+    if (
 
       String(data[i][0]) ===
       String(sessionId)
@@ -1510,7 +1510,7 @@ function checkSession(sessionId){
       String(data[i][5]) ===
       "Aktif"
 
-    ){
+    ) {
 
       return true;
 
@@ -1522,7 +1522,7 @@ function checkSession(sessionId){
 
 }
 
-function logoutSession(sessionId){
+function logoutSession(sessionId) {
 
   const sheet =
     SS.getSheetByName("Session");
@@ -1530,12 +1530,12 @@ function logoutSession(sessionId){
   const data =
     sheet.getDataRange().getValues();
 
-  for(let i = 1; i < data.length; i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(
+    if (
       String(data[i][0]) ===
       String(sessionId)
-    ){
+    ) {
 
       sheet.getRange(
         i + 1,
@@ -1561,7 +1561,7 @@ function logoutSession(sessionId){
 
 }
 
-function getGuruProfile(idGuru){
+function getGuruProfile(idGuru) {
 
   const guruSheet =
     SS.getSheetByName("Guru");
@@ -1583,20 +1583,20 @@ function getGuruProfile(idGuru){
 
   let profile = null;
 
-  for(let i = 1; i < guruData.length; i++){
+  for (let i = 1; i < guruData.length; i++) {
 
-    if(
+    if (
       String(guruData[i][0]) ===
       String(idGuru)
-    ){
+    ) {
 
       profile = {
 
-        idGuru : guruData[i][0],
-        nama : guruData[i][1],
-        role : guruData[i][4],
-        waliKelas : [],
-        mengajar : []
+        idGuru: guruData[i][0],
+        nama: guruData[i][1],
+        role: guruData[i][4],
+        waliKelas: [],
+        mengajar: []
 
       };
 
@@ -1606,18 +1606,18 @@ function getGuruProfile(idGuru){
 
   }
 
-  if(!profile){
+  if (!profile) {
 
     return null;
 
   }
 
-  for(let i = 1; i < kelasData.length; i++){
+  for (let i = 1; i < kelasData.length; i++) {
 
-    if(
+    if (
       String(kelasData[i][2]) ===
       String(idGuru)
-    ){
+    ) {
 
       profile.waliKelas.push(
         kelasData[i][1]
@@ -1627,22 +1627,22 @@ function getGuruProfile(idGuru){
 
   }
 
-  for(let i = 1; i < relasiData.length; i++){
+  for (let i = 1; i < relasiData.length; i++) {
 
-    if(
+    if (
       String(relasiData[i][1]).trim() !==
       String(idGuru).trim()
-    ){
+    ) {
       continue;
     }
 
     const kelas =
       String(relasiData[i][2]).trim();
 
-    if(
+    if (
       kelas &&
       !profile.mengajar.includes(kelas)
-    ){
+    ) {
 
       profile.mengajar.push(kelas);
 
@@ -1654,7 +1654,7 @@ function getGuruProfile(idGuru){
 
 }
 
-function getRoleBySession(sessionId){
+function getRoleBySession(sessionId) {
 
   const sessionSheet =
     SS.getSheetByName("Session");
@@ -1670,9 +1670,9 @@ function getRoleBySession(sessionId){
 
   let idGuru = null;
 
-  for(let i=1;i<sessionData.length;i++){
+  for (let i = 1; i < sessionData.length; i++) {
 
-    if(
+    if (
 
       String(sessionData[i][0]) ===
       String(sessionId)
@@ -1682,7 +1682,7 @@ function getRoleBySession(sessionId){
       String(sessionData[i][5]) ===
       "Aktif"
 
-    ){
+    ) {
 
       idGuru =
         sessionData[i][1];
@@ -1693,20 +1693,20 @@ function getRoleBySession(sessionId){
 
   }
 
-  if(!idGuru){
+  if (!idGuru) {
 
     return null;
 
   }
 
-  for(let i=1;i<guruData.length;i++){
+  for (let i = 1; i < guruData.length; i++) {
 
-    if(
+    if (
 
       String(guruData[i][0]) ===
       String(idGuru)
 
-    ){
+    ) {
 
       return guruData[i][4];
 
@@ -1724,7 +1724,7 @@ function checkRole(
 
   allowedRoles
 
-){
+) {
 
   const role =
 
@@ -1732,7 +1732,7 @@ function checkRole(
       sessionId
     );
 
-  if(!role){
+  if (!role) {
 
     return false;
 
@@ -1749,7 +1749,7 @@ function checkRole(
 
 }
 
-function getStudentsByClass(kelas){
+function getStudentsByClass(kelas) {
 
   const sheet =
     SS.getSheetByName("Siswa");
@@ -1759,9 +1759,9 @@ function getStudentsByClass(kelas){
 
   const hasil = [];
 
-  for(let i=1;i<data.length;i++){
+  for (let i = 1; i < data.length; i++) {
 
-    if(
+    if (
 
       String(data[i][6]) ===
       String(kelas)
@@ -1771,13 +1771,13 @@ function getStudentsByClass(kelas){
       String(data[i][7]) ===
       "Aktif"
 
-    ){
+    ) {
 
       hasil.push({
 
-        nisn : data[i][1],
+        nisn: data[i][1],
 
-        nama : data[i][2]
+        nama: data[i][2]
 
       });
 
@@ -1789,7 +1789,7 @@ function getStudentsByClass(kelas){
 
 }
 
-function getKelasAbsensi(sessionId){
+function getKelasAbsensi(sessionId) {
 
   const role =
     getRoleBySession(sessionId);
@@ -1797,13 +1797,13 @@ function getKelasAbsensi(sessionId){
   const hasil = [];
 
   // ADMIN / KEPSEK
-  if(
+  if (
     role &&
     (
       role.includes("Admin") ||
       role.includes("KepalaSekolah")
     )
-  ){
+  ) {
 
     const sheet =
       SS.getSheetByName("Kelas");
@@ -1811,16 +1811,16 @@ function getKelasAbsensi(sessionId){
     const data =
       sheet.getDataRange().getValues();
 
-    for(let i=1;i<data.length;i++){
+    for (let i = 1; i < data.length; i++) {
 
-      if(
+      if (
         String(data[i][3]) ===
         "Aktif"
-      ){
+      ) {
 
         hasil.push({
 
-          nama : data[i][1]
+          nama: data[i][1]
 
         });
 
@@ -1846,13 +1846,13 @@ function getKelasAbsensi(sessionId){
 
   let idGuru = "";
 
-  for(
+  for (
     let i = 1;
     i < sessionData.length;
     i++
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         sessionData[i][0]
@@ -1866,7 +1866,7 @@ function getKelasAbsensi(sessionId){
       ) ===
       "Aktif"
 
-    ){
+    ) {
 
       idGuru =
         sessionData[i][1];
@@ -1889,13 +1889,13 @@ function getKelasAbsensi(sessionId){
 
   const daftarKelas = [];
 
-  for(
+  for (
     let i = 1;
     i < dataMengajar.length;
     i++
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         dataMengajar[i][1]
@@ -1907,13 +1907,13 @@ function getKelasAbsensi(sessionId){
         idGuru
       ).trim()
 
-    ){
+    ) {
 
       continue;
 
     }
 
-    if(
+    if (
 
       String(
         dataMengajar[i][5]
@@ -1923,7 +1923,7 @@ function getKelasAbsensi(sessionId){
 
       "Aktif"
 
-    ){
+    ) {
 
       continue;
 
@@ -1935,13 +1935,13 @@ function getKelasAbsensi(sessionId){
         dataMengajar[i][2]
       ).trim();
 
-    if(
+    if (
 
       !daftarKelas.includes(
         kelas
       )
 
-    ){
+    ) {
 
       daftarKelas.push(
         kelas
@@ -1949,7 +1949,7 @@ function getKelasAbsensi(sessionId){
 
       hasil.push({
 
-        nama : kelas
+        nama: kelas
 
       });
 
@@ -1967,7 +1967,7 @@ function getKelasAbsensi(sessionId){
    MAPEL
 ========================= */
 
-function getMapel(sessionId){
+function getMapel(sessionId) {
 
   const allowed =
     checkRole(
@@ -1978,7 +1978,7 @@ function getMapel(sessionId){
       ]
     );
 
-  if(!allowed){
+  if (!allowed) {
 
     throw new Error(
       "Akses ditolak"
@@ -2006,7 +2006,7 @@ function getMapel(sessionId){
    MAPEL OPTIONS (UTILITY)
 ========================= */
 
-function getMapelOptions(){
+function getMapelOptions() {
 
   const sheet =
 
@@ -2024,7 +2024,7 @@ function getMapelOptions(){
 
   const hasil = [];
 
-  for(
+  for (
 
     let i = 1;
 
@@ -2032,23 +2032,23 @@ function getMapelOptions(){
 
     i++
 
-  ){
+  ) {
 
-    if(
+    if (
 
       data[i][3] ===
 
       "Aktif"
 
-    ){
+    ) {
 
       hasil.push({
 
-        id :
+        id:
 
           data[i][0],
 
-        nama :
+        nama:
 
           data[i][1]
 
@@ -2069,7 +2069,7 @@ function getMapelOptions(){
 function addMapel(
   sessionId,
   data
-){
+) {
 
   const allowed =
     checkRole(
@@ -2080,7 +2080,7 @@ function addMapel(
       ]
     );
 
-  if(!allowed){
+  if (!allowed) {
 
     throw new Error(
       "Akses ditolak"
@@ -2110,7 +2110,7 @@ function updateMapel(
   sessionId,
   rowIndex,
   data
-){
+) {
 
   const allowed =
     checkRole(
@@ -2121,7 +2121,7 @@ function updateMapel(
       ]
     );
 
-  if(!allowed){
+  if (!allowed) {
 
     throw new Error(
       "Akses ditolak"
@@ -2157,7 +2157,7 @@ function updateMapel(
 function deleteMapel(
   sessionId,
   idMapel
-){
+) {
 
   const allowed =
     checkRole(
@@ -2168,7 +2168,7 @@ function deleteMapel(
       ]
     );
 
-  if(!allowed){
+  if (!allowed) {
 
     throw new Error(
       "Akses ditolak"
@@ -2186,13 +2186,13 @@ function deleteMapel(
       .getDataRange()
       .getValues();
 
-  for(
+  for (
     let i = 1;
     i < data.length;
     i++
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         data[i][0]
@@ -2204,7 +2204,7 @@ function deleteMapel(
         idMapel
       ).trim()
 
-    ){
+    ) {
 
       sheet.deleteRow(
         i + 1
@@ -2222,7 +2222,7 @@ function deleteMapel(
 
 function isMapelUsed(
   namaMapel
-){
+) {
 
   const sheet =
 
@@ -2236,26 +2236,26 @@ function isMapelUsed(
       .getDataRange()
       .getValues();
 
-  for(
+  for (
     let i = 1;
     i < data.length;
     i++
-  ){
+  ) {
 
     const daftarMapel =
 
       String(
         data[i][4]
       )
-      .split("|");
+        .split("|");
 
-    for(
+    for (
       let j = 0;
       j < daftarMapel.length;
       j++
-    ){
+    ) {
 
-      if(
+      if (
 
         daftarMapel[j].trim()
 
@@ -2265,7 +2265,7 @@ function isMapelUsed(
           namaMapel
         ).trim()
 
-      ){
+      ) {
 
         return true;
 
@@ -2281,7 +2281,7 @@ function isMapelUsed(
 
 function getMapelUsage(
   namaMapel
-){
+) {
 
   const sheetGuruMengajar =
     SS.getSheetByName(
@@ -2305,29 +2305,29 @@ function getMapelUsage(
 
   const hasil = [];
 
-  for(
+  for (
     let i = 1;
     i < dataMengajar.length;
     i++
-  ){
+  ) {
 
     const daftarMapel =
 
       String(
         dataMengajar[i][4]
       )
-      .split("|");
+        .split("|");
 
-    if(
+    if (
 
-      !daftarMapel.some(function(item){
+      !daftarMapel.some(function (item) {
 
         return item.trim() ===
           String(namaMapel).trim();
 
       })
 
-    ){
+    ) {
 
       continue;
 
@@ -2335,13 +2335,13 @@ function getMapelUsage(
 
     let namaGuru = "-";
 
-    for(
+    for (
       let j = 1;
       j < dataGuru.length;
       j++
-    ){
+    ) {
 
-      if(
+      if (
 
         String(
           dataGuru[j][0]
@@ -2353,7 +2353,7 @@ function getMapelUsage(
           dataMengajar[i][1]
         ).trim()
 
-      ){
+      ) {
 
         namaGuru =
           dataGuru[j][1];
@@ -2366,13 +2366,13 @@ function getMapelUsage(
 
     hasil.push({
 
-      guru :
+      guru:
         namaGuru,
 
-      kelas :
+      kelas:
         dataMengajar[i][2],
 
-      hari :
+      hari:
         dataMengajar[i][3]
 
     });
@@ -2385,7 +2385,7 @@ function getMapelUsage(
 
 function getMapelById(
   idMapel
-){
+) {
 
   const sheet =
     SS.getSheetByName(
@@ -2397,13 +2397,13 @@ function getMapelById(
       .getDataRange()
       .getValues();
 
-  for(
+  for (
     let i = 1;
     i < data.length;
     i++
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         data[i][0]
@@ -2415,23 +2415,23 @@ function getMapelById(
         idMapel
       ).trim()
 
-    ){
+    ) {
 
       return {
 
-        rowIndex :
+        rowIndex:
           i + 1,
 
-        idMapel :
+        idMapel:
           data[i][0],
 
-        namaMapel :
+        namaMapel:
           data[i][1],
 
-        kelompok :
+        kelompok:
           data[i][2],
 
-        status :
+        status:
           data[i][3]
 
       };
@@ -2456,7 +2456,7 @@ function createTemplateSpreadsheet(
 
   sheetName = "Import"
 
-){
+) {
 
   const spreadsheet =
 
@@ -2548,7 +2548,7 @@ function createTemplateSpreadsheet(
 
 }
 
-function downloadTemplateMapel(){
+function downloadTemplateMapel() {
 
   const template =
 
@@ -2600,7 +2600,7 @@ function setDropdownValidation(
 
   sourceRange
 
-){
+) {
 
   const rule =
 
@@ -2642,9 +2642,9 @@ function setDropdownValidation(
    ID MAPEL (UTILITY)
 ========================= */
 
-function generateMapelId(){
+function generateMapelId() {
 
-  return "MP" + Utilities.getUuid().substring(0,8);
+  return "MP" + Utilities.getUuid().substring(0, 8);
 
 }
 
@@ -2658,7 +2658,7 @@ function importMapel(
 
   rows
 
-){
+) {
 
   const allowed =
 
@@ -2676,11 +2676,11 @@ function importMapel(
 
     );
 
-  if(
+  if (
 
     !allowed
 
-  ){
+  ) {
 
     throw new Error(
 
@@ -2706,7 +2706,7 @@ function importMapel(
 
     new Set();
 
-  for(
+  for (
 
     let i = 1;
 
@@ -2714,7 +2714,7 @@ function importMapel(
 
     i++
 
-  ){
+  ) {
 
     namaMapelExist.add(
 
@@ -2724,9 +2724,9 @@ function importMapel(
 
       )
 
-      .trim()
+        .trim()
 
-      .toLowerCase()
+        .toLowerCase()
 
     );
 
@@ -2734,13 +2734,13 @@ function importMapel(
 
   const hasil = {
 
-    berhasil : 0,
+    berhasil: 0,
 
-    gagal : 0
+    gagal: 0
 
   };
 
-  for(
+  for (
 
     let i = 0;
 
@@ -2748,7 +2748,7 @@ function importMapel(
 
     i++
 
-  ){
+  ) {
 
     const namaMapel =
 
@@ -2758,7 +2758,7 @@ function importMapel(
 
       )
 
-      .trim();
+        .trim();
 
     const kelompok =
 
@@ -2768,7 +2768,7 @@ function importMapel(
 
       )
 
-      .trim();
+        .trim();
 
     const status =
 
@@ -2778,11 +2778,11 @@ function importMapel(
 
       )
 
-      .trim();
+        .trim();
 
     /* Abaikan baris kosong */
 
-    if(
+    if (
 
       namaMapel === "" &&
 
@@ -2790,7 +2790,7 @@ function importMapel(
 
       status === ""
 
-    ){
+    ) {
 
       continue;
 
@@ -2800,7 +2800,7 @@ function importMapel(
 
       namaMapel.toLowerCase();
 
-    if(
+    if (
 
       namaMapelExist.has(
 
@@ -2808,7 +2808,7 @@ function importMapel(
 
       )
 
-    ){
+    ) {
 
       hasil.gagal++;
 
@@ -2846,7 +2846,7 @@ function importMapel(
    TEMPLATE GURU MENGAJAR (UTILITY)
 ========================= */
 
-function downloadTemplateGuruMengajar(){
+function downloadTemplateGuruMengajar() {
 
   const template =
 
@@ -2909,250 +2909,250 @@ function downloadTemplateGuruMengajar(){
       "Mapel"
     ).getDataRange().getValues();
 
-    sheetReferensi.getRange(
-      "A1"
-    ).setValue(
-      "Guru"
-    );
+  sheetReferensi.getRange(
+    "A1"
+  ).setValue(
+    "Guru"
+  );
 
-    for(
-      let i = 1;
-      i < guruData.length;
-      i++
-    ){
-
-      sheetReferensi
-        .getRange(
-          i + 1,
-          1
-        )
-        .setValue(
-          guruData[i][1]
-        );
-
-    }
-
-    sheetReferensi.getRange(
-      "B1"
-    ).setValue(
-      "Kelas"
-    );
-
-    for(
-      let i = 1;
-      i < kelasData.length;
-      i++
-    ){
-
-      sheetReferensi
-        .getRange(
-          i + 1,
-          2
-        )
-        .setValue(
-          kelasData[i][1]
-        );
-
-    }
-
-    sheetReferensi.getRange(
-      "C1"
-    ).setValue(
-      "Hari"
-    );
-
-    const hari = [
-
-      "Ahad",
-      "Senin",
-      "Selasa",
-      "Rabu",
-      "Kamis",
-      "Sabtu"
-
-    ];
-
-    for(
-      let i = 0;
-      i < hari.length;
-      i++
-    ){
-
-      sheetReferensi
-        .getRange(
-          i + 2,
-          3
-        )
-        .setValue(
-          hari[i]
-        );
-
-    }
-
-    sheetReferensi.getRange(
-      "D1"
-    ).setValue(
-      "Mapel"
-    );
-
-    for(
-      let i = 1;
-      i < mapelData.length;
-      i++
-    ){
-
-      if(
-        mapelData[i][3] !==
-        "Aktif"
-      ){
-
-        continue;
-
-      }
-
-      sheetReferensi
-        .getRange(
-          sheetReferensi.getLastRow() + 1,
-          4
-        )
-        .setValue(
-          mapelData[i][1]
-        );
-
-    }
-
-    sheetReferensi.getRange(
-      "E1"
-    ).setValue(
-      "Status"
-    );
+  for (
+    let i = 1;
+    i < guruData.length;
+    i++
+  ) {
 
     sheetReferensi
       .getRange(
-        2,
-        5,
-        2,
+        i + 1,
         1
       )
-      .setValues([
+      .setValue(
+        guruData[i][1]
+      );
 
-        ["Aktif"],
-        ["Nonaktif"]
+  }
 
-      ]);
+  sheetReferensi.getRange(
+    "B1"
+  ).setValue(
+    "Kelas"
+  );
 
-    /* =========================
-      DATA VALIDATION
-    ========================= */
+  for (
+    let i = 1;
+    i < kelasData.length;
+    i++
+  ) {
 
-    setDropdownValidation(
+    sheetReferensi
+      .getRange(
+        i + 1,
+        2
+      )
+      .setValue(
+        kelasData[i][1]
+      );
 
-      sheetImport,
+  }
 
-      "A2:A1000",
+  sheetReferensi.getRange(
+    "C1"
+  ).setValue(
+    "Hari"
+  );
 
-      sheetReferensi,
+  const hari = [
 
-      "A2:A"
+    "Ahad",
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Sabtu"
 
-    );
+  ];
 
-    setDropdownValidation(
+  for (
+    let i = 0;
+    i < hari.length;
+    i++
+  ) {
 
-      sheetImport,
+    sheetReferensi
+      .getRange(
+        i + 2,
+        3
+      )
+      .setValue(
+        hari[i]
+      );
 
-      "B2:B1000",
+  }
 
-      sheetReferensi,
+  sheetReferensi.getRange(
+    "D1"
+  ).setValue(
+    "Mapel"
+  );
 
-      "B2:B"
+  for (
+    let i = 1;
+    i < mapelData.length;
+    i++
+  ) {
 
-    );
+    if (
+      mapelData[i][3] !==
+      "Aktif"
+    ) {
 
-    setDropdownValidation(
+      continue;
 
-      sheetImport,
+    }
 
-      "C2:C1000",
+    sheetReferensi
+      .getRange(
+        sheetReferensi.getLastRow() + 1,
+        4
+      )
+      .setValue(
+        mapelData[i][1]
+      );
 
-      sheetReferensi,
+  }
 
-      "C2:C"
+  sheetReferensi.getRange(
+    "E1"
+  ).setValue(
+    "Status"
+  );
 
-    );
+  sheetReferensi
+    .getRange(
+      2,
+      5,
+      2,
+      1
+    )
+    .setValues([
 
-    setDropdownValidation(
+      ["Aktif"],
+      ["Nonaktif"]
 
-      sheetImport,
+    ]);
 
-      "D2:D1000",
+  /* =========================
+    DATA VALIDATION
+  ========================= */
 
-      sheetReferensi,
+  setDropdownValidation(
 
-      "D2:D"
+    sheetImport,
 
-    );
+    "A2:A1000",
 
-    setDropdownValidation(
+    sheetReferensi,
 
-      sheetImport,
+    "A2:A"
 
-      "E2:E1000",
+  );
 
-      sheetReferensi,
+  setDropdownValidation(
 
-      "D2:D"
+    sheetImport,
 
-    );
+    "B2:B1000",
 
-    setDropdownValidation(
+    sheetReferensi,
 
-      sheetImport,
+    "B2:B"
 
-      "F2:F1000",
+  );
 
-      sheetReferensi,
+  setDropdownValidation(
 
-      "D2:D"
+    sheetImport,
 
-    );
+    "C2:C1000",
 
-    setDropdownValidation(
+    sheetReferensi,
 
-      sheetImport,
+    "C2:C"
 
-      "G2:G1000",
+  );
 
-      sheetReferensi,
+  setDropdownValidation(
 
-      "D2:D"
+    sheetImport,
 
-    );
+    "D2:D1000",
 
-    setDropdownValidation(
+    sheetReferensi,
 
-      sheetImport,
+    "D2:D"
 
-      "H2:H1000",
+  );
 
-      sheetReferensi,
+  setDropdownValidation(
 
-      "D2:D"
+    sheetImport,
 
-    );
+    "E2:E1000",
 
-    setDropdownValidation(
+    sheetReferensi,
 
-      sheetImport,
+    "D2:D"
 
-      "I2:I1000",
+  );
 
-      sheetReferensi,
+  setDropdownValidation(
 
-      "E2:E"
+    sheetImport,
 
-    );
-  
+    "F2:F1000",
+
+    sheetReferensi,
+
+    "D2:D"
+
+  );
+
+  setDropdownValidation(
+
+    sheetImport,
+
+    "G2:G1000",
+
+    sheetReferensi,
+
+    "D2:D"
+
+  );
+
+  setDropdownValidation(
+
+    sheetImport,
+
+    "H2:H1000",
+
+    sheetReferensi,
+
+    "D2:D"
+
+  );
+
+  setDropdownValidation(
+
+    sheetImport,
+
+    "I2:I1000",
+
+    sheetReferensi,
+
+    "E2:E"
+
+  );
+
   const file =
 
     exportSpreadsheetAsXlsx(
@@ -3177,7 +3177,7 @@ function downloadTemplateGuruMengajar(){
    TEMPLATE SISWA (UTILITY)
 ========================= */
 
-function downloadTemplateSiswa(){
+function downloadTemplateSiswa() {
 
   const template =
 
@@ -3234,7 +3234,7 @@ function downloadTemplateSiswa(){
 
     );
 
-  for(
+  for (
 
     let i = 1;
 
@@ -3242,7 +3242,7 @@ function downloadTemplateSiswa(){
 
     i++
 
-  ){
+  ) {
 
     sheetReferensi
 
@@ -3394,7 +3394,7 @@ function importSiswa(
 
   rows
 
-){
+) {
 
   const allowed =
 
@@ -3412,11 +3412,11 @@ function importSiswa(
 
     );
 
-  if(
+  if (
 
     !allowed
 
-  ){
+  ) {
 
     throw new Error(
 
@@ -3446,7 +3446,7 @@ function importSiswa(
 
     new Set();
 
-  for(
+  for (
 
     let i = 1;
 
@@ -3454,7 +3454,7 @@ function importSiswa(
 
     i++
 
-  ){
+  ) {
 
     idExist.add(
 
@@ -3480,13 +3480,13 @@ function importSiswa(
 
   const hasil = {
 
-    berhasil : 0,
+    berhasil: 0,
 
-    gagal : 0
+    gagal: 0
 
   };
 
-  for(
+  for (
 
     let i = 0;
 
@@ -3494,7 +3494,7 @@ function importSiswa(
 
     i++
 
-  ){
+  ) {
 
     const row =
 
@@ -3516,25 +3516,25 @@ function importSiswa(
 
       ).trim();
 
-    if(
+    if (
 
       id === "" &&
 
       nisn === ""
 
-    ){
+    ) {
 
       continue;
 
     }
 
-    if(
+    if (
 
       idExist.has(id) ||
 
       nisnExist.has(nisn)
 
-    ){
+    ) {
 
       hasil.gagal++;
 
@@ -3582,7 +3582,7 @@ function getGuruIdByNama(
 
   namaGuru
 
-){
+) {
 
   const sheet =
 
@@ -3598,7 +3598,7 @@ function getGuruIdByNama(
       .getDataRange()
       .getValues();
 
-  for(
+  for (
 
     let i = 1;
 
@@ -3606,9 +3606,9 @@ function getGuruIdByNama(
 
     i++
 
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
 
@@ -3624,7 +3624,7 @@ function getGuruIdByNama(
 
       ).trim()
 
-    ){
+    ) {
 
       return data[i][0];
 
@@ -3644,7 +3644,7 @@ function getKelasByNama(
 
   namaKelas
 
-){
+) {
 
   const sheet =
 
@@ -3660,7 +3660,7 @@ function getKelasByNama(
       .getDataRange()
       .getValues();
 
-  for(
+  for (
 
     let i = 1;
 
@@ -3668,9 +3668,9 @@ function getKelasByNama(
 
     i++
 
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
 
@@ -3686,19 +3686,19 @@ function getKelasByNama(
 
       ).trim()
 
-    ){
+    ) {
 
       return {
 
-        id :
+        id:
 
           data[i][0],
 
-        nama :
+        nama:
 
           data[i][1],
 
-        status :
+        status:
 
           data[i][3]
 
@@ -3720,7 +3720,7 @@ function getMapelByNama(
 
   namaMapel
 
-){
+) {
 
   const sheet =
 
@@ -3736,7 +3736,7 @@ function getMapelByNama(
       .getDataRange()
       .getValues();
 
-  for(
+  for (
 
     let i = 1;
 
@@ -3744,9 +3744,9 @@ function getMapelByNama(
 
     i++
 
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
 
@@ -3762,19 +3762,19 @@ function getMapelByNama(
 
       ).trim()
 
-    ){
+    ) {
 
       return {
 
-        id :
+        id:
 
           data[i][0],
 
-        nama :
+        nama:
 
           data[i][1],
 
-        status :
+        status:
 
           data[i][3]
 
@@ -3798,7 +3798,7 @@ function importGuruMengajar(
 
   rows
 
-){
+) {
 
   const allowed =
 
@@ -3816,11 +3816,11 @@ function importGuruMengajar(
 
     );
 
-  if(
+  if (
 
     !allowed
 
-  ){
+  ) {
 
     throw new Error(
 
@@ -3840,13 +3840,13 @@ function importGuruMengajar(
 
   const hasil = {
 
-    berhasil : 0,
+    berhasil: 0,
 
-    gagal : 0
+    gagal: 0
 
   };
 
-  for(
+  for (
 
     let i = 0;
 
@@ -3854,7 +3854,7 @@ function importGuruMengajar(
 
     i++
 
-  ){
+  ) {
 
     const row =
 
@@ -3868,11 +3868,11 @@ function importGuruMengajar(
 
       );
 
-    if(
+    if (
 
       !idGuru
 
-    ){
+    ) {
 
       hasil.gagal++;
 
@@ -3882,7 +3882,7 @@ function importGuruMengajar(
 
     const daftarMapel = [];
 
-    for(
+    for (
 
       let j = 3;
 
@@ -3890,9 +3890,9 @@ function importGuruMengajar(
 
       j++
 
-    ){
+    ) {
 
-      if(
+      if (
 
         String(
 
@@ -3900,7 +3900,7 @@ function importGuruMengajar(
 
         ).trim() !== ""
 
-      ){
+      ) {
 
         daftarMapel.push(
 
@@ -3944,7 +3944,7 @@ function importGuruMengajar(
    GURU MENGAJAR
 ========================= */
 
-function getGuruMengajar(sessionId){
+function getGuruMengajar(sessionId) {
 
   const allowed =
     checkRole(
@@ -3957,7 +3957,7 @@ function getGuruMengajar(sessionId){
       ]
     );
 
-  if(!allowed){
+  if (!allowed) {
 
     throw new Error(
       "Akses ditolak"
@@ -3998,21 +3998,21 @@ function getGuruMengajar(sessionId){
 
   ]);
 
-  for(
+  for (
     let i = 1;
     i < dataMengajar.length;
     i++
-  ){
+  ) {
 
     let namaGuru = "-";
 
-    for(
+    for (
       let j = 1;
       j < dataGuru.length;
       j++
-    ){
+    ) {
 
-      if(
+      if (
 
         String(
           dataGuru[j][0]
@@ -4024,7 +4024,7 @@ function getGuruMengajar(sessionId){
           dataMengajar[i][1]
         ).trim()
 
-      ){
+      ) {
 
         namaGuru =
           dataGuru[j][1];
@@ -4064,7 +4064,7 @@ function getGuruMengajar(sessionId){
 function getKelasByGuru(
   sessionId,
   idGuru
-){
+) {
 
   const allowed =
     checkRole(
@@ -4077,7 +4077,7 @@ function getKelasByGuru(
       ]
     );
 
-  if(!allowed){
+  if (!allowed) {
 
     throw new Error(
       "Akses ditolak"
@@ -4099,13 +4099,13 @@ function getKelasByGuru(
 
   const daftarKelas = [];
 
-  for(
+  for (
     let i = 1;
     i < data.length;
     i++
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         data[i][1]
@@ -4117,7 +4117,7 @@ function getKelasByGuru(
         idGuru
       ).trim()
 
-    ){
+    ) {
 
       continue;
 
@@ -4129,11 +4129,11 @@ function getKelasByGuru(
         data[i][2]
       ).trim();
 
-    if(
+    if (
       !daftarKelas.includes(
         kelas
       )
-    ){
+    ) {
 
       daftarKelas.push(
         kelas
@@ -4144,6 +4144,209 @@ function getKelasByGuru(
   }
 
   return daftarKelas;
+
+}
+
+function splitMapelRekapValue(value) {
+
+  return String(
+    value || ""
+  )
+    .split("|")
+    .map(function (item) {
+      return String(item).trim();
+    })
+    .filter(function (item) {
+      return item !== "";
+    });
+
+}
+
+function matchesMapelRekap(
+  sourceValue,
+  selectedMapel
+) {
+
+  if (!selectedMapel) {
+    return true;
+  }
+
+  return splitMapelRekapValue(
+    sourceValue
+  ).includes(
+    String(selectedMapel).trim()
+  );
+
+}
+
+function getFilteredGuruMengajar(
+  sessionId,
+  guru = "",
+  kelas = "",
+  mapel = ""
+) {
+
+  const allowed =
+    checkRole(
+      sessionId,
+      [
+        "Admin",
+        "KepalaSekolah",
+        "WaliKelas",
+        "GuruMapel"
+      ]
+    );
+
+  if (!allowed) {
+
+    throw new Error(
+      "Akses ditolak"
+    );
+
+  }
+
+  const sheet =
+    SS.getSheetByName(
+      "GuruMengajar"
+    );
+
+  const data =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  const hasil = [];
+
+  for (
+    let i = 1;
+    i < data.length;
+    i++
+  ) {
+
+    const idGuruData =
+      String(
+        data[i][1]
+      ).trim();
+
+    const kelasData =
+      String(
+        data[i][2]
+      ).trim();
+
+    const hariData =
+      String(
+        data[i][3]
+      ).trim();
+
+    const mapelData =
+      String(
+        data[i][4]
+      ).trim();
+
+    const statusData =
+      String(
+        data[i][5]
+      ).trim();
+
+    if (statusData !== "Aktif") {
+      continue;
+    }
+
+    if (
+      guru
+      &&
+      idGuruData !==
+      String(guru).trim()
+    ) {
+      continue;
+    }
+
+    if (
+      kelas
+      &&
+      kelasData !==
+      String(kelas).trim()
+    ) {
+      continue;
+    }
+
+    if (
+      mapel
+      &&
+      !matchesMapelRekap(
+        mapelData,
+        mapel
+      )
+    ) {
+      continue;
+    }
+
+    hasil.push({
+      idRelasi: String(
+        data[i][0]
+      ).trim(),
+      idGuru: idGuruData,
+      kelas: kelasData,
+      hari: hariData,
+      mapel: mapelData,
+      status: statusData
+    });
+
+  }
+
+  return hasil;
+
+}
+
+function getMapelRekap(
+  sessionId,
+  guru = "",
+  kelas = ""
+) {
+
+  const dataMengajar =
+    getFilteredGuruMengajar(
+      sessionId,
+      guru,
+      kelas
+    );
+
+  const daftarMapel = [];
+
+  for (
+    let i = 0;
+    i < dataMengajar.length;
+    i++
+  ) {
+
+    const mapelItems =
+      splitMapelRekapValue(
+        dataMengajar[i].mapel
+      );
+
+    for (
+      let j = 0;
+      j < mapelItems.length;
+      j++
+    ) {
+
+      if (
+        !daftarMapel.includes(
+          mapelItems[j]
+        )
+      ) {
+        daftarMapel.push(
+          mapelItems[j]
+        );
+      }
+
+    }
+
+  }
+
+  return JSON.stringify(
+    daftarMapel
+  );
 
 }
 
@@ -4161,7 +4364,7 @@ function getRelasiMengajar(
 
   tanggal
 
-){
+) {
 
   const sheet =
 
@@ -4177,19 +4380,19 @@ function getRelasiMengajar(
 
   const hariIni =
 
-  [
-    "Minggu",
-    "Senin",
-    "Selasa",
-    "Rabu",
-    "Kamis",
-    "Jumat",
-    "Sabtu"
-  ][
+    [
+      "Minggu",
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jumat",
+      "Sabtu"
+    ][
     new Date(tanggal).getDay()
-  ];
+    ];
 
-  for(
+  for (
 
     let i = 1;
 
@@ -4197,9 +4400,9 @@ function getRelasiMengajar(
 
     i++
 
-  ){
+  ) {
 
-    if(
+    if (
 
       String(data[i][1]).trim()
 
@@ -4207,13 +4410,13 @@ function getRelasiMengajar(
 
       String(idGuru).trim()
 
-    ){
+    ) {
 
       continue;
 
     }
 
-    if(
+    if (
 
       String(data[i][2]).trim()
 
@@ -4221,13 +4424,13 @@ function getRelasiMengajar(
 
       String(kelas).trim()
 
-    ){
+    ) {
 
       continue;
 
     }
 
-    if(
+    if (
 
       String(data[i][3]).trim()
 
@@ -4235,13 +4438,13 @@ function getRelasiMengajar(
 
       hariIni
 
-    ){
+    ) {
 
       continue;
 
     }
 
-    if(
+    if (
 
       String(data[i][5]).trim()
 
@@ -4249,7 +4452,7 @@ function getRelasiMengajar(
 
       "Aktif"
 
-    ){
+    ) {
 
       continue;
 
@@ -4257,15 +4460,15 @@ function getRelasiMengajar(
 
     return {
 
-      idRelasi :
+      idRelasi:
 
         data[i][0],
 
-      hari :
+      hari:
 
         data[i][3],
 
-      mapel :
+      mapel:
 
         data[i][4]
 
@@ -4288,7 +4491,7 @@ function getRelasiMengajarByHari(
 
   hari
 
-){
+) {
 
   const sheet =
 
@@ -4302,7 +4505,7 @@ function getRelasiMengajarByHari(
       .getDataRange()
       .getValues();
 
-  for(
+  for (
 
     let i = 1;
 
@@ -4310,9 +4513,9 @@ function getRelasiMengajarByHari(
 
     i++
 
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         data[i][2]
@@ -4324,13 +4527,13 @@ function getRelasiMengajarByHari(
         kelas
       ).trim()
 
-    ){
+    ) {
 
       continue;
 
     }
 
-    if(
+    if (
 
       String(
         data[i][3]
@@ -4342,13 +4545,13 @@ function getRelasiMengajarByHari(
         hari
       ).trim()
 
-    ){
+    ) {
 
       continue;
 
     }
 
-    if(
+    if (
 
       String(
         data[i][5]
@@ -4358,31 +4561,31 @@ function getRelasiMengajarByHari(
 
       "Aktif"
 
-    ){
+    ) {
 
       continue;
 
     }
 
-    return{
+    return {
 
-      idRelasi :
+      idRelasi:
 
         data[i][0],
 
-      idGuru :
+      idGuru:
 
         data[i][1],
 
-      kelas :
+      kelas:
 
         data[i][2],
 
-      hari :
+      hari:
 
         data[i][3],
 
-      mapel :
+      mapel:
 
         data[i][4]
 
@@ -4397,7 +4600,7 @@ function getRelasiMengajarByHari(
 function addGuruMengajar(
   sessionId,
   data
-){
+) {
 
   const allowed =
     checkRole(
@@ -4408,7 +4611,7 @@ function addGuruMengajar(
       ]
     );
 
-  if(!allowed){
+  if (!allowed) {
 
     throw new Error(
       "Akses ditolak"
@@ -4440,7 +4643,7 @@ function updateGuruMengajar(
   sessionId,
   rowIndex,
   data
-){
+) {
 
   const allowed =
     checkRole(
@@ -4451,7 +4654,7 @@ function updateGuruMengajar(
       ]
     );
 
-  if(!allowed){
+  if (!allowed) {
 
     throw new Error(
       "Akses ditolak"
@@ -4513,7 +4716,7 @@ function updateGuruMengajar(
 function deleteGuruMengajar(
   sessionId,
   idRelasi
-){
+) {
 
   const allowed =
     checkRole(
@@ -4524,7 +4727,7 @@ function deleteGuruMengajar(
       ]
     );
 
-  if(!allowed){
+  if (!allowed) {
 
     throw new Error(
       "Akses ditolak"
@@ -4542,13 +4745,13 @@ function deleteGuruMengajar(
       .getDataRange()
       .getValues();
 
-  for(
+  for (
     let i = 1;
     i < data.length;
     i++
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         data[i][0]
@@ -4560,7 +4763,7 @@ function deleteGuruMengajar(
         idRelasi
       ).trim()
 
-    ){
+    ) {
 
       sheet.deleteRow(
         i + 1
@@ -4578,7 +4781,7 @@ function deleteGuruMengajar(
 
 function getGuruMengajarById(
   idRelasi
-){
+) {
 
   const sheet =
     SS.getSheetByName(
@@ -4590,13 +4793,13 @@ function getGuruMengajarById(
       .getDataRange()
       .getValues();
 
-  for(
+  for (
     let i = 1;
     i < data.length;
     i++
-  ){
+  ) {
 
-    if(
+    if (
 
       String(
         data[i][0]
@@ -4608,29 +4811,29 @@ function getGuruMengajarById(
         idRelasi
       ).trim()
 
-    ){
+    ) {
 
       return {
 
-        rowIndex :
+        rowIndex:
           i + 1,
 
-        idRelasi :
+        idRelasi:
           data[i][0],
 
-        idGuru :
+        idGuru:
           data[i][1],
 
-        kelas :
+        kelas:
           data[i][2],
 
-        hari :
+        hari:
           data[i][3],
 
-        mapel :
+        mapel:
           data[i][4],
 
-        status :
+        status:
           data[i][5]
 
       };
@@ -4647,7 +4850,7 @@ function getGuruMengajarById(
    TEMPLATE MANAGER
 ========================= */
 
-function getTemplateFolder(){
+function getTemplateFolder() {
 
   const folderName =
 
@@ -4659,11 +4862,11 @@ function getTemplateFolder(){
       folderName
     );
 
-  if(
+  if (
 
     folders.hasNext()
 
-  ){
+  ) {
 
     return folders.next();
 
@@ -4675,7 +4878,7 @@ function getTemplateFolder(){
 
 }
 
-function getGuruMengajarTemplateFile(){
+function getGuruMengajarTemplateFile() {
 
   const folder =
 
@@ -4687,11 +4890,11 @@ function getGuruMengajarTemplateFile(){
       "GuruMengajar.xlsx"
     );
 
-  if(
+  if (
 
     files.hasNext()
 
-  ){
+  ) {
 
     return files.next();
 
@@ -4701,7 +4904,7 @@ function getGuruMengajarTemplateFile(){
 
 }
 
-function createGuruMengajarTemplate(){
+function createGuruMengajarTemplate() {
 
   const ss =
 
@@ -4758,8 +4961,9 @@ function getDataRekap(
   tanggalAwal,
   tanggalAkhir,
   guru,
-  kelas
-){
+  kelas,
+  mapel = ""
+) {
 
   const allowed =
 
@@ -4773,7 +4977,7 @@ function getDataRekap(
       ]
     );
 
-  if(!allowed){
+  if (!allowed) {
 
     throw new Error(
       "Akses ditolak"
@@ -4799,27 +5003,24 @@ function getDataRekap(
     data[0]
   );
 
-  let daftarKelasGuru = [];
+  const relasiMengajar =
+    getFilteredGuruMengajar(
+      sessionId,
+      guru,
+      kelas,
+      mapel
+    );
 
-  // Filter kelas spesifik
-  // akan digunakan pada Sprint 3.6
+  const daftarRelasi =
+    relasiMengajar.map(function (item) {
+      return item.idRelasi;
+    });
 
-  if(guru){
-
-    daftarKelasGuru =
-
-      getKelasByGuru(
-        sessionId,
-        guru
-      );
-
-  }
-
-  for(
+  for (
     let i = 1;
     i < data.length;
     i++
-  ){
+  ) {
 
     const tanggal =
 
@@ -4841,7 +5042,19 @@ function getDataRekap(
         data[i][3]
       ).trim();
 
-    if(
+    const relasiData =
+
+      String(
+        data[i][7] || ""
+      ).trim();
+
+    const mapelData =
+
+      String(
+        data[i][9] || ""
+      ).trim();
+
+    if (
 
       tanggal >= tanggalAwal
 
@@ -4849,35 +5062,43 @@ function getDataRekap(
 
       tanggal <= tanggalAkhir
 
-    ){
+    ) {
 
-      if(
-
-        guru
-
+      if (
+        kelas
         &&
-
-        !daftarKelasGuru.includes(
-          kelasData
-        )
-
-      ){
+        kelasData !==
+        String(kelas).trim()
+      ) {
 
         continue;
 
       }
 
-      if(
-
-        kelas
-
+      if (
+        (
+          guru
+          ||
+          mapel
+        )
         &&
+        !daftarRelasi.includes(
+          relasiData
+        )
+      ) {
 
-        kelasData !==
+        continue;
 
-        String(kelas).trim()
+      }
 
-      ){
+      if (
+        mapel
+        &&
+        !matchesMapelRekap(
+          mapelData,
+          mapel
+        )
+      ) {
 
         continue;
 
@@ -4902,8 +5123,9 @@ function mergeDataRekap(
   tanggalAwal,
   tanggalAkhir,
   guru,
-  kelas
-){
+  kelas,
+  mapel = ""
+) {
 
   const masterSiswa =
     getMasterSiswa();
@@ -4922,36 +5144,48 @@ function mergeDataRekap(
 
         guru,
 
-        kelas
+        kelas,
+        mapel
 
       )
 
     );
 
-  // daftar kelas guru hanya diambil sekali
-  let daftarKelasGuru = [];
+  const relasiMengajar =
+    getFilteredGuruMengajar(
+      sessionId,
+      guru,
+      kelas,
+      mapel
+    );
 
-  if(guru){
+  const daftarKelasFilter = [];
 
-    daftarKelasGuru =
+  for (
+    let i = 0;
+    i < relasiMengajar.length;
+    i++
+  ) {
 
-      getKelasByGuru(
-
-        sessionId,
-
-        guru
-
+    if (
+      !daftarKelasFilter.includes(
+        relasiMengajar[i].kelas
+      )
+    ) {
+      daftarKelasFilter.push(
+        relasiMengajar[i].kelas
       );
+    }
 
   }
 
   const hasil = [];
 
-  for(
+  for (
     let i = 1;
     i < masterSiswa.length;
     i++
-  ){
+  ) {
 
     const kelasSiswa =
 
@@ -4960,7 +5194,7 @@ function mergeDataRekap(
       ).trim();
 
     // Filter kelas jika dipilih
-    if(
+    if (
 
       kelas
 
@@ -4970,26 +5204,23 @@ function mergeDataRekap(
 
       String(kelas).trim()
 
-    ){
+    ) {
 
       continue;
 
     }
 
-    // Filter kelas yang diajar guru
-    if(
-
-      guru
-
-      &&
-
-      !daftarKelasGuru.includes(
-
-        kelasSiswa
-
+    if (
+      (
+        guru
+        ||
+        mapel
       )
-
-    ){
+      &&
+      !daftarKelasFilter.includes(
+        kelasSiswa
+      )
+    ) {
 
       continue;
 
@@ -5003,23 +5234,23 @@ function mergeDataRekap(
 
     const dataSiswa = {
 
-      nisn : nisn,
+      nisn: nisn,
 
-      nama : masterSiswa[i][2],
+      nama: masterSiswa[i][2],
 
-      kelas : kelasSiswa,
+      kelas: kelasSiswa,
 
-      absensi : []
+      absensi: []
 
     };
 
-    for(
+    for (
       let j = 1;
       j < dataAbsensi.length;
       j++
-    ){
+    ) {
 
-      if(
+      if (
 
         String(
           dataAbsensi[j][1]
@@ -5029,7 +5260,7 @@ function mergeDataRekap(
 
         nisn
 
-      ){
+      ) {
 
         dataSiswa.absensi.push(
 
@@ -5055,15 +5286,15 @@ function mergeDataRekap(
 
 function hitungRekap(
   dataMerge
-){
+) {
 
   const hasil = [];
 
-  for(
+  for (
     let i = 0;
     i < dataMerge.length;
     i++
-  ){
+  ) {
 
     const siswa =
       dataMerge[i];
@@ -5073,11 +5304,11 @@ function hitungRekap(
     let izin = 0;
     let alpa = 0;
 
-    for(
+    for (
       let j = 0;
       j < siswa.absensi.length;
       j++
-    ){
+    ) {
 
       const status =
 
@@ -5085,7 +5316,7 @@ function hitungRekap(
           siswa.absensi[j][4]
         ).trim();
 
-      switch(status){
+      switch (status) {
 
         case "Hadir":
           hadir++;
@@ -5125,90 +5356,90 @@ function hitungRekap(
 
         : Math.round(
 
-            (hadir / total) * 100
+          (hadir / total) * 100
 
-          );
+        );
 
-        let keterangan = "";
+    let keterangan = "";
 
-        if(persentase === 100){
+    if (persentase === 100) {
 
-          keterangan =
-            "Sempurna";
+      keterangan =
+        "Sempurna";
 
-        }
+    }
 
-        else if(
-          persentase >= 95
-        ){
+    else if (
+      persentase >= 95
+    ) {
 
-          keterangan =
-            "Sangat Baik";
+      keterangan =
+        "Sangat Baik";
 
-        }
+    }
 
-        else if(
-          persentase >= 90
-        ){
+    else if (
+      persentase >= 90
+    ) {
 
-          keterangan =
-            "Baik";
+      keterangan =
+        "Baik";
 
-        }
+    }
 
-        else if(
-          persentase >= 85
-        ){
+    else if (
+      persentase >= 85
+    ) {
 
-          keterangan =
-            "Cukup Baik";
+      keterangan =
+        "Cukup Baik";
 
-        }
+    }
 
-        else if(
-          persentase >= 75
-        ){
+    else if (
+      persentase >= 75
+    ) {
 
-          keterangan =
-            "Perlu Peningkatan";
+      keterangan =
+        "Perlu Peningkatan";
 
-        }
+    }
 
-        else if(
-          persentase >= 50
-        ){
+    else if (
+      persentase >= 50
+    ) {
 
-          keterangan =
-            "Perlu Perhatian";
+      keterangan =
+        "Perlu Perhatian";
 
-        }
+    }
 
-        else{
+    else {
 
-          keterangan =
-            "Perlu Tindak Lanjut";
+      keterangan =
+        "Perlu Tindak Lanjut";
 
-        }
+    }
 
     hasil.push({
 
-      nisn : siswa.nisn,
+      nisn: siswa.nisn,
 
-      nama : siswa.nama,
+      nama: siswa.nama,
 
-      kelas : siswa.kelas,
+      kelas: siswa.kelas,
 
-      hadir : hadir,
+      hadir: hadir,
 
-      sakit : sakit,
+      sakit: sakit,
 
-      izin : izin,
+      izin: izin,
 
-      alpa : alpa,
+      alpa: alpa,
 
-      persentase : persentase,
+      persentase: persentase,
 
-      keterangan : keterangan
+      keterangan: keterangan
 
     });
 
@@ -5232,30 +5463,18 @@ function getRekapUmum(
 
   guru,
 
-  kelas
+  kelas,
+  mapel = ""
 
-){
+) {
 
-  const dataMerge =
-
-    mergeDataRekap(
-
-      sessionId,
-
-      tanggalAwal,
-
-      tanggalAkhir,
-
-      guru,
-
-      kelas
-
-    );
-
-  return hitungRekap(
-
-    dataMerge
-
+  return getRekapFinal(
+    sessionId,
+    tanggalAwal,
+    tanggalAkhir,
+    guru,
+    kelas,
+    mapel
   );
 
 }
@@ -5274,30 +5493,18 @@ function getRekapWali(
 
   guru,
 
-  kelas
+  kelas,
+  mapel = ""
 
-){
+) {
 
-  const dataMerge =
-
-    mergeDataRekap(
-
-      sessionId,
-
-      tanggalAwal,
-
-      tanggalAkhir,
-
-      "",
-
-      kelas
-
-    );
-
-  return hitungRekap(
-
-    dataMerge
-
+  return getRekapFinal(
+    sessionId,
+    tanggalAwal,
+    tanggalAkhir,
+    "",
+    kelas,
+    mapel
   );
 
 }
@@ -5316,216 +5523,17 @@ function getRekapGuru(
 
   guru,
 
-  kelas
-
-){
-
-  const masterSiswa =
-
-    getMasterSiswa();
-
-  const absensi =
-
-    getMasterAbsensi();
-
-  const dataMengajar =
-
-    JSON.parse(
-
-      getGuruMengajar(
-        sessionId
-      )
-
-    );
-
-  const daftarRelasi = [];
-
-  for(
-
-    let i = 1;
-
-    i < dataMengajar.length;
-
-    i++
-
-  ){
-
-    if(
-
-      String(
-        dataMengajar[i][1]
-      ).trim()
-
-      !==
-
-      String(guru).trim()
-
-    ){
-
-      continue;
-
-    }
-
-    if(
-
-      kelas
-
-      &&
-
-      String(
-        dataMengajar[i][3]
-      ).trim()
-
-      !==
-
-      String(kelas).trim()
-
-    ){
-
-      continue;
-
-    }
-
-    daftarRelasi.push(
-
-      String(
-        dataMengajar[i][0]
-      ).trim()
-
-    );
-
-  }
-
-  const hasilMerge = [];
-
-  for(
-
-    let i = 1;
-
-    i < masterSiswa.length;
-
-    i++
-
-  ){
-
-    const dataSiswa = {
-
-      nisn :
-
-        String(
-          masterSiswa[i][1]
-        ).trim(),
-
-      nama :
-
-        masterSiswa[i][2],
-
-      kelas :
-
-        masterSiswa[i][6],
-
-      absensi : []
-
-    };
-
-    for(
-
-      let j = 1;
-
-      j < absensi.length;
-
-      j++
-
-    ){
-
-      const tanggalData =
-
-        Utilities.formatDate(
-
-          new Date(
-            absensi[j][0]
-          ),
-
-          Session.getScriptTimeZone(),
-
-          "yyyy-MM-dd"
-
-        );
-
-      if(
-
-        tanggalData < tanggalAwal
-
-        ||
-
-        tanggalData > tanggalAkhir
-
-      ){
-
-        continue;
-
-      }
-
-      if(
-
-        String(
-          absensi[j][1]
-        ).trim()
-
-        !==
-
-        dataSiswa.nisn
-
-      ){
-
-        continue;
-
-      }
-      
-      if(
-
-        !daftarRelasi.includes(
-
-          String(
-            absensi[j][7]
-          ).trim()
-
-        )
-
-      ){
-
-        continue;
-
-      }
-
-      dataSiswa.absensi.push(
-
-        absensi[j]
-
-      );
-
-    }
-
-    if(
-
-      dataSiswa.absensi.length > 0
-
-    ){
-
-      hasilMerge.push(
-
-        dataSiswa
-
-      );
-
-    }
-
-  }
-  
-  return hitungRekap(
-
-    hasilMerge
-
+  kelas,
+  mapel = ""
+
+) {
+  return getRekapFinal(
+    sessionId,
+    tanggalAwal,
+    tanggalAkhir,
+    guru,
+    kelas,
+    mapel
   );
 
 }
@@ -5542,90 +5550,57 @@ function getRekapFinal(
 
   kelas,
 
-  mode = "guru"
+  mapel = "",
 
-){
+  mode = ""
 
-  let hasil = [];
+) {
 
-  switch(mode){
+  if (
+    !mode
+    &&
+    [
+      "umum",
+      "guru",
+      "wali"
+    ].includes(
+      String(mapel).trim()
+    )
+  ) {
 
-    case "wali":
-
-      hasil =
-
-        getRekapWali(
-
-          sessionId,
-
-          tanggalAwal,
-
-          tanggalAkhir,
-
-          guru,
-
-          kelas
-
-        );
-
-      break;
-
-    case "guru":
-
-      hasil =
-
-        getRekapGuru(
-
-          sessionId,
-
-          tanggalAwal,
-
-          tanggalAkhir,
-
-          guru,
-
-          kelas
-
-        );
-
-      break;
-
-    case "umum":
-
-      hasil =
-
-        getRekapUmum(
-
-          sessionId,
-
-          tanggalAwal,
-
-          tanggalAkhir,
-
-          guru,
-
-          kelas
-
-        );
-
-      break;
-
-    default:
-
-      hasil = [];
-
-      break;
+    mode = mapel;
+    mapel = "";
 
   }
 
-  return hasil;
+  const dataMerge =
+
+    mergeDataRekap(
+
+      sessionId,
+
+      tanggalAwal,
+
+      tanggalAkhir,
+
+      guru,
+
+      kelas,
+
+      mapel
+
+    );
+
+  return hitungRekap(
+    dataMerge
+  );
 
 }
 
 function getSemesterExport(
   tanggalAwal,
   tanggalAkhir
-){
+) {
 
   const awal =
     new Date(
@@ -5643,19 +5618,19 @@ function getSemesterExport(
   const bulanAkhir =
     akhir.getMonth() + 1;
 
-  if(
+  if (
     bulanAwal >= 7 &&
     bulanAkhir >= 7
-  ){
+  ) {
 
     return "Ganjil";
 
   }
 
-  if(
+  if (
     bulanAwal <= 6 &&
     bulanAkhir <= 6
-  ){
+  ) {
 
     return "Genap";
 
@@ -5671,7 +5646,7 @@ function getSemesterExport(
 
 function createExportSpreadsheet(
   namaFile
-){
+) {
 
   return SpreadsheetApp.create(
     namaFile
@@ -5681,7 +5656,7 @@ function createExportSpreadsheet(
 
 function createExportFileName(
   prefix
-){
+) {
 
   const tanggal =
 
@@ -5709,7 +5684,7 @@ function createExportFileName(
 
 function exportSpreadsheetAsXlsx(
   spreadsheetId
-){
+) {
 
   return (
 
@@ -5729,7 +5704,7 @@ function exportSpreadsheetAsXlsx(
 
 function cleanupExportSpreadsheet(
   spreadsheetId
-){
+) {
 
   DriveApp
     .getFileById(
@@ -5747,8 +5722,16 @@ function exportRekapExcel(
   tanggalAkhir,
   guru,
   kelas,
+  mapel = "",
   guruText
-){
+) {
+
+  if (
+    arguments.length < 7
+  ) {
+    guruText = mapel;
+    mapel = "";
+  }
 
   const data =
 
@@ -5762,7 +5745,9 @@ function exportRekapExcel(
 
       guru,
 
-      kelas
+      kelas,
+
+      mapel
 
     );
 
@@ -5783,27 +5768,27 @@ function exportRekapExcel(
     spreadsheet
       .getSheets()[0];
 
-    const pengaturanSheet =
+  const pengaturanSheet =
 
-      SS.getSheetByName(
-        "Pengaturan"
-      );
+    SS.getSheetByName(
+      "Pengaturan"
+    );
 
-    const config = {};
+  const config = {};
 
-    pengaturanSheet
+  pengaturanSheet
 
-      .getDataRange()
+    .getDataRange()
 
-      .getValues()
+    .getValues()
 
-      .slice(1)
+    .slice(1)
 
-      .forEach(function(row){
+    .forEach(function (row) {
 
-        config[row[0]] = row[1];
+      config[row[0]] = row[1];
 
-      });
+    });
 
   sheet.setName(
     "Rekap Absensi"
@@ -5876,7 +5861,7 @@ function exportRekapExcel(
   sheet
     .getRange("H6:I6")
     .merge();
-  
+
   sheet
     .getRange("A4:A6")
     .setFontWeight("bold");
@@ -5884,7 +5869,7 @@ function exportRekapExcel(
   sheet
     .getRange("H4:H6")
     .setFontWeight("bold");
-  
+
   const guruHeader =
 
     guruText || "Semua Guru";
@@ -5923,7 +5908,7 @@ function exportRekapExcel(
       "dd MMMM yyyy HH:mm"
 
     ) + " WIB";
-  
+
   sheet
     .getRange("B4")
     .setValue(
@@ -5960,6 +5945,13 @@ function exportRekapExcel(
       tanggalExport
     );
 
+  // Header export menggunakan single source of truth
+  // dan lebar kolom disiapkan setelah nilai header selesai ditulis.
+  sheet.setColumnWidth(1, 90);   // A : label kiri
+  sheet.setColumnWidth(2, 220);  // B : nilai Guru/Kelas/Periode
+  sheet.setColumnWidth(8, 120);  // H : label kanan
+  sheet.setColumnWidth(10, 220); // J : nilai Tahun Ajaran/Semester/Tanggal Export
+
   sheet
     .getRange("A8:J8")
     .setValues([
@@ -5988,7 +5980,7 @@ function exportRekapExcel(
       ]
 
     ]);
-  
+
   sheet
     .getRange("A8:J8")
     .setFontWeight("bold");
@@ -6004,7 +5996,7 @@ function exportRekapExcel(
     .setVerticalAlignment(
       "middle"
     );
-  
+
   sheet
     .getRange("A8:J8")
     .setBorder(
@@ -6031,140 +6023,140 @@ function exportRekapExcel(
     .getRange("A8:J8")
     .setFontColor("#000000");
 
-    const rows = [];
+  const rows = [];
 
-    for(
-      let i = 0;
-      i < data.length;
-      i++
-    ){
+  for (
+    let i = 0;
+    i < data.length;
+    i++
+  ) {
 
-      rows.push([
+    rows.push([
 
-        i + 1,
+      i + 1,
 
-        data[i].nisn,
+      data[i].nisn,
 
-        data[i].nama,
+      data[i].nama,
 
-        data[i].kelas,
+      data[i].kelas,
 
-        data[i].hadir,
+      data[i].hadir,
 
-        data[i].sakit,
+      data[i].sakit,
 
-        data[i].izin,
+      data[i].izin,
 
-        data[i].alpa,
+      data[i].alpa,
 
-        data[i].persentase,
+      data[i].persentase,
 
-        data[i].keterangan
+      data[i].keterangan
 
-      ]);
+    ]);
 
-    }
+  }
 
-    if(
-      rows.length > 0
-    ){
+  if (
+    rows.length > 0
+  ) {
 
-      const range =
+    const range =
 
-        sheet.getRange(
+      sheet.getRange(
 
-          9,
+        9,
 
-          1,
+        1,
 
-          rows.length,
+        rows.length,
 
-          10
+        10
 
-        )
+      )
 
-      range
-        .setValues(rows);
+    range
+      .setValues(rows);
 
-      range
-        .setBorder(
+    range
+      .setBorder(
 
-          true,
+        true,
 
-          true,
+        true,
 
-          true,
+        true,
 
-          true,
+        true,
 
-          true,
+        true,
 
-          true
+        true
 
-        );
-
-      range.setVerticalAlignment(
-        "middle"
       );
-      
-      // Kolom No
+
+    range.setVerticalAlignment(
+      "middle"
+    );
+
+    // Kolom No
+    sheet
+      .getRange(
+        9,
+        1,
+        rows.length,
+        1
+      )
+      .setHorizontalAlignment(
+        "center"
+      );
+
+    // Kolom NISN
+    sheet
+      .getRange(
+        9,
+        2,
+        rows.length,
+        1
+      )
+      .setHorizontalAlignment(
+        "center"
+      );
+
+    // Kolom KLS sampai %
+    sheet
+      .getRange(
+        9,
+        4,
+        rows.length,
+        6
+      )
+      .setHorizontalAlignment(
+        "center"
+      );
+
+    // Kolom %
+    for (
+      let i = 0;
+      i < rows.length;
+      i++
+    ) {
+
       sheet
         .getRange(
-          9,
-          1,
-          rows.length,
-          1
+          9 + i,
+          9
         )
-        .setHorizontalAlignment(
-          "center"
+        .setValue(
+
+          rows[i][8] + "%"
+
         );
-
-      // Kolom NISN
-      sheet
-        .getRange(
-          9,
-          2,
-          rows.length,
-          1
-        )
-        .setHorizontalAlignment(
-          "center"
-        );
-
-      // Kolom KLS sampai %
-      sheet
-        .getRange(
-          9,
-          4,
-          rows.length,
-          6
-        )
-        .setHorizontalAlignment(
-          "center"
-        );
-
-      // Kolom %
-      for(
-        let i = 0;
-        i < rows.length;
-        i++
-      ){
-
-        sheet
-          .getRange(
-            9 + i,
-            9
-          )
-          .setValue(
-
-            rows[i][8] + "%"
-
-          );
-
-      }
 
     }
-  
+
+  }
+
   // Lebar kolom laporan
 
   sheet.setColumnWidth(1, 55);    // No
@@ -6186,7 +6178,7 @@ function exportRekapExcel(
   sheet.setColumnWidth(9, 60);    // %
 
   sheet.setColumnWidth(10, 180);  // Ket
-  
+
   // Freeze informasi laporan
   sheet.setFrozenRows(8);
 
@@ -6198,7 +6190,7 @@ function exportRekapExcel(
       10
     )
     .createFilter();
-  
+
   // ==============================
   // Layout siap cetak A4 Landscape
   // ==============================
@@ -6228,10 +6220,10 @@ function exportRekapExcel(
 
   return {
 
-    spreadsheetId :
+    spreadsheetId:
       spreadsheetId,
 
-    exportUrl :
+    exportUrl:
 
       exportSpreadsheetAsXlsx(
 
@@ -6239,14 +6231,14 @@ function exportRekapExcel(
 
       ),
 
-    data :
+    data:
       data
 
   };
 
 }
 
-function saveAttendance(data){
+function saveAttendance(data) {
 
   const sheet =
 
@@ -6274,7 +6266,7 @@ function saveAttendance(data){
 
   let idGuru = "";
 
-  for(
+  for (
 
     let i = 1;
 
@@ -6282,9 +6274,9 @@ function saveAttendance(data){
 
     i++
 
-  ){
+  ) {
 
-    if(
+    if (
 
       String(guruData[i][1]).trim()
 
@@ -6292,7 +6284,7 @@ function saveAttendance(data){
 
       namaGuru
 
-    ){
+    ) {
 
       idGuru =
 
@@ -6304,7 +6296,7 @@ function saveAttendance(data){
 
   }
 
-  data.forEach(function(item){
+  data.forEach(function (item) {
 
     const relasi =
 
@@ -6366,7 +6358,7 @@ function reviseAttendance(
   kelas,
   tanggal,
   data
-){
+) {
 
   const sheet =
 
@@ -6380,11 +6372,11 @@ function reviseAttendance(
       .getDataRange()
       .getValues();
 
-  for(
+  for (
     let i = allData.length - 1;
     i >= 1;
     i--
-  ){
+  ) {
 
     const tgl =
 
@@ -6406,7 +6398,7 @@ function reviseAttendance(
         allData[i][3]
       ).trim();
 
-    if(
+    if (
 
       tgl === tanggal
 
@@ -6415,7 +6407,7 @@ function reviseAttendance(
       kelasData ===
       String(kelas).trim()
 
-    ){
+    ) {
 
       sheet.deleteRow(
         i + 1
@@ -6445,7 +6437,7 @@ function reviseAttendance(
 
   let idGuru = "";
 
-  for(
+  for (
 
     let i = 1;
 
@@ -6453,9 +6445,9 @@ function reviseAttendance(
 
     i++
 
-  ){
+  ) {
 
-    if(
+    if (
 
       String(guruData[i][1]).trim()
 
@@ -6463,7 +6455,7 @@ function reviseAttendance(
 
       namaGuru
 
-    ){
+    ) {
 
       idGuru =
 
@@ -6475,7 +6467,7 @@ function reviseAttendance(
 
   }
 
-  data.forEach(function(item){
+  data.forEach(function (item) {
 
     const relasi =
 
@@ -6541,7 +6533,7 @@ function getNamaHariIndonesia(
 
   tanggal
 
-){
+) {
 
   const hari =
 
@@ -6576,7 +6568,7 @@ function getNamaHariIndonesia(
 function getAttendanceByClassAndDate(
   kelas,
   tanggal
-){
+) {
 
   const sheet =
     SS.getSheetByName(
@@ -6585,25 +6577,25 @@ function getAttendanceByClassAndDate(
 
   const data =
     sheet.getDataRange()
-         .getValues();
+      .getValues();
 
   const statusTerakhir = {};
 
   let info = {
 
-    ditemukan : false,
+    ditemukan: false,
 
-    inputOleh : "",
+    inputOleh: "",
 
-    timestamp : ""
+    timestamp: ""
 
   };
 
-  for(
+  for (
     let i = 1;
     i < data.length;
     i++
-  ){
+  ) {
 
     const tgl =
 
@@ -6621,7 +6613,7 @@ function getAttendanceByClassAndDate(
 
       String(data[i][3]).trim();
 
-    if(
+    if (
 
       tgl === tanggal
 
@@ -6630,7 +6622,7 @@ function getAttendanceByClassAndDate(
       kelasData ===
       String(kelas).trim()
 
-    ){
+    ) {
 
       statusTerakhir[
         String(data[i][1])
@@ -6650,17 +6642,17 @@ function getAttendanceByClassAndDate(
 
   const hasil = [];
 
-  for(
+  for (
     const nisn
     in
     statusTerakhir
-  ){
+  ) {
 
     hasil.push({
 
-      nisn : nisn,
+      nisn: nisn,
 
-      status :
+      status:
         statusTerakhir[nisn]
 
     });
@@ -6669,9 +6661,9 @@ function getAttendanceByClassAndDate(
 
   return JSON.stringify({
 
-    info : info,
+    info: info,
 
-    data : hasil
+    data: hasil
 
   });
 
