@@ -101,6 +101,85 @@ Hasil
 
 ---
 
+# Sprint Rekap 2C
+
+Status
+
+DONE
+
+Target
+
+Summary Card Dinamis
+
+Hasil
+
+✅ Total Siswa
+
+✅ Sempurna
+
+✅ Perlu Perhatian
+
+✅ Persentase Rata-rata
+
+---
+
+# Sprint Rekap 2D
+
+Status
+
+DONE
+
+Target
+
+Sticky Header
+
+Hasil
+
+✅ Header tabel tetap terlihat saat scroll vertikal
+
+✅ Tidak mengganggu responsive desktop maupun mobile
+
+---
+
+# Sprint Rekap 2E
+
+Status
+
+DONE
+
+Target
+
+Badge Keterangan
+
+Hasil
+
+✅ Badge Sempurna
+
+✅ Badge Perlu Perhatian
+
+✅ Badge Perlu Tindak Lanjut
+
+---
+
+# Sprint Rekap 2F
+
+Status
+
+IN PROGRESS
+
+Target
+
+Interactive Table
+
+Fokus
+
+- Sorting Header
+- Sorting Asc/Desc
+- Icon Sort
+- Client-side Sorting
+
+---
+
 # Aturan Sprint
 
 Setiap sprint wajib melalui tahapan berikut.

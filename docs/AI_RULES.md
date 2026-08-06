@@ -159,6 +159,46 @@ Sebutkan apabila ada pekerjaan lanjutan.
 
 ---
 
+# MEMBACA DOKUMENTASI
+
+Sebelum melakukan audit ataupun implementasi, AI WAJIB membaca seluruh dokumentasi pada folder docs.
+
+Minimal:
+
+- AI_RULES.md
+- PROJECT_STATUS.md
+- ROADMAP.md
+- SPRINT.md
+
+Apabila sprint berkaitan dengan arsitektur atau database, AI juga wajib membaca:
+
+- ARCHITECTURE.md
+- DATABASE.md
+- Analisis_WONG_MIT.md
+
+AI tidak boleh mengabaikan dokumentasi tersebut.
+
+---
+
+# WORKFLOW AKTIF
+
+Workflow pengembangan mengikuti instruksi terbaru dari pengguna.
+
+Contoh:
+
+- Manual Apps Script (copy-paste)
+- CLASP
+- Git
+- TRAE
+
+AI tidak boleh mengubah workflow aktif tanpa instruksi pengguna.
+
+Apabila pengguna sedang menggunakan workflow manual, AI tidak boleh memberikan instruksi CLASP, Git, CMD, ataupun terminal.
+
+Sebaliknya, apabila pengguna telah kembali menggunakan workflow CLASP/TRAE, AI dapat menyesuaikan arah bantuannya.
+
+---
+
 # ATURAN EDIT FILE
 
 AI hanya boleh mengubah file yang memang diperlukan.
@@ -182,6 +222,39 @@ page_absensi.html
 kecuali memang dibutuhkan.
 
 Semakin sedikit file yang berubah semakin baik.
+
+---
+
+# ROADMAP
+
+AI tidak boleh mengubah roadmap, target sprint, maupun ruang lingkup sprint aktif.
+
+AI hanya boleh mengerjakan sprint yang sedang aktif.
+
+Apabila menemukan pekerjaan lain di luar sprint aktif, AI cukup melaporkannya sebagai catatan tanpa mengubah fokus sprint ataupun menawarkan refactor besar.
+
+---
+
+# IMPLEMENTASI
+
+Utamakan perubahan sekecil mungkin.
+
+Perubahan lokal lebih diutamakan dibanding refactor besar.
+
+Hindari mengubah banyak file apabila tujuan sprint dapat diselesaikan pada satu atau dua file.
+
+---
+
+# DOKUMENTASI SPRINT
+
+Setiap sprint yang dinyatakan LOLOS wajib diikuti dengan:
+
+- Update CHANGELOG.md
+- Update PROJECT_STATUS.md
+- Update ROADMAP.md (jika progress berubah)
+- Update SPRINT.md
+
+Baru setelah itu sprint berikutnya boleh dimulai.
 
 ---
 
@@ -354,6 +427,28 @@ arsitektur
 roadmap
 
 maka file dokumentasi pada folder docs juga harus diperbarui agar tetap sesuai kondisi project.
+
+---
+
+# FORMAT RESPON AI
+
+Setiap implementasi sprint wajib menggunakan urutan berikut.
+
+1. Ringkasan hasil audit.
+
+2. File yang akan diubah.
+
+3. Alasan perubahan.
+
+4. Implementasi.
+
+5. Cara pengujian.
+
+6. Risiko apabila ada.
+
+7. Langkah berikutnya.
+
+AI tidak boleh langsung menulis kode tanpa melalui tahapan di atas, kecuali pengguna secara eksplisit meminta hanya kode saja.
 
 ---
 

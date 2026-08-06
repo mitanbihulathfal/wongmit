@@ -111,7 +111,8 @@ Kondisi:
 ## Rekap Absensi
 
 Status:
-SELESAI (Sprint Rekap 2B)
+ACTIVE DEVELOPMENT
+(Sprint Rekap 2F sedang berjalan)
 
 Kondisi saat ini:
 
@@ -122,14 +123,22 @@ Kondisi saat ini:
 - Filter guru.
 - Filter kelas.
 - Filter mapel.
-- Empty state.
-- Loading skeleton.
+- Empty State modern.
+- Loading Skeleton.
+- Summary Card dinamis.
+- Sticky Header tabel.
+- Badge Keterangan dinamis.
 - Engine Rekap berbasis filter.
 - Export backend tetap kompatibel.
 - Nilai semester export menggunakan single source of truth.
-- Horizontal scroll pada mobile.
+- Horizontal scroll mobile.
 
-Penyempurnaan berikutnya dapat difokuskan pada summary dinamis, sticky header, sticky column, dan optimasi lanjutan.
+Sprint aktif berikutnya:
+
+- Interactive Table
+- Sorting Header
+- Sticky Column
+- Optimasi render
 
 ---
 

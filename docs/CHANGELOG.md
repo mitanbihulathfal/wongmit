@@ -31,6 +31,79 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-06
+
+### Sprint Rekap 2C
+
+Judul
+
+Summary Card Dinamis
+
+Perubahan
+
+- Menambahkan Summary Card dinamis di atas tabel Rekap.
+- Menampilkan Total Siswa.
+- Menampilkan jumlah kategori Sempurna.
+- Menampilkan jumlah kategori Perlu Perhatian.
+- Menampilkan rata-rata persentase kehadiran.
+- Summary dirender secara client-side setelah data Rekap diterima.
+
+Status
+
+SELESAI
+
+Commit
+
+Sprint Rekap 2C : Dynamic Summary Card
+
+---
+
+## 2026-08-06
+
+### Sprint Rekap 2D
+
+Judul
+
+Sticky Header Tabel
+
+Perubahan
+
+- Header tabel tetap terlihat saat scroll vertikal.
+- Menambahkan area scroll vertikal pada wrapper tabel.
+- Tetap kompatibel dengan responsive desktop dan mobile.
+
+Status
+
+SELESAI
+
+Commit
+
+Sprint Rekap 2D : Sticky Header
+
+---
+
+## 2026-08-06
+
+### Sprint Rekap 2E
+
+Judul
+
+Dynamic Badge Keterangan
+
+Perubahan
+
+- Menambahkan badge dinamis berdasarkan nilai Keterangan.
+- Badge mengikuti kategori hasil Rekap.
+- Badge terintegrasi dengan render tabel tanpa mengubah backend.
+
+Status
+
+SELESAI
+
+Commit
+
+Sprint Rekap 2E : Dynamic Badge
+
 ## 2026-08-05
 
 ### Sprint Rekap 2B

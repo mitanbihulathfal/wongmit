@@ -383,16 +383,17 @@
 
   /* ----- REKAP : 7. TABLE ----- */
   .rekap-page .rekap-table-wrapper{
-    --rekap-table-sticky-top: 0px;
-    --rekap-table-sticky-left-no: 0px;
-    --rekap-table-sticky-left-kls: 60px;
-    border: 1px solid #edf1f5;
-    border-radius: 16px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    background: #fff;
-    position: relative;
-    isolation: isolate;
+      --rekap-table-sticky-top: 0px;
+      --rekap-table-sticky-left-no: 0px;
+      --rekap-table-sticky-left-kls: 60px;
+      border: 1px solid #edf1f5;
+      border-radius: 16px;
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 70vh;
+      background: #fff;
+      position: relative;
+      isolation: isolate;
   }
   /* FUTURE Sprint Rekap 2B: Sticky header dan sticky column menggunakan custom property di atas */
   .rekap-page #rekapTableWrapper table{
@@ -411,9 +412,25 @@
     padding: 14px 16px;
     border-bottom: 1px solid #e2e8f0;
     vertical-align: middle;
-    position: relative;
-    z-index: 1;
     text-align: center;
+
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  .rekap-page #rekapTableWrapper thead th[data-rekap-sort]{
+    cursor: pointer;
+    user-select: none;
+  }
+  .rekap-page #rekapTableWrapper thead th[data-rekap-sort]:hover{
+    color: #2563eb;
+  }
+  .rekap-page .rekap-sort-icon{
+    display: inline-block;
+    width: 12px;
+    margin-left: 3px;
+    color: #94a3b8;
+    font-size: 10px;
   }
   .rekap-page #rekapTableWrapper thead th:nth-child(2){
     text-align: left;
@@ -478,6 +495,52 @@
     z-index: 1;
   }
   /* FUTURE Sprint Rekap 2B: 7-Level badge color-coded Keterangan (Sempurna s/d Tindak Lanjut) */
+
+  /* ----- REKAP : 7B. BADGE KETERANGAN ----- */
+
+  .rekap-page .rekap-badge{
+    display:inline-block;
+    padding:5px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+
+  .rekap-page .rekap-badge-sempurna{
+    background:#dcfce7;
+    color:#166534;
+  }
+
+  .rekap-page .rekap-badge-sangat-baik{
+    background:#dbeafe;
+    color:#1d4ed8;
+  }
+
+  .rekap-page .rekap-badge-baik{
+    background:#ecfccb;
+    color:#3f6212;
+  }
+
+  .rekap-page .rekap-badge-cukup{
+    background:#fef3c7;
+    color:#92400e;
+  }
+
+  .rekap-page .rekap-badge-peningkatan{
+    background:#ffedd5;
+    color:#c2410c;
+  }
+
+  .rekap-page .rekap-badge-perhatian{
+    background:#fee2e2;
+    color:#b91c1c;
+  }
+
+  .rekap-page .rekap-badge-tindak{
+    background:#cf5763;
+    color:#ffffff;
+  }
 
   .rekap-page .rekap-section-header{
     display: flex;
@@ -659,6 +722,41 @@
       gap: 6px;
       margin-bottom: 10px;
     }
+  }
+
+  .rekap-page #rekapTableWrapper .rekap-badge-sempurna{
+      background:#dcfce7 !important;
+      color:#166534 !important;
+  }
+
+  .rekap-page #rekapTableWrapper .rekap-badge-sangat-baik{
+      background:#dbeafe !important;
+      color:#1d4ed8 !important;
+  }
+
+  .rekap-page #rekapTableWrapper .rekap-badge-baik{
+      background:#ecfccb !important;
+      color:#3f6212 !important;
+  }
+
+  .rekap-page #rekapTableWrapper .rekap-badge-cukup{
+      background:#fef3c7 !important;
+      color:#92400e !important;
+  }
+
+  .rekap-page #rekapTableWrapper .rekap-badge-peningkatan{
+      background:#ffedd5 !important;
+      color:#c2410c !important;
+  }
+
+  .rekap-page #rekapTableWrapper .rekap-badge-perhatian{
+      background:#fee2e2 !important;
+      color:#b91c1c !important;
+  }
+
+  .rekap-page #rekapTableWrapper .rekap-badge-tindak{
+      background:#cf5763 !important;
+      color:#ffffff !important;
   }
 
 </style>
@@ -875,14 +973,14 @@
           <tr>
 
             <th width="60">No</th>
-            <th>Nama Siswa</th>
-            <th width="80">KLS</th>
-            <th width="70">H</th>
-            <th width="70">S</th>
-            <th width="70">I</th>
-            <th width="70">A</th>
-            <th width="90">%</th>
-            <th width="150">Ket</th>
+            <th data-rekap-sort="nama" tabindex="0" aria-sort="none">Nama Siswa<span class="rekap-sort-icon" aria-hidden="true"></span></th>
+            <th width="80" data-rekap-sort="kelas" tabindex="0" aria-sort="none">KLS<span class="rekap-sort-icon" aria-hidden="true"></span></th>
+            <th width="70" data-rekap-sort="hadir" tabindex="0" aria-sort="none">H<span class="rekap-sort-icon" aria-hidden="true"></span></th>
+            <th width="70" data-rekap-sort="sakit" tabindex="0" aria-sort="none">S<span class="rekap-sort-icon" aria-hidden="true"></span></th>
+            <th width="70" data-rekap-sort="izin" tabindex="0" aria-sort="none">I<span class="rekap-sort-icon" aria-hidden="true"></span></th>
+            <th width="70" data-rekap-sort="alpa" tabindex="0" aria-sort="none">A<span class="rekap-sort-icon" aria-hidden="true"></span></th>
+            <th width="90" data-rekap-sort="persentase" tabindex="0" aria-sort="none">%<span class="rekap-sort-icon" aria-hidden="true"></span></th>
+            <th width="150" data-rekap-sort="keterangan" tabindex="0" aria-sort="none">Ket<span class="rekap-sort-icon" aria-hidden="true"></span></th>
 
           </tr>
 

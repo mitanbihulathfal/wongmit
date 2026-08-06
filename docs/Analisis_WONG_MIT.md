@@ -249,6 +249,29 @@ Seluruhnya menggunakan satu engine.
 
 ---
 
+Progress UI Rekap Modern (Agustus 2026)
+
+✅ Sprint 2A
+- Modern Responsive Layout
+- Empty State
+- Loading Skeleton
+
+✅ Sprint 2B
+- Penyempurnaan Engine Rekap
+- Integrasi Backend
+- Penyempurnaan Export
+
+✅ Sprint 2C
+- Summary Card Dinamis
+
+✅ Sprint 2D
+- Sticky Header pada tabel
+
+✅ Sprint 2E
+- Badge Keterangan Dinamis
+
+---
+
 # SMART FILTER
 
 Urutan filter:
@@ -398,5 +421,9 @@ Baru boleh masuk Sprint berikutnya.
 # CATATAN
 
 Seluruh isi dokumen ini merupakan arah pengembangan resmi WONG MIT.
+
+Dokumen ini menjadi acuan utama seluruh AI (ChatGPT, TRAE, maupun Agent AI lainnya).
+
+AI wajib membaca dokumen ini sebelum melakukan audit ataupun implementasi fitur baru.
 
 Apabila terdapat keputusan baru pada Sprint berikutnya, dokumen ini harus diperbarui agar tetap menjadi acuan utama bagi seluruh AI yang membantu pengembangan project.

@@ -54,17 +54,27 @@ SEDANG BERJALAN
 
 Progress
 
-✅ Sprint Rekap 2A-1
+✅ Sprint Rekap 2A
+Modern Responsive Layout
 
-✅ Sprint Rekap 2A-2
+✅ Sprint Rekap 2B
+Backend Rekap Modern
 
-✅ Sprint Rekap 2A-3
+✅ Sprint Rekap 2C
+Summary Card
 
-⬜ Sprint Rekap 2B
+✅ Sprint Rekap 2D
+Sticky Header
 
-⬜ Sprint Rekap 2C
+✅ Sprint Rekap 2E
+Badge Keterangan
+
+⬜ Sprint Rekap 2F
+Interactive Table
+(Sorting Header)
 
 ⬜ Sprint Rekap 3
+Final UI Polish & Optimization
 
 ---
 

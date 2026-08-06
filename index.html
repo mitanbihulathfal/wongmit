@@ -2159,7 +2159,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-
       let modeForm = "tambah";
 
       let modeAbsensi = "baru";
@@ -11773,6 +11772,29 @@
 
         };
 
+        document.querySelectorAll(
+          "#rekapTableWrapper thead th[data-rekap-sort]"
+        ).forEach(function (header) {
+
+          header.onclick = function () {
+
+            sortRekapTable(header.dataset.rekapSort);
+
+          };
+
+          header.onkeydown = function (event) {
+
+            if (event.key === "Enter" || event.key === " ") {
+
+              event.preventDefault();
+              sortRekapTable(header.dataset.rekapSort);
+
+            }
+
+          };
+
+        });
+
         loadGuruDropdown(
           "filterGuruRekap",
           "Semua Guru"
@@ -11962,6 +11984,291 @@
 
       }
 
+      /* =========================
+        REKAP SUMMARY CARD
+      ========================= */
+
+      function renderRekapSummary(data) {
+
+        const container =
+          document.getElementById("rekapSummary");
+
+        if (!container) return;
+
+        if (!data || data.length === 0) {
+          container.style.display = "none";
+          container.innerHTML = "";
+          return;
+        }
+
+        let totalSiswa = data.length;
+        let totalSempurna = 0;
+        let totalPerluPerhatian = 0;
+        let totalPersentase = 0;
+
+        data.forEach(function (item) {
+
+          totalPersentase += Number(item.persentase) || 0;
+
+          if (item.keterangan === "Sempurna") {
+            totalSempurna++;
+          }
+
+          if (
+            item.keterangan === "Perlu Perhatian" ||
+            item.keterangan === "Perlu Peningkatan" ||
+            item.keterangan === "Perlu Tindak Lanjut"
+          ) {
+            totalPerluPerhatian++;
+          }
+
+        });
+
+        const rataRata =
+          totalSiswa === 0
+            ? 0
+            : Math.round(totalPersentase / totalSiswa);
+
+        container.innerHTML = `
+
+          <div class="rekap-summary-card">
+            <div class="rekap-summary-icon">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="rekap-summary-info">
+              <small>Total Siswa</small>
+              <h4>${totalSiswa}</h4>
+            </div>
+          </div>
+
+          <div class="rekap-summary-card">
+            <div class="rekap-summary-icon">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <div class="rekap-summary-info">
+              <small>Sempurna</small>
+              <h4>${totalSempurna}</h4>
+            </div>
+          </div>
+
+          <div class="rekap-summary-card">
+            <div class="rekap-summary-icon">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="rekap-summary-info">
+              <small>Perlu Perhatian</small>
+              <h4>${totalPerluPerhatian}</h4>
+            </div>
+          </div>
+
+          <div class="rekap-summary-card">
+            <div class="rekap-summary-icon">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="rekap-summary-info">
+              <small>Rata-rata</small>
+              <h4>${rataRata}%</h4>
+            </div>
+          </div>
+
+        `;
+
+        container.style.display = "grid";
+
+      }
+
+      function getRekapBadge(keterangan) {
+
+        let badgeClass = "rekap-badge";
+
+        switch (keterangan) {
+
+          case "Sempurna":
+            badgeClass += " rekap-badge-sempurna";
+            break;
+
+          case "Sangat Baik":
+            badgeClass += " rekap-badge-sangat-baik";
+            break;
+
+          case "Baik":
+            badgeClass += " rekap-badge-baik";
+            break;
+
+          case "Cukup Baik":
+            badgeClass += " rekap-badge-cukup";
+            break;
+
+          case "Perlu Peningkatan":
+            badgeClass += " rekap-badge-peningkatan";
+            break;
+
+          case "Perlu Perhatian":
+            badgeClass += " rekap-badge-perhatian";
+            break;
+
+          default:
+            badgeClass += " rekap-badge-tindak";
+
+        }
+
+        return '<span class="' + badgeClass + '">' + keterangan + '</span>';
+
+      }
+
+      let rekapTableData = [];
+      let rekapSortKey = "";
+      let rekapSortDirection = "asc";
+
+      function updateRekapSortIndicators() {
+
+        document.querySelectorAll(
+          "#rekapTableWrapper thead th[data-rekap-sort]"
+        ).forEach(function (header) {
+
+          const isActive =
+            header.dataset.rekapSort === rekapSortKey;
+
+          const direction =
+            isActive ? rekapSortDirection : "none";
+
+          header.setAttribute(
+            "aria-sort",
+            direction === "asc" ? "ascending" :
+              direction === "desc" ? "descending" : "none"
+          );
+
+          header.querySelector(
+            ".rekap-sort-icon"
+          ).textContent =
+            direction === "asc" ? "▲" :
+              direction === "desc" ? "▼" : "";
+
+        });
+
+      }
+
+      function sortRekapTable(sortKey) {
+
+        if (!rekapTableData.length) {
+          return;
+        }
+
+        if (rekapSortKey === sortKey) {
+          rekapSortDirection =
+            rekapSortDirection === "asc" ? "desc" : "asc";
+        } else {
+          rekapSortKey = sortKey;
+          rekapSortDirection = "asc";
+        }
+
+        const sortedData =
+          rekapTableData.map(function (row, index) {
+            return {
+              row: row,
+              index: index
+            };
+          });
+
+        sortedData.sort(function (first, second) {
+
+          const firstValue = first.row[sortKey];
+          const secondValue = second.row[sortKey];
+          let comparison;
+
+          if (sortKey === "nama" ||
+              sortKey === "kelas" ||
+              sortKey === "keterangan") {
+
+            comparison = String(firstValue || "").localeCompare(
+              String(secondValue || ""),
+              undefined,
+              { numeric: true, sensitivity: "base" }
+            );
+
+          } else {
+
+            comparison = Number(firstValue || 0) -
+              Number(secondValue || 0);
+
+          }
+
+          return comparison || first.index - second.index;
+
+        });
+
+        if (rekapSortDirection === "desc") {
+          sortedData.reverse();
+        }
+
+        renderRekapTable(
+          sortedData.map(function (item) {
+            return item.row;
+          })
+        );
+        updateRekapSortIndicators();
+
+      }
+
+      function renderRekapTable(data) {
+
+        const tbody =
+          document.getElementById(
+            "tableRekapAbsensi"
+          );
+
+        tbody.innerHTML = "";
+
+        if (data.length === 0) {
+
+          tbody.innerHTML =
+            '<tr>' +
+            '<td colspan="9" class="text-center py-5">' +
+            'Tidak ada data rekap.' +
+            '</td>' +
+            '</tr>';
+
+          return;
+        }
+
+        for (let i = 0; i < data.length; i++) {
+
+          tbody.innerHTML +=
+            '<tr>' +
+            '<td>' +
+            (i + 1) +
+            '</td>' +
+            '<td>' +
+            data[i].nama +
+            '</td>' +
+            '<td class="text-center">' +
+            data[i].kelas +
+            '</td>' +
+            '<td class="text-center">' +
+            data[i].hadir +
+            '</td>' +
+            '<td class="text-center">' +
+            data[i].sakit +
+            '</td>' +
+            '<td class="text-center">' +
+            data[i].izin +
+            '</td>' +
+            '<td class="text-center">' +
+            data[i].alpa +
+            '</td>' +
+            '<td class="text-center">' +
+            data[i].persentase +
+            '%' +
+            '</td>' +
+            '<td>' +
+            getRekapBadge(data[i].keterangan) +
+            '</td>' +
+            '</tr>';
+
+        }
+
+      }
+
       function tampilkanRekap() {
 
         const tanggalAwal =
@@ -12026,101 +12333,14 @@
             const data =
               result;
 
-            const tbody =
+            rekapTableData = data.slice();
+            rekapSortKey = "";
+            rekapSortDirection = "asc";
+            updateRekapSortIndicators();
 
-              document.getElementById(
-                "tableRekapAbsensi"
-              );
+            renderRekapSummary(data);
 
-            tbody.innerHTML = "";
-
-            if (data.length === 0) {
-
-              tbody.innerHTML =
-
-                '<tr>' +
-
-                '<td colspan="9" class="text-center py-5">' +
-
-                'Tidak ada data rekap.' +
-
-                '</td>' +
-
-                '</tr>';
-
-              return;
-
-            }
-
-            for (
-              let i = 0;
-              i < data.length;
-              i++
-            ) {
-
-              tbody.innerHTML +=
-
-                '<tr>' +
-
-                '<td>' +
-
-                (i + 1) +
-
-                '</td>' +
-
-                '<td>' +
-
-                data[i].nama +
-
-                '</td>' +
-
-                '<td class="text-center">' +
-
-                data[i].kelas +
-
-                '</td>' +
-
-                '<td class="text-center">' +
-
-                data[i].hadir +
-
-                '</td>' +
-
-                '<td class="text-center">' +
-
-                data[i].sakit +
-
-                '</td>' +
-
-                '<td class="text-center">' +
-
-                data[i].izin +
-
-                '</td>' +
-
-                '<td class="text-center">' +
-
-                data[i].alpa +
-
-                '</td>' +
-
-                '<td class="text-center">' +
-
-                data[i].persentase +
-
-                '%' +
-
-                '</td>' +
-
-                '<td>' +
-
-                data[i].keterangan +
-
-                '</td>' +
-
-                '</tr>';
-
-            }
+            renderRekapTable(data);
 
           })
 

@@ -37,10 +37,7 @@
 
         <li>
 
-          <a
-            class="dropdown-item"
-            href="javascript:void(0)"
-            onclick="showTambahSiswa()">
+          <a class="dropdown-item" href="javascript:void(0)" onclick="showTambahSiswa()">
 
             <i class="fa-solid fa-user-plus me-2"></i>
 
@@ -52,10 +49,7 @@
 
         <li>
 
-          <a
-            class="dropdown-item"
-            href="javascript:void(0)"
-            onclick="showImportSiswa()">
+          <a class="dropdown-item" href="javascript:void(0)" onclick="showImportSiswa()">
 
             <i class="fa-solid fa-file-import me-2"></i>
 
@@ -105,55 +99,51 @@
 
   </div>
 
-    <div
-      class="table-responsive"
-      style="
+  <div class="table-responsive" style="
         overflow-x:auto;
         -webkit-overflow-scrolling:touch;
       ">
 
-      <table
-        class="table table-striped table-hover"
-        style="min-width:760px;">
+    <table class="table table-striped table-hover" style="min-width:760px;">
 
       <thead class="table-light">
-      <tr>
+        <tr>
 
-      <th onclick="sortTable(0)" style="cursor:pointer">
-      ID <span class="sort-icon" data-column="0">↕</span>
-      </th>
+          <th onclick="sortTable(0)" style="cursor:pointer">
+            ID <span class="sort-icon" data-column="0">↕</span>
+          </th>
 
-      <th onclick="sortTable(1)" style="cursor:pointer">
-      NISN <span class="sort-icon" data-column="1">↕</span>
-      </th>
+          <th onclick="sortTable(1)" style="cursor:pointer">
+            NISN <span class="sort-icon" data-column="1">↕</span>
+          </th>
 
-      <th onclick="sortTable(2)" style="cursor:pointer">
-      Nama <span class="sort-icon" data-column="2">↕</span>
-      </th>
+          <th onclick="sortTable(2)" style="cursor:pointer">
+            Nama <span class="sort-icon" data-column="2">↕</span>
+          </th>
 
-      <th onclick="sortTable(3)" style="cursor:pointer">
-      Tempat Lahir <span class="sort-icon" data-column="3">↕</span>
-      </th>
+          <th onclick="sortTable(3)" style="cursor:pointer">
+            Tempat Lahir <span class="sort-icon" data-column="3">↕</span>
+          </th>
 
-      <th onclick="sortTable(4)" style="cursor:pointer">
-      Tanggal Lahir <span class="sort-icon" data-column="4">↕</span>
-      </th>
+          <th onclick="sortTable(4)" style="cursor:pointer">
+            Tanggal Lahir <span class="sort-icon" data-column="4">↕</span>
+          </th>
 
-      <th onclick="sortTable(5)" style="cursor:pointer">
-      JK <span class="sort-icon" data-column="5">↕</span>
-      </th>
+          <th onclick="sortTable(5)" style="cursor:pointer">
+            JK <span class="sort-icon" data-column="5">↕</span>
+          </th>
 
-      <th onclick="sortTable(6)" style="cursor:pointer">
-      Kelas <span class="sort-icon" data-column="6">↕</span>
-      </th>
+          <th onclick="sortTable(6)" style="cursor:pointer">
+            Kelas <span class="sort-icon" data-column="6">↕</span>
+          </th>
 
-      <th onclick="sortTable(7)" style="cursor:pointer">
-      Status <span class="sort-icon" data-column="7">↕</span>
-      </th>
+          <th onclick="sortTable(7)" style="cursor:pointer">
+            Status <span class="sort-icon" data-column="7">↕</span>
+          </th>
 
-      <th>Aksi</th>
+          <th>Aksi</th>
 
-      </tr>
+        </tr>
       </thead>
 
       <tbody id="tableSiswa">
@@ -174,10 +164,7 @@
 
 <!-- MODAL TAMBAH SISWA -->
 
-<div
-  class="modal fade"
-  id="modalSiswa"
-  tabindex="-1">
+<div class="modal fade" id="modalSiswa" tabindex="-1">
 
   <div class="modal-dialog modal-lg">
 
@@ -311,10 +298,7 @@
 
 <!-- MODAL IMPORT MASSAL SISWA -->
 
-<div
-  class="modal fade"
-  id="modalImportSiswa"
-  tabindex="-1">
+<div class="modal fade" id="modalImportSiswa" tabindex="-1">
 
   <div class="modal-dialog modal-xl">
 
@@ -340,9 +324,7 @@
 
       <div class="modal-body">
 
-        <a
-          href="javascript:void(0)"
-          onclick="downloadTemplateSiswa()">
+        <a href="javascript:void(0)" onclick="downloadTemplateSiswa()">
 
           <i class="fa-solid fa-download"></i>
 
@@ -350,10 +332,7 @@
 
         </a>
 
-        <div
-          id="dropAreaSiswa"
-          class="border rounded text-center p-5 mt-3"
-          style="
+        <div id="dropAreaSiswa" class="border rounded text-center p-5 mt-3" style="
             border-style:dashed !important;
             cursor:pointer;
             background:#fafafa;">
@@ -378,9 +357,7 @@
 
         </div>
 
-        <div
-          id="namaFileSiswa"
-          class="text-center mt-3 text-muted">
+        <div id="namaFileSiswa" class="text-center mt-3 text-muted">
 
           Belum ada file dipilih.
 
@@ -388,8 +365,7 @@
 
         <hr>
 
-        <div
-          id="previewImportSiswa">
+        <div id="previewImportSiswa">
 
           <div class="text-muted text-center py-4">
 
