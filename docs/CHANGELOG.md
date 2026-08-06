@@ -33,6 +33,40 @@ Catatan
 
 ## 2026-08-06
 
+### Sprint Rekap 2F
+
+Judul
+
+Interactive Table Client-side Sorting
+
+Perubahan
+
+- Menambahkan sorting pada header kolom Nama Siswa, KLS, H, S, I, A, %, dan Ket.
+- Klik pertama mengurutkan data secara Ascending.
+- Klik kedua mengurutkan data secara Descending.
+- Menambahkan indikator Icon Sort pada header kolom aktif.
+- Sorting dilakukan sepenuhnya secara client-side menggunakan data Rekap yang sudah tampil.
+- Sorting tidak memanggil backend dan tidak menghitung ulang Rekap.
+
+Status
+
+SELESAI
+
+Commit
+
+Sprint Rekap 2F : Interactive Table Client-side Sorting
+
+Catatan
+
+- Review Pengguna LOLOS.
+- Testing Desktop LOLOS.
+- Testing Mobile LOLOS.
+- CLASP Push dan Deploy selesai.
+
+---
+
+## 2026-08-06
+
 ### Sprint Rekap 2C
 
 Judul

@@ -12201,11 +12201,11 @@
           sortedData.reverse();
         }
 
-        renderRekapTable(
-          sortedData.map(function (item) {
-            return item.row;
-          })
-        );
+        rekapTableData = sortedData.map(function (item) {
+          return item.row;
+        });
+
+        renderRekapTable(rekapTableData);
         updateRekapSortIndicators();
 
       }
@@ -12484,7 +12484,8 @@
             guru,
             kelas,
             mapel,
-            guruText
+            guruText,
+            rekapTableData
           );
 
       }

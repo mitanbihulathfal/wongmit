@@ -112,7 +112,7 @@ Kondisi:
 
 Status:
 ACTIVE DEVELOPMENT
-(Sprint Rekap 2F sedang berjalan)
+(Sprint Rekap 2F selesai)
 
 Kondisi saat ini:
 
@@ -132,13 +132,14 @@ Kondisi saat ini:
 - Export backend tetap kompatibel.
 - Nilai semester export menggunakan single source of truth.
 - Horizontal scroll mobile.
+- Interactive Table dengan sorting client-side.
+- Sorting Ascending dan Descending.
+- Indikator sorting pada header tabel.
+- Sorting tidak memanggil backend atau menghitung ulang Rekap.
 
-Sprint aktif berikutnya:
+Sprint berikutnya:
 
-- Interactive Table
-- Sorting Header
-- Sticky Column
-- Optimasi render
+Belum ditentukan. Akan mengikuti roadmap dan keputusan pengguna.
 
 ---
 

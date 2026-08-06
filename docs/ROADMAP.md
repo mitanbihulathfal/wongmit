@@ -69,7 +69,7 @@ Sticky Header
 ✅ Sprint Rekap 2E
 Badge Keterangan
 
-⬜ Sprint Rekap 2F
+✅ Sprint Rekap 2F
 Interactive Table
 (Sorting Header)
 

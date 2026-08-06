@@ -164,8 +164,7 @@ Hasil
 # Sprint Rekap 2F
 
 Status
-
-IN PROGRESS
+DONE
 
 Target
 
@@ -177,6 +176,26 @@ Fokus
 - Sorting Asc/Desc
 - Icon Sort
 - Client-side Sorting
+
+Hasil
+
+✅ Sorting header berjalan pada kolom Nama Siswa, KLS, H, S, I, A, %, dan Ket
+
+✅ Klik pertama mengurutkan Ascending
+
+✅ Klik kedua mengurutkan Descending
+
+✅ Indikator Icon Sort ditampilkan pada header aktif
+
+✅ Sorting dilakukan sepenuhnya secara client-side
+
+✅ Sorting tidak memanggil backend atau menghitung ulang Rekap
+
+✅ Testing Desktop LOLOS
+
+✅ Testing Mobile LOLOS
+
+✅ Review Pengguna LOLOS
 
 ---
 

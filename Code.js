@@ -5723,7 +5723,8 @@ function exportRekapExcel(
   guru,
   kelas,
   mapel = "",
-  guruText
+  guruText,
+  dataSnapshot
 ) {
 
   if (
@@ -5733,23 +5734,31 @@ function exportRekapExcel(
     mapel = "";
   }
 
-  const data =
+  const snapshotValid =
+    Array.isArray(dataSnapshot) &&
+    dataSnapshot.every(function (row) {
+      return row &&
+        Object.prototype.hasOwnProperty.call(row, "nisn") &&
+        Object.prototype.hasOwnProperty.call(row, "nama") &&
+        Object.prototype.hasOwnProperty.call(row, "kelas") &&
+        Object.prototype.hasOwnProperty.call(row, "hadir") &&
+        Object.prototype.hasOwnProperty.call(row, "sakit") &&
+        Object.prototype.hasOwnProperty.call(row, "izin") &&
+        Object.prototype.hasOwnProperty.call(row, "alpa") &&
+        Object.prototype.hasOwnProperty.call(row, "persentase") &&
+        Object.prototype.hasOwnProperty.call(row, "keterangan");
+    });
 
-    getRekapFinal(
-
-      sessionId,
-
-      tanggalAwal,
-
-      tanggalAkhir,
-
-      guru,
-
-      kelas,
-
-      mapel
-
-    );
+  const data = snapshotValid
+    ? dataSnapshot
+    : getRekapFinal(
+        sessionId,
+        tanggalAwal,
+        tanggalAkhir,
+        guru,
+        kelas,
+        mapel
+      );
 
   const spreadsheet =
 
