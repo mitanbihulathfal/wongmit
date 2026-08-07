@@ -33,6 +33,42 @@ Catatan
 
 ## 2026-08-07
 
+### Sprint Rekap 6
+
+Judul
+
+Optimasi Performa Engine Rekap
+
+Perubahan
+
+- Menghilangkan duplikasi pemanggilan `getFilteredGuruMengajar()` pada pipeline Rekap.
+- Menambahkan fungsi internal `getDataRekapRaw()` yang mengembalikan array langsung.
+- Mengoptimalkan `mergeDataRekap()` menggunakan lookup berbasis `Map` (nisn → daftar absensi).
+- Menggunakan `Set` untuk lookup filter kelas dan relasi.
+- Mengoptimalkan `renderRekapTable()` menggunakan `join("")` tanpa `innerHTML +=` di dalam loop.
+- Kompleksitas merge turun dari O(n×m) menjadi O(n+m).
+- Output Rekap, filtering, sorting, summary, dan export tetap identik.
+
+Status
+
+SELESAI
+
+Commit
+
+Sprint Rekap 6 : Optimasi Performa Engine Rekap
+
+Catatan
+
+- Diagnostics LOLOS.
+- git diff --check LOLOS.
+- Testing Desktop LOLOS.
+- Testing Mobile LOLOS.
+- Review Pengguna LOLOS.
+
+---
+
+## 2026-08-07
+
 ### Sprint Cleanup Legacy Rekap
 
 Judul

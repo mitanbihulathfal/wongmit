@@ -261,6 +261,60 @@ Hasil
 
 ---
 
+# Sprint Rekap 6
+
+Status
+DONE
+
+Target
+
+Optimasi Performa Engine Rekap.
+
+Fokus
+
+- Menghilangkan duplikasi pemanggilan `getFilteredGuruMengajar()`.
+- Menambahkan fungsi internal `getDataRekapRaw()` yang mengembalikan array langsung.
+- Mengoptimalkan `mergeDataRekap()` menggunakan lookup berbasis `Map` (nisn → daftar absensi).
+- Menggunakan `Set` untuk lookup filter kelas dan relasi.
+- Mengoptimalkan `renderRekapTable()` menggunakan `join("")` tanpa `innerHTML +=` di dalam loop.
+
+Hasil
+
+✅ Duplikasi `getFilteredGuruMengajar()` telah dihilangkan
+
+✅ `getDataRekapRaw()` telah ditambahkan
+
+✅ `mergeDataRekap()` menggunakan `Map` lookup (kompleksitas O(n+m))
+
+✅ `Set` digunakan untuk lookup filter kelas dan relasi
+
+✅ `renderRekapTable()` menggunakan `join("")`
+
+✅ Output Rekap, filtering, sorting, summary, dan export tetap identik
+
+✅ Diagnostics LOLOS
+
+✅ git diff --check LOLOS
+
+✅ Testing Desktop LOLOS
+
+✅ Testing Mobile LOLOS
+
+✅ Review Pengguna LOLOS
+
+---
+
+# Sprint Rekap 7
+
+Status
+BELUM DIMULAI
+
+Target
+
+Belum ditentukan. Akan mengikuti roadmap dan keputusan pengguna.
+
+---
+
 # Aturan Sprint
 
 Setiap sprint wajib melalui tahapan berikut.

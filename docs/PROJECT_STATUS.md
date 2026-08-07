@@ -112,7 +112,7 @@ Kondisi:
 
 Status:
 ACTIVE DEVELOPMENT
-(Sprint Rekap 2F, Sprint Export Baru, dan Sprint Cleanup Legacy Rekap selesai)
+(Sprint Rekap 2F, Sprint Export Baru, Sprint Cleanup Legacy Rekap, dan Sprint Rekap 6 selesai)
 
 Kondisi saat ini:
 
@@ -142,6 +142,10 @@ Kondisi saat ini:
 - Wrapper `getRekapUmum()`, `getRekapGuru()`, dan `getRekapWali()` telah dihapus.
 - Parameter `mode` pada `getRekapFinal()` telah dihapus.
 - Engine Rekap hanya menggunakan satu jalur: `getRekapFinal() → mergeDataRekap() → getDataRekap() → hitungRekap()`.
+- Engine Rekap telah dioptimasi performa tanpa mengubah arsitektur maupun output.
+- Duplikasi `getFilteredGuruMengajar()` telah dihilangkan.
+- `mergeDataRekap()` menggunakan lookup berbasis `Map` (kompleksitas O(n+m)).
+- `renderRekapTable()` menggunakan `join("")` tanpa `innerHTML +=` di dalam loop.
 
 Sprint berikutnya:
 
