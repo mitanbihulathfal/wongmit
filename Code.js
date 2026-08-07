@@ -5449,95 +5449,6 @@ function hitungRekap(
 
 }
 
-/* =========================
-   REKAP UMUM
-========================= */
-
-function getRekapUmum(
-
-  sessionId,
-
-  tanggalAwal,
-
-  tanggalAkhir,
-
-  guru,
-
-  kelas,
-  mapel = ""
-
-) {
-
-  return getRekapFinal(
-    sessionId,
-    tanggalAwal,
-    tanggalAkhir,
-    guru,
-    kelas,
-    mapel
-  );
-
-}
-
-/* =========================
-   REKAP WALI KELAS
-========================= */
-
-function getRekapWali(
-
-  sessionId,
-
-  tanggalAwal,
-
-  tanggalAkhir,
-
-  guru,
-
-  kelas,
-  mapel = ""
-
-) {
-
-  return getRekapFinal(
-    sessionId,
-    tanggalAwal,
-    tanggalAkhir,
-    "",
-    kelas,
-    mapel
-  );
-
-}
-
-/* =========================
-   REKAP GURU MAPEL
-========================= */
-
-function getRekapGuru(
-
-  sessionId,
-
-  tanggalAwal,
-
-  tanggalAkhir,
-
-  guru,
-
-  kelas,
-  mapel = ""
-
-) {
-  return getRekapFinal(
-    sessionId,
-    tanggalAwal,
-    tanggalAkhir,
-    guru,
-    kelas,
-    mapel
-  );
-
-}
-
 function getRekapFinal(
 
   sessionId,
@@ -5550,28 +5461,9 @@ function getRekapFinal(
 
   kelas,
 
-  mapel = "",
-
-  mode = ""
+  mapel = ""
 
 ) {
-
-  if (
-    !mode
-    &&
-    [
-      "umum",
-      "guru",
-      "wali"
-    ].includes(
-      String(mapel).trim()
-    )
-  ) {
-
-    mode = mapel;
-    mapel = "";
-
-  }
 
   const dataMerge =
 

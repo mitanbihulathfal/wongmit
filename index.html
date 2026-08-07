@@ -3554,6 +3554,37 @@
 
       }
 
+      function filterGuru() {
+
+        const keyword =
+          document
+            .getElementById('searchGuru')
+            .value
+            .toLowerCase();
+
+        const rows =
+          document
+            .querySelectorAll('#tableGuru tr');
+
+        rows.forEach(function (row) {
+
+          const text =
+            row.innerText.toLowerCase();
+
+          if (text.includes(keyword)) {
+
+            row.style.display = '';
+
+          } else {
+
+            row.style.display = 'none';
+
+          }
+
+        });
+
+      }
+
       function loadClasses() {
 
         google.script.run

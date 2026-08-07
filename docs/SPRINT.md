@@ -199,6 +199,34 @@ Hasil
 
 ---
 
+# Sprint Export Baru
+
+Status
+DONE
+
+Target
+
+Export Rekap berbasis JavaScript Memory
+
+Fokus
+
+- Snapshot `rekapTableData` menjadi sumber utama Export.
+- Export tidak menghitung ulang Rekap apabila snapshot tersedia.
+- Urutan Excel mengikuti urutan tabel terakhir, termasuk hasil sorting.
+- Fallback `getRekapFinal()` tetap tersedia untuk backward compatibility.
+
+Hasil
+
+✅ Export menggunakan snapshot `rekapTableData` dari JavaScript Memory
+
+✅ Export tidak memanggil `getRekapFinal()` apabila snapshot valid tersedia
+
+✅ Urutan Excel mengikuti urutan tabel terakhir
+
+✅ Fallback backend tetap menjaga backward compatibility
+
+---
+
 # Aturan Sprint
 
 Setiap sprint wajib melalui tahapan berikut.

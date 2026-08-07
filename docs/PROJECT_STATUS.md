@@ -112,7 +112,7 @@ Kondisi:
 
 Status:
 ACTIVE DEVELOPMENT
-(Sprint Rekap 2F selesai)
+(Sprint Rekap 2F dan Sprint Export Baru selesai)
 
 Kondisi saat ini:
 
@@ -136,6 +136,9 @@ Kondisi saat ini:
 - Sorting Ascending dan Descending.
 - Indikator sorting pada header tabel.
 - Sorting tidak memanggil backend atau menghitung ulang Rekap.
+- Export menggunakan snapshot `rekapTableData` dari JavaScript Memory sebagai sumber utama.
+- Export mengikuti urutan tabel terakhir, termasuk hasil sorting.
+- Backend menggunakan `getRekapFinal()` sebagai fallback apabila snapshot tidak tersedia atau tidak valid.
 
 Sprint berikutnya:
 
