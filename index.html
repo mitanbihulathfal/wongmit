@@ -12248,8 +12248,6 @@
             "tableRekapAbsensi"
           );
 
-        tbody.innerHTML = "";
-
         if (data.length === 0) {
 
           tbody.innerHTML =
@@ -12262,9 +12260,11 @@
           return;
         }
 
+        const baris = [];
+
         for (let i = 0; i < data.length; i++) {
 
-          tbody.innerHTML +=
+          baris.push(
             '<tr>' +
             '<td>' +
             (i + 1) +
@@ -12294,9 +12294,12 @@
             '<td>' +
             getRekapBadge(data[i].keterangan) +
             '</td>' +
-            '</tr>';
+            '</tr>'
+          );
 
         }
+
+        tbody.innerHTML = baris.join("");
 
       }
 

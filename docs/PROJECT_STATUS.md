@@ -112,7 +112,7 @@ Kondisi:
 
 Status:
 ACTIVE DEVELOPMENT
-(Sprint Rekap 2F dan Sprint Export Baru selesai)
+(Sprint Rekap 2F, Sprint Export Baru, dan Sprint Cleanup Legacy Rekap selesai)
 
 Kondisi saat ini:
 
@@ -139,6 +139,9 @@ Kondisi saat ini:
 - Export menggunakan snapshot `rekapTableData` dari JavaScript Memory sebagai sumber utama.
 - Export mengikuti urutan tabel terakhir, termasuk hasil sorting.
 - Backend menggunakan `getRekapFinal()` sebagai fallback apabila snapshot tidak tersedia atau tidak valid.
+- Wrapper `getRekapUmum()`, `getRekapGuru()`, dan `getRekapWali()` telah dihapus.
+- Parameter `mode` pada `getRekapFinal()` telah dihapus.
+- Engine Rekap hanya menggunakan satu jalur: `getRekapFinal() → mergeDataRekap() → getDataRekap() → hitungRekap()`.
 
 Sprint berikutnya:
 

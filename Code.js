@@ -4956,13 +4956,18 @@ function createGuruMengajarTemplate() {
    ABSENSI
 ========================= */
 
-function getDataRekap(
+/* =========================
+   DATA REKAP INTERNAL (ARRAY)
+========================= */
+
+function getDataRekapRaw(
   sessionId,
   tanggalAwal,
   tanggalAkhir,
   guru,
   kelas,
-  mapel = ""
+  mapel,
+  relasiMengajar
 ) {
 
   const allowed =
@@ -5003,18 +5008,12 @@ function getDataRekap(
     data[0]
   );
 
-  const relasiMengajar =
-    getFilteredGuruMengajar(
-      sessionId,
-      guru,
-      kelas,
-      mapel
-    );
-
   const daftarRelasi =
-    relasiMengajar.map(function (item) {
-      return item.idRelasi;
-    });
+    new Set();
+
+  relasiMengajar.forEach(function (item) {
+    daftarRelasi.add(item.idRelasi);
+  });
 
   for (
     let i = 1;
@@ -5082,7 +5081,7 @@ function getDataRekap(
           mapel
         )
         &&
-        !daftarRelasi.includes(
+        !daftarRelasi.has(
           relasiData
         )
       ) {
@@ -5112,6 +5111,40 @@ function getDataRekap(
 
   }
 
+  return hasil;
+
+}
+
+function getDataRekap(
+  sessionId,
+  tanggalAwal,
+  tanggalAkhir,
+  guru,
+  kelas,
+  mapel = ""
+) {
+
+  const relasiMengajar =
+
+    getFilteredGuruMengajar(
+      sessionId,
+      guru,
+      kelas,
+      mapel
+    );
+
+  const hasil =
+
+    getDataRekapRaw(
+      sessionId,
+      tanggalAwal,
+      tanggalAkhir,
+      guru,
+      kelas,
+      mapel,
+      relasiMengajar
+    );
+
   return JSON.stringify(
     hasil
   );
@@ -5130,27 +5163,7 @@ function mergeDataRekap(
   const masterSiswa =
     getMasterSiswa();
 
-  const dataAbsensi =
-
-    JSON.parse(
-
-      getDataRekap(
-
-        sessionId,
-
-        tanggalAwal,
-
-        tanggalAkhir,
-
-        guru,
-
-        kelas,
-        mapel
-
-      )
-
-    );
-
+  /* Satu kali pemanggilan relasi mengajar, dipakai bersama getDataRekapRaw */
   const relasiMengajar =
     getFilteredGuruMengajar(
       sessionId,
@@ -5159,23 +5172,58 @@ function mergeDataRekap(
       mapel
     );
 
-  const daftarKelasFilter = [];
+  const dataAbsensi =
+    getDataRekapRaw(
+      sessionId,
+      tanggalAwal,
+      tanggalAkhir,
+      guru,
+      kelas,
+      mapel,
+      relasiMengajar
+    );
+
+  const setKelasFilter =
+    new Set();
+
+  relasiMengajar.forEach(function (item) {
+    setKelasFilter.add(item.kelas);
+  });
+
+  /* Lookup absensi per NISN utk hindari nested loop O(n*m) */
+  const absensiByNisn =
+    new Map();
 
   for (
-    let i = 0;
-    i < relasiMengajar.length;
-    i++
+    let j = 1;
+    j < dataAbsensi.length;
+    j++
   ) {
 
+    const nisnAbs =
+
+      String(
+        dataAbsensi[j][1]
+      ).trim();
+
     if (
-      !daftarKelasFilter.includes(
-        relasiMengajar[i].kelas
+      !absensiByNisn.has(
+        nisnAbs
       )
     ) {
-      daftarKelasFilter.push(
-        relasiMengajar[i].kelas
+
+      absensiByNisn.set(
+        nisnAbs,
+        []
       );
+
     }
+
+    absensiByNisn.get(
+      nisnAbs
+    ).push(
+      dataAbsensi[j]
+    );
 
   }
 
@@ -5217,7 +5265,7 @@ function mergeDataRekap(
         mapel
       )
       &&
-      !daftarKelasFilter.includes(
+      !setKelasFilter.has(
         kelasSiswa
       )
     ) {
@@ -5240,37 +5288,12 @@ function mergeDataRekap(
 
       kelas: kelasSiswa,
 
-      absensi: []
+      absensi:
+        absensiByNisn.get(
+          nisn
+        ) || []
 
     };
-
-    for (
-      let j = 1;
-      j < dataAbsensi.length;
-      j++
-    ) {
-
-      if (
-
-        String(
-          dataAbsensi[j][1]
-        ).trim()
-
-        ===
-
-        nisn
-
-      ) {
-
-        dataSiswa.absensi.push(
-
-          dataAbsensi[j]
-
-        );
-
-      }
-
-    }
 
     hasil.push(
 

@@ -31,6 +31,38 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-07
+
+### Sprint Cleanup Legacy Rekap
+
+Judul
+
+Cleanup Legacy Rekap
+
+Perubahan
+
+- Menghapus wrapper `getRekapUmum()`, `getRekapGuru()`, dan `getRekapWali()` yang tidak memiliki caller internal.
+- Menghapus parameter `mode` pada `getRekapFinal()`.
+- Menghapus blok normalisasi compatibility `mode` pada `getRekapFinal()`.
+- Engine Rekap kini hanya menggunakan satu jalur: `getRekapFinal() → mergeDataRekap() → getDataRekap() → hitungRekap()`.
+- Tidak ada perubahan perilaku runtime, hanya pembersihan legacy code.
+
+Status
+
+SELESAI
+
+Commit
+
+Sprint Cleanup Legacy Rekap
+
+Catatan
+
+- Diagnostics LOLOS.
+- git diff --check LOLOS.
+- Global search memastikan `getRekapUmum`, `getRekapGuru`, `getRekapWali`, dan parameter `mode` sudah hilang.
+
+---
+
 ## 2026-08-06
 
 ### Sprint Rekap 2F

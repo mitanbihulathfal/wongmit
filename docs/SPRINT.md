@@ -227,6 +227,40 @@ Hasil
 
 ---
 
+# Sprint Cleanup Legacy Rekap
+
+Status
+DONE
+
+Target
+
+Pembersihan legacy code pada engine Rekap.
+
+Fokus
+
+- Menghapus wrapper `getRekapUmum()`, `getRekapGuru()`, dan `getRekapWali()` yang tidak memiliki caller internal.
+- Menghapus parameter `mode` pada `getRekapFinal()`.
+- Menghapus blok normalisasi compatibility `mode` pada `getRekapFinal()`.
+- Memastikan engine Rekap hanya menggunakan satu jalur: `getRekapFinal() → mergeDataRekap() → getDataRekap() → hitungRekap()`.
+
+Hasil
+
+✅ Wrapper `getRekapUmum()`, `getRekapGuru()`, dan `getRekapWali()` telah dihapus
+
+✅ Parameter `mode` pada `getRekapFinal()` telah dihapus
+
+✅ Blok normalisasi compatibility `mode` telah dihapus
+
+✅ Engine Rekap hanya menggunakan satu jalur
+
+✅ Tidak ada perubahan perilaku runtime
+
+✅ Diagnostics LOLOS
+
+✅ git diff --check LOLOS
+
+---
+
 # Aturan Sprint
 
 Setiap sprint wajib melalui tahapan berikut.
