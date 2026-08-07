@@ -12253,7 +12253,13 @@
           tbody.innerHTML =
             '<tr>' +
             '<td colspan="9" class="text-center py-5">' +
-            'Tidak ada data rekap.' +
+            '<div class="rekap-empty">' +
+            '<div class="rekap-empty-icon">' +
+            '<i class="fa-solid fa-filter-circle-xmark"></i>' +
+            '</div>' +
+            '<h4 class="rekap-empty-title">Tidak ada data pada periode dan filter yang dipilih.</h4>' +
+            '<p class="rekap-empty-sub">Silakan ubah periode atau filter.</p>' +
+            '</div>' +
             '</td>' +
             '</tr>';
 
@@ -12316,6 +12322,21 @@
           document.getElementById(
             "tanggalAkhirRekap"
           ).value;
+
+        if (
+          tanggalAwal &&
+          tanggalAkhir &&
+          tanggalAwal > tanggalAkhir
+        ) {
+
+          showToast(
+            "Tanggal awal tidak boleh lebih besar dari tanggal akhir",
+            "warning"
+          );
+
+          return;
+
+        }
 
         const guru =
 
@@ -12462,7 +12483,7 @@
 
           btnExport,
 
-          "Mengekspor..."
+          "Menyiapkan Excel..."
 
         );
 
@@ -12480,6 +12501,11 @@
 
               "_blank"
 
+            );
+
+            showToast(
+              "Export berhasil.",
+              "success"
             );
 
             google.script.run

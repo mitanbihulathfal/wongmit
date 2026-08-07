@@ -759,6 +759,41 @@
       color:#ffffff !important;
   }
 
+  /* ----- REKAP : 9. ANIMASI FADE-IN TABEL (Sprint Rekap 7B) ----- */
+  .rekap-page #tableRekapAbsensi{
+    animation: rekap-table-enter .22s ease both;
+  }
+  @keyframes rekap-table-enter{
+    from{
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ----- REKAP : 10. PETUNJUK SCROLL MOBILE (Sprint Rekap 7B) ----- */
+  .rekap-page .rekap-scroll-hint{
+    display: none;
+  }
+  @media (max-width: 768px){
+    .rekap-page .rekap-scroll-hint{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .rekap-page .rekap-scroll-hint i{
+      font-size: 11px;
+    }
+  }
+
 </style>
 
 <div class="rekap-page">
@@ -986,7 +1021,7 @@
 
         </thead>
 
-        <tbody id="tableRekapAbsensi">
+        <tbody id="tableRekapAbsensi" aria-live="polite">
 
           <tr>
 
@@ -1028,6 +1063,11 @@
         </tbody>
 
       </table>
+
+      <div class="rekap-scroll-hint">
+        <i class="fa-solid fa-arrows-left-right"></i>
+        Geser tabel untuk melihat kolom lainnya.
+      </div>
 
     </div>
 
