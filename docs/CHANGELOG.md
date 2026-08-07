@@ -33,6 +33,42 @@ Catatan
 
 ## 2026-08-07
 
+### Sprint Rekap 7B
+
+Judul
+
+Implementasi UX Halaman Rekap
+
+Perubahan
+
+- Menambahkan validasi periode pada `tampilkanRekap()` (tanggal awal tidak boleh lebih besar dari tanggal akhir).
+- Menampilkan empty state yang lebih informatif saat tidak ada data pada periode dan filter yang dipilih.
+- Mengubah teks loading tombol Export menjadi "Menyiapkan Excel...".
+- Menambahkan toast sukses "Export berhasil." setelah export selesai.
+- Menambahkan `aria-live="polite"` pada tabel hasil rekap.
+- Menambahkan petunjuk scroll horizontal pada mobile ("Geser tabel untuk melihat kolom lainnya.").
+- Menambahkan animasi fade-in ringan saat tabel rekap selesai dirender.
+
+Status
+
+SELESAI
+
+Commit
+
+Sprint Rekap 7B : Implementasi UX Halaman Rekap
+
+Catatan
+
+- Diagnostics LOLOS.
+- git diff --check LOLOS.
+- Testing Desktop LOLOS.
+- Testing Mobile LOLOS.
+- Review Pengguna LOLOS.
+
+---
+
+## 2026-08-07
+
 ### Sprint Rekap 6
 
 Judul

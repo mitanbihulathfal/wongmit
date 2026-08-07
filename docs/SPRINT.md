@@ -304,14 +304,66 @@ Hasil
 
 ---
 
-# Sprint Rekap 7
+# Sprint Rekap 7B
 
 Status
-BELUM DIMULAI
+DONE
 
 Target
 
-Belum ditentukan. Akan mengikuti roadmap dan keputusan pengguna.
+Implementasi UX Halaman Rekap.
+
+Fokus
+
+- Validasi periode pada `tampilkanRekap()` (tanggal awal tidak boleh lebih besar dari tanggal akhir).
+- Empty state yang lebih informatif saat tidak ada data pada periode dan filter yang dipilih.
+- Teks loading tombol Export menjadi "Menyiapkan Excel...".
+- Toast sukses "Export berhasil." setelah export selesai.
+- `aria-live="polite"` pada tabel hasil rekap.
+- Petunjuk scroll horizontal pada mobile ("Geser tabel untuk melihat kolom lainnya.").
+- Animasi fade-in ringan saat tabel rekap selesai dirender.
+
+Hasil
+
+✅ Validasi periode telah ditambahkan
+
+✅ Empty state lebih informatif
+
+✅ Teks loading Export "Menyiapkan Excel..." telah diterapkan
+
+✅ Toast "Export berhasil." telah ditambahkan
+
+✅ `aria-live="polite"` telah ditambahkan pada tabel hasil rekap
+
+✅ Petunjuk scroll horizontal mobile telah ditambahkan
+
+✅ Animasi fade-in tabel telah ditambahkan
+
+✅ Diagnostics LOLOS
+
+✅ git diff --check LOLOS
+
+✅ Testing Desktop LOLOS
+
+✅ Testing Mobile LOLOS
+
+✅ Review Pengguna LOLOS
+
+---
+
+# STATUS SPRINT REKAP — FREEZE
+
+Seluruh Sprint Rekap telah selesai dan di-freeze.
+
+Daftar sprint Rekap yang telah selesai:
+- Sprint Rekap 2A-1 s/d 2A-3
+- Sprint Rekap 2B s/d 2F
+- Sprint Export Baru
+- Sprint Cleanup Legacy Rekap
+- Sprint Rekap 6
+- Sprint Rekap 7B
+
+Sprint berikutnya berpindah ke modul lain sesuai ROADMAP.
 
 ---
 

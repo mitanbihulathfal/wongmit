@@ -111,8 +111,13 @@ Kondisi:
 ## Rekap Absensi
 
 Status:
-ACTIVE DEVELOPMENT
-(Sprint Rekap 2F, Sprint Export Baru, Sprint Cleanup Legacy Rekap, dan Sprint Rekap 6 selesai)
+SELESAI
+(Sprint Rekap 6 dan Sprint Rekap 7B selesai — seluruh Sprint Rekap telah selesai dan di-freeze)
+
+Modul Rekap telah selesai meliputi:
+- Cleanup Legacy (penghapusan wrapper legacy dan parameter mode)
+- Optimasi Performa (Map lookup, getDataRekapRaw, Set, join render)
+- UX (validasi periode, empty state informatif, toast export, aria-live, petunjuk scroll mobile, animasi fade-in)
 
 Kondisi saat ini:
 
