@@ -1244,174 +1244,6 @@ function getKelasOptions() {
 
 }
 
-function addGuruKelas(
-  sessionId,
-  data
-) {
-
-  const allowed =
-    checkRole(
-      sessionId,
-      ["Admin", "KepalaSekolah"]
-    );
-
-  if (!allowed) {
-    throw new Error(
-      "Akses ditolak"
-    );
-  }
-
-  const sheet =
-    SS.getSheetByName("GuruKelas");
-
-  const dataSheet =
-    sheet.getDataRange().getValues();
-
-  for (let i = 1; i < dataSheet.length; i++) {
-
-    if (
-
-      String(dataSheet[i][0]) ===
-      String(data.idGuru)
-
-      &&
-
-      String(dataSheet[i][1]) ===
-      String(data.kelas)
-
-    ) {
-
-      throw new Error(
-        "Guru sudah terdaftar pada kelas tersebut"
-      );
-
-    }
-
-  }
-
-  sheet.appendRow([
-
-    data.idGuru,
-    data.kelas
-
-  ]);
-
-  return true;
-
-}
-
-function getGuruKelas(
-  sessionId
-) {
-
-  const allowed =
-    checkRole(
-      sessionId,
-      ["Admin", "KepalaSekolah"]
-    );
-
-  if (!allowed) {
-    throw new Error(
-      "Akses ditolak"
-    );
-  }
-
-  const sheetGuruKelas =
-    SS.getSheetByName("GuruKelas");
-
-  const sheetGuru =
-    SS.getSheetByName("Guru");
-
-  const dataRelasi =
-    sheetGuruKelas.getDataRange().getValues();
-
-  const dataGuru =
-    sheetGuru.getDataRange().getValues();
-
-  const hasil = [];
-
-  for (let i = 1; i < dataRelasi.length; i++) {
-
-    let namaGuru = "-";
-
-    for (let j = 1; j < dataGuru.length; j++) {
-
-      if (
-        String(dataGuru[j][0]) ===
-        String(dataRelasi[i][0])
-      ) {
-
-        namaGuru = dataGuru[j][1];
-        break;
-
-      }
-
-    }
-
-    hasil.push({
-
-      idGuru: dataRelasi[i][0],
-      guru: namaGuru,
-      kelas: dataRelasi[i][1]
-
-    });
-
-  }
-
-  return JSON.stringify(hasil);
-
-}
-
-function deleteGuruKelas(
-  sessionId,
-  idGuru,
-  kelas
-) {
-
-  const allowed =
-    checkRole(
-      sessionId,
-      ["Admin", "KepalaSekolah"]
-    );
-
-  if (!allowed) {
-    throw new Error(
-      "Akses ditolak"
-    );
-  }
-
-  const sheet =
-    SS.getSheetByName("GuruKelas");
-
-  const data =
-    sheet.getDataRange().getValues();
-
-  for (let i = 1; i < data.length; i++) {
-
-    if (
-
-      String(data[i][0]) ===
-      String(idGuru)
-
-      &&
-
-      String(data[i][1]) ===
-      String(kelas)
-
-    ) {
-
-      sheet.deleteRow(i + 1);
-
-      return true;
-
-    }
-
-  }
-
-  return false;
-
-}
-
 function checkLogin(username, password) {
 
   const sheet =
@@ -2576,13 +2408,12 @@ function downloadTemplateMapel() {
 
     );
 
-  cleanupExportSpreadsheet(
+  return {
 
-    template.spreadsheetId
+    spreadsheetId: template.spreadsheetId,
+    exportUrl: file
 
-  );
-
-  return file;
+  };
 
 }
 
@@ -3163,13 +2994,12 @@ function downloadTemplateGuruMengajar() {
 
     );
 
-  cleanupExportSpreadsheet(
+  return {
 
-    spreadsheet.getId()
+    spreadsheetId: spreadsheet.getId(),
+    exportUrl: file
 
-  );
-
-  return file;
+  };
 
 }
 
@@ -3374,13 +3204,12 @@ function downloadTemplateSiswa() {
 
     );
 
-  cleanupExportSpreadsheet(
+  return {
 
-    template.spreadsheetId
+    spreadsheetId: template.spreadsheetId,
+    exportUrl: file
 
-  );
-
-  return file;
+  };
 
 }
 

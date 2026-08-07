@@ -1971,15 +1971,6 @@
 
       </a>
 
-      <a id="menuGuruKelas" href="javascript:void(0)" class="menu-link"
-        onclick="loadPage('page_gurukelas'); return false;">
-
-        <i class="fa-solid fa-diagram-project"></i>
-
-        Relasi Guru Kelas
-
-      </a>
-
       <a id="menuGuruMengajar" href="javascript:void(0)" class="menu-link"
         onclick="loadPage('page_gurumengajar'); return false;">
 
@@ -4687,29 +4678,6 @@
 
         if (
 
-          pageName === "page_gurukelas"
-
-          &&
-
-          !roles.includes("Admin")
-
-          &&
-
-          !roles.includes("KepalaSekolah")
-
-        ) {
-
-          showToast(
-            "Anda tidak memiliki akses ke halaman ini",
-            "warning"
-          );
-
-          return;
-
-        }
-
-        if (
-
           pageName === "page_gurumengajar"
 
           &&
@@ -4802,10 +4770,6 @@
 
               loadRekap();
 
-            }
-
-            if (pageName === 'page_gurukelas') {
-              loadGuruKelas();
             }
 
             if (pageName === 'page_gurumengajar') {
@@ -5481,303 +5445,6 @@
           }
 
         });
-
-      }
-
-      function loadGuruOptions() {
-
-        google.script.run
-          .withSuccessHandler(function (data) {
-
-            data = JSON.parse(data);
-
-            let html =
-              '<option value="">Pilih Guru</option>';
-
-            data.forEach(function (guru) {
-
-              html += `
-          <option value="${guru.id}">
-            ${guru.nama}
-          </option>
-        `;
-
-            });
-
-            const select =
-              document.getElementById('guruRelasi');
-
-            if (select) {
-              select.innerHTML = html;
-            }
-
-          })
-          .getGuruOptions();
-
-      }
-
-      function loadKelasOptions() {
-
-        google.script.run
-          .withSuccessHandler(function (data) {
-
-            data = JSON.parse(data);
-
-            let html =
-              '<option value="">Pilih Kelas</option>';
-
-            data.forEach(function (kelas) {
-
-              html += `
-          <option value="${kelas.nama}">
-            ${kelas.nama}
-          </option>
-        `;
-
-            });
-
-            const select =
-              document.getElementById('kelasRelasi');
-
-            if (select) {
-              select.innerHTML = html;
-            }
-
-          })
-          .getKelasOptions();
-
-      }
-
-      function showTambahGuruKelas() {
-
-        loadGuruOptions();
-        loadKelasOptions();
-
-        const modal =
-          new bootstrap.Modal(
-            document.getElementById('modalGuruKelas')
-          );
-
-        modal.show();
-
-      }
-
-      function simpanGuruKelas() {
-
-        if (
-          !lockButton(
-            "simpanGuruKelas"
-          )
-        ) {
-          return;
-        }
-
-        const btn =
-
-          document.getElementById(
-            "btnSimpanGuruKelas"
-          );
-
-        startButtonLoading(
-          btn
-        );
-
-        const data = {
-
-          idGuru:
-            document.getElementById(
-              'guruRelasi'
-            ).value,
-
-          kelas:
-            document.getElementById(
-              'kelasRelasi'
-            ).value
-
-        };
-
-        google.script.run
-          .withSuccessHandler(function () {
-
-            unlockButton(
-              "simpanGuruKelas"
-            );
-
-            successButtonLoading(
-              btn
-            );
-
-            showToast(
-              "Relasi guru kelas berhasil disimpan"
-            );
-
-            const modal =
-              bootstrap.Modal.getInstance(
-                document.getElementById(
-                  'modalGuruKelas'
-                )
-              );
-
-            if (modal) {
-              modal.hide();
-            }
-
-            loadGuruKelas();
-
-            setTimeout(function () {
-
-              stopButtonLoading(
-                btn
-              );
-
-            }, 1000);
-
-          })
-          .withFailureHandler(function (error) {
-
-            unlockButton(
-              "simpanGuruKelas"
-            );
-
-            stopButtonLoading(
-              btn
-            );
-
-            console.error(error);
-
-            showToast(
-              "Gagal menyimpan relasi guru kelas",
-              "error"
-            );
-
-          })
-          .addGuruKelas(
-
-            localStorage.getItem(
-              "wongmit_session"
-            ),
-
-            data
-
-          );
-
-      }
-
-      function loadGuruKelas() {
-
-        google.script.run
-          .withSuccessHandler(function (data) {
-
-            data = JSON.parse(data);
-
-            let html = '';
-
-            if (data.length === 0) {
-
-              html = `
-          <tr>
-            <td colspan="3" class="text-center">
-              Belum ada relasi
-            </td>
-          </tr>
-        `;
-
-            } else {
-
-              data.forEach(function (row) {
-
-                html += `
-            <tr>
-
-              <td>${row.guru}</td>
-              <td>${row.kelas}</td>
-
-              <td>
-
-                <button
-                  class="btn btn-danger btn-sm"
-                  onclick="hapusGuruKelas(
-                    '${row.idGuru}',
-                    '${row.kelas}'
-                  )">
-
-                  <i class="fa-solid fa-trash"></i>
-
-                </button>
-
-              </td>
-
-            </tr>
-          `;
-
-              });
-
-            }
-
-            const table =
-              document.getElementById(
-                'tableGuruKelas'
-              );
-
-            if (table) {
-              table.innerHTML = html;
-            }
-
-          })
-          .getGuruKelas(
-
-            localStorage.getItem(
-              "wongmit_session"
-            )
-
-          );
-
-      }
-
-      function hapusGuruKelas(
-        idGuru,
-        kelas
-      ) {
-
-        showConfirmModal(
-          "Hapus Relasi",
-          "Yakin ingin menghapus relasi ini?",
-          function () {
-
-            google.script.run
-              .withSuccessHandler(function () {
-
-                showToast(
-                  "Relasi berhasil dihapus"
-                );
-
-                loadGuruKelas();
-
-              })
-              .withFailureHandler(function (error) {
-
-                console.error(error);
-
-                showToast(
-                  "Gagal menghapus relasi guru kelas",
-                  "error"
-                );
-
-              })
-              .deleteGuruKelas(
-
-                localStorage.getItem(
-                  "wongmit_session"
-                ),
-
-                idGuru,
-
-                kelas
-
-              );
-
-          }
-        );
 
       }
 
@@ -7359,7 +7026,6 @@
           "menuSiswa",
           "menuGuru",
           "menuKelas",
-          "menuGuruKelas",
           "menuGuruMengajar",
           "menuAbsensi",
           "menuRekap",
@@ -7414,7 +7080,6 @@
             "menuSiswa",
             "menuGuru",
             "menuKelas",
-            "menuGuruKelas",
             "menuGuruMengajar",
             "menuAbsensi",
             "menuRekap"
@@ -7765,12 +7430,17 @@
 
         google.script.run
 
-          .withSuccessHandler(function (url) {
+          .withSuccessHandler(function (result) {
 
             window.open(
-              url,
+              result.exportUrl,
               "_blank"
             );
+
+            google.script.run
+              .cleanupExportSpreadsheet(
+                result.spreadsheetId
+              );
 
           })
 
@@ -7797,15 +7467,20 @@
 
         google.script.run
 
-          .withSuccessHandler(function (url) {
+          .withSuccessHandler(function (result) {
 
             window.open(
 
-              url,
+              result.exportUrl,
 
               "_blank"
 
             );
+
+            google.script.run
+              .cleanupExportSpreadsheet(
+                result.spreadsheetId
+              );
 
           })
 
@@ -10371,12 +10046,17 @@
 
         google.script.run
 
-          .withSuccessHandler(function (url) {
+          .withSuccessHandler(function (result) {
 
             window.open(
-              url,
+              result.exportUrl,
               "_blank"
             );
+
+            google.script.run
+              .cleanupExportSpreadsheet(
+                result.spreadsheetId
+              );
 
           })
 
