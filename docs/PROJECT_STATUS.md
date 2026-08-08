@@ -74,11 +74,12 @@ Kondisi:
 ## Relasi Guru Kelas
 
 Status:
-SELESAI
+DIHAPUS
 
 Kondisi:
 
-- Relasi guru dengan kelas telah digunakan sebagai dasar hak akses dan proses absensi.
+- Halaman "Relasi Guru Kelas" telah dihapus dari project karena sudah tidak digunakan.
+- Relasi guru dengan kelas kini ditangani melalui modul Guru Mengajar.
 
 ---
 
@@ -111,8 +112,9 @@ Kondisi:
 ## Rekap Absensi
 
 Status:
-SELESAI
+PRODUCTION + FROZEN
 (Sprint Rekap 6 dan Sprint Rekap 7B selesai — seluruh Sprint Rekap telah selesai dan di-freeze)
+Modul Rekap tidak lagi dikembangkan kecuali ditemukan bug nyata.
 
 Modul Rekap telah selesai meliputi:
 - Cleanup Legacy (penghapusan wrapper legacy dan parameter mode)
@@ -205,7 +207,13 @@ Dokumentasi teknis tambahan akan dibuat ketika proyek memasuki fase stabil.
 
 # TARGET BERIKUTNYA
 
-Sprint berikutnya difokuskan pada penyempurnaan lanjutan modul Rekap Absensi, optimasi backend, dan penyempurnaan pengalaman pengguna.
+Sprint aktif berikutnya adalah Sprint Pengaturan.
+
+Roadmap aktif berikutnya:
+
+1. Pengaturan
+2. Dashboard
+3. Penyempurnaan modul produksi lainnya
 
 ---
 

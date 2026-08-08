@@ -2821,36 +2821,40 @@ function downloadTemplateGuruMengajar() {
   }
 
   sheetReferensi.getRange(
-    "D1"
-  ).setValue(
-    "Mapel"
-  );
+      "D1"
+    ).setValue(
+      "Mapel"
+    );
 
-  for (
-    let i = 1;
-    i < mapelData.length;
-    i++
-  ) {
+    let barisMapel = 2;
 
-    if (
-      mapelData[i][3] !==
-      "Aktif"
+    for (
+      let i = 1;
+      i < mapelData.length;
+      i++
     ) {
 
-      continue;
+      if (
+        mapelData[i][3] !==
+        "Aktif"
+      ) {
+
+        continue;
+
+      }
+
+      sheetReferensi
+        .getRange(
+          barisMapel,
+          4
+        )
+        .setValue(
+          mapelData[i][1]
+        );
+
+      barisMapel++;
 
     }
-
-    sheetReferensi
-      .getRange(
-        sheetReferensi.getLastRow() + 1,
-        4
-      )
-      .setValue(
-        mapelData[i][1]
-      );
-
-  }
 
   sheetReferensi.getRange(
     "E1"

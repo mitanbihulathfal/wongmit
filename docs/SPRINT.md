@@ -351,9 +351,9 @@ Hasil
 
 ---
 
-# STATUS SPRINT REKAP — FREEZE
+# SPRINT REKAP — CLOSED
 
-Seluruh Sprint Rekap telah selesai dan di-freeze.
+Seluruh Sprint Rekap telah selesai, di-freeze, dan ditutup.
 
 Daftar sprint Rekap yang telah selesai:
 - Sprint Rekap 2A-1 s/d 2A-3
@@ -362,8 +362,27 @@ Daftar sprint Rekap yang telah selesai:
 - Sprint Cleanup Legacy Rekap
 - Sprint Rekap 6
 - Sprint Rekap 7B
+---
 
-Sprint berikutnya berpindah ke modul lain sesuai ROADMAP.
+# Sprint Pengaturan
+
+Status
+ACTIVE
+
+Target
+
+Penyempurnaan halaman Pengaturan aplikasi agar lebih intuitif dan lengkap.
+
+Fokus
+
+- Penyempurnaan UI Pengaturan Akademik
+- Penyempurnaan UI Pengaturan Sekolah
+- Penyempurnaan UI Pengaturan Sistem
+- Penyempurnaan UI Pengaturan Tahun Ajaran
+
+Hasil
+
+- (akan diisi progress sprint berjalan)
 
 ---
 

@@ -31,6 +31,63 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-08
+
+### Bugfix Template Guru Mengajar
+
+Judul
+
+Perbaikan Template Guru Mengajar — Kolom Mapel di Sheet Referensi
+
+Perubahan
+
+- Pada `downloadTemplateGuruMengajar()`, kolom `Mapel` pada sheet `Referensi` Excel template sebelumnya memiliki rentang kosong sampai baris 8 karena penggunaan `getLastRow() + 1` yang tidak konsisten.
+- Diganti dengan penghitung baris eksplisit (`barisMapel`, dimulai dari 2 dan di-increment per baris) sehingga daftar mapel langsung tersusun berurutan setelah header.
+- Template Excel kini tidak lagi mengandung rentang kosong pada kolom Mapel.
+
+Status
+
+SELESAI
+
+Commit
+
+Bugfix Template Guru Mengajar
+
+Catatan
+
+- Bug terkonfirmasi melalui `git diff Code.js` pada fungsi `downloadTemplateGuruMengajar()`.
+- Perubahan hanya pada fungsi tersebut; tidak mengubah arsitektur, modul lain, atau engine Rekap.
+- Testing di Apps Script LOLOS.
+- git diff --check LOLOS.
+
+---
+
+## 2026-08-08
+
+### Pasca Freeze Rekap
+
+Judul
+
+Freeze Modul Rekap
+
+Perubahan
+
+- Sprint Rekap 6 (Optimasi Performa) telah selesai.
+- Sprint Rekap 7B (UX) telah selesai.
+- Seluruh Sprint Rekap telah di-freeze dan modul Rekap tidak lagi dikembangkan kecuali ditemukan bug nyata.
+- Halaman "Relasi Guru Kelas" telah dihapus dari project karena sudah tidak digunakan.
+- Roadmap aktif berpindah ke: Pengaturan, Dashboard, dan penyempurnaan modul produksi lainnya.
+
+Status
+
+SELESAI
+
+Commit
+
+Pasca Freeze Rekap
+
+---
+
 ## 2026-08-07
 
 ### Sprint Rekap 7B
