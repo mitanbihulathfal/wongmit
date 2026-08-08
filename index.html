@@ -3545,6 +3545,44 @@
 
       }
 
+      function filterMapel() {
+        var keyword = (document.getElementById('guruSearchMapel').value || '').toLowerCase();
+        var rows = document.querySelectorAll('#tableMapel tr');
+        for (var i = 0; i < rows.length; i++) {
+          var row = rows[i];
+          if (row.cells.length === 1) continue;
+          var text = row.textContent.toLowerCase();
+          row.style.display = text.indexOf(keyword) !== -1 ? '' : 'none';
+        }
+      }
+
+      function filterGuruMengajar() {
+        var keyword = (document.getElementById('guruSearchGuruMengajar').value || '').toLowerCase();
+        var rows = document.querySelectorAll('#tableGuruMengajar tr');
+        for (var i = 0; i < rows.length; i++) {
+          var row = rows[i];
+          if (row.cells.length === 1) continue;
+          var text = row.textContent.toLowerCase();
+          row.style.display = text.indexOf(keyword) !== -1 ? '' : 'none';
+        }
+      }
+
+      // Rotasi icon collapse (Guru Mengajar)
+      document.addEventListener('shown.bs.collapse', function (e) {
+        var toggle = document.querySelector('.guru-collapse-toggle[data-bs-target="#' + e.target.id + '"]');
+        if (toggle) {
+          var icon = toggle.querySelector('.guru-collapse-icon');
+          if (icon) icon.classList.remove('guru-collapse-icon-rotate');
+        }
+      });
+      document.addEventListener('hidden.bs.collapse', function (e) {
+        var toggle = document.querySelector('.guru-collapse-toggle[data-bs-target="#' + e.target.id + '"]');
+        if (toggle) {
+          var icon = toggle.querySelector('.guru-collapse-icon');
+          if (icon) icon.classList.add('guru-collapse-icon-rotate');
+        }
+      });
+
       function filterGuru() {
 
         const keyword =

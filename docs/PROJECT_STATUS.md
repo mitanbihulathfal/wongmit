@@ -91,6 +91,9 @@ SELESAI
 Kondisi:
 
 - Modul telah digunakan untuk menentukan jadwal guru mengajar.
+- Panel Daftar Mata Pelajaran dan Guru Mengajar dapat collapse/expand (default CLOSED).
+- Search client-side tersedia untuk tabel Mata Pelajaran (`filterMapel()`) dan Guru Mengajar (`filterGuruMengajar()`).
+- UX Polish selesai: satu card utuh per panel, padding konsisten, responsive desktop/mobile.
 
 Masih memungkinkan dilakukan optimasi di masa depan.
 

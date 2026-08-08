@@ -364,6 +364,85 @@ Daftar sprint Rekap yang telah selesai:
 - Sprint Rekap 7B
 ---
 
+# Sprint Guru Mengajar — UX Panel & Search
+
+Status
+DONE
+
+Target
+
+UX Panel & Search Halaman Guru Mengajar.
+
+Fokus
+
+- Collapse/expand panel Daftar Mata Pelajaran.
+- Collapse/expand panel Daftar Guru Mengajar.
+- Search client-side tabel Mata Pelajaran (`filterMapel()`).
+- Search client-side tabel Guru Mengajar (`filterGuruMengajar()`).
+
+Hasil
+
+✅ Collapse/expand kedua panel menggunakan Bootstrap 5 Collapse
+
+✅ Search client-side `filterMapel()` untuk `#tableMapel`
+
+✅ Search client-side `filterGuruMengajar()` untuk `#tableGuruMengajar`
+
+✅ Search tidak memanggil backend
+
+✅ Rotasi icon chevron saat collapse/expand
+
+✅ `aria-expanded` dan `aria-controls` pada tombol toggle
+
+✅ Runtime test desktop dan mobile LOLOS
+
+✅ node --check Code.js LOLOS
+
+✅ git diff --check LOLOS
+
+---
+
+# Sprint Guru Mengajar — UX Polish
+
+Status
+DONE
+
+Target
+
+UX Polish Halaman Guru Mengajar.
+
+Fokus
+
+- Menggabungkan struktur panel menjadi satu card utuh per panel.
+- Panel default CLOSED.
+- Menghilangkan kotak/ruang putih kosong saat collapse.
+- Padding internal konsisten pada header dan body.
+- Polish visual ringan (spacing, border/radius, warna soft, hover/focus, responsive).
+
+Hasil
+
+✅ Satu card utuh per panel (Daftar Mata Pelajaran dan Guru Mengajar)
+
+✅ Panel default CLOSED
+
+✅ Tidak ada kotak/ruang putih kosong saat collapse
+
+✅ Judul/deskripsi dan search box tidak menempel ke tepi
+
+✅ ID penting dipertahankan (`tableMapel`, `tableGuruMengajar`, `guruMapelBody`, `guruGuruMengajarBody`, `guruSearchMapel`, `guruSearchGuruMengajar`)
+
+✅ Search client-side tetap berjalan tanpa perubahan
+
+✅ Responsive desktop dan mobile
+
+✅ Runtime test desktop dan mobile LOLOS
+
+✅ node --check Code.js LOLOS
+
+✅ git diff --check LOLOS
+
+---
+
 # Sprint Pengaturan
 
 Status

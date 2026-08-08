@@ -33,6 +33,72 @@ Catatan
 
 ## 2026-08-08
 
+### Sprint Guru Mengajar — UX Polish
+
+Judul
+
+UX Polish Halaman Guru Mengajar
+
+Perubahan
+
+- Menggabungkan struktur panel menjadi satu card utuh untuk masing-masing panel (Daftar Mata Pelajaran dan Guru Mengajar), menghilangkan kotak/ruang putih kosong saat collapse.
+- Panel Daftar Mata Pelajaran dan Guru Mengajar kini default CLOSED.
+- Menambahkan padding internal konsisten pada header dan body panel sehingga judul/deskripsi dan search box tidak menempel ke tepi.
+- Polish visual ringan: tombol collapse, search input, spacing, border/radius, warna soft, hover/focus, dan responsivitas desktop/mobile.
+- ID penting dipertahankan: `tableMapel`, `tableGuruMengajar`, `guruMapelBody`, `guruGuruMengajarBody`, `guruSearchMapel`, `guruSearchGuruMengajar`.
+- Search client-side `filterMapel()` dan `filterGuruMengajar()` tetap berjalan tanpa perubahan.
+
+Status
+
+SELESAI
+
+Commit
+
+Sprint Guru Mengajar : UX Polish
+
+Catatan
+
+- Runtime test desktop dan mobile LOLOS.
+- node --check Code.js LOLOS.
+- git diff --check LOLOS.
+
+---
+
+## 2026-08-08
+
+### Sprint Guru Mengajar — UX Panel & Search
+
+Judul
+
+UX Panel & Search Halaman Guru Mengajar
+
+Perubahan
+
+- Menambahkan collapse/expand pada panel Daftar Mata Pelajaran dan panel Guru Mengajar menggunakan Bootstrap 5 Collapse.
+- Menambahkan search client-side untuk tabel `#tableMapel` melalui function `filterMapel()`.
+- Menambahkan search client-side untuk tabel `#tableGuruMengajar` melalui function `filterGuruMengajar()`.
+- Search dilakukan sepenuhnya client-side tanpa memanggil backend.
+- Menambahkan rotasi icon chevron saat panel collapse/expand.
+- Menambahkan `aria-expanded` dan `aria-controls` pada tombol toggle untuk aksesibilitas.
+
+Status
+
+SELESAI
+
+Commit
+
+Sprint Guru Mengajar : UX Panel & Search
+
+Catatan
+
+- Runtime test desktop dan mobile LOLOS.
+- node --check Code.js LOLOS.
+- git diff --check LOLOS.
+
+---
+
+## 2026-08-08
+
 ### Bugfix Template Guru Mengajar
 
 Judul

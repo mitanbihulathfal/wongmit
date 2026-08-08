@@ -1,7 +1,91 @@
-<div class="card card-summary mb-3">
+<!-- =========================================================
+  GURU MENGAJAR - UX POLISH (COLLAPSE & SEARCH)
+========================================================= -->
+<style>
+  .guru-collapse-body {
+    transition: .2s ease;
+  }
 
-  <div
-    class="d-flex justify-content-between align-items-center flex-wrap">
+  .guru-collapse-icon {
+    transition: .2s ease;
+  }
+
+  .guru-collapse-icon-rotate {
+    transform: rotate(180deg);
+  }
+
+  .guru-search-box {
+    max-width: 320px;
+  }
+
+  /* Panel header: judul + deskripsi tidak menempel ke tepi */
+  .guru-panel-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(15, 23, 42, .06);
+  }
+
+  /* Panel body: search + tabel tidak menempel ke tepi */
+  .guru-panel-body {
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  /* Tombol collapse lebih halus */
+  .guru-collapse-toggle {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: #64748b;
+    border-color: #e2e8f0;
+    background: #f8fafc;
+    transition: all .18s ease;
+  }
+
+  .guru-collapse-toggle:hover {
+    background: #eef2f7;
+    color: #0b2d6b;
+    border-color: #cbd5e1;
+  }
+
+  /* Search input lebih lembut */
+  .guru-search-box .form-control {
+    border-radius: 12px;
+    border-color: #e2e8f0;
+    background: #f8fafc;
+    transition: all .18s ease;
+  }
+
+  .guru-search-box .form-control:focus {
+    background: #fff;
+    border-color: #6aa8ff;
+    box-shadow: 0 0 0 .18rem rgba(13, 110, 253, .10);
+  }
+
+  /* Responsive mobile */
+  @media (max-width: 768px) {
+    .guru-panel-header {
+      padding: 1rem 1.1rem;
+    }
+
+    .guru-panel-body {
+      padding: 1rem 1.1rem 1.25rem;
+    }
+
+    .guru-search-box {
+      max-width: 100%;
+    }
+  }
+</style>
+
+<!-- =========================================================
+  PANEL 1: DAFTAR MATA PELAJARAN
+========================================================= -->
+<div class="card card-summary mb-4">
+
+  <!-- Header panel -->
+  <div class="d-flex justify-content-between align-items-center flex-wrap guru-panel-header">
 
     <div>
 
@@ -21,7 +105,20 @@
 
     </div>
 
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 align-items-center">
+
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm guru-collapse-toggle"
+        data-bs-toggle="collapse"
+        data-bs-target="#guruMapelBody"
+        aria-expanded="false"
+        aria-controls="guruMapelBody"
+        title="Tampilkan / Sembunyikan daftar mata pelajaran">
+
+        <i class="fa-solid fa-chevron-up guru-collapse-icon guru-collapse-icon-rotate"></i>
+
+      </button>
 
       <button
         class="btn btn-outline-primary"
@@ -48,69 +145,86 @@
 
   </div>
 
-</div>
+  <!-- Body panel (default closed) -->
+  <div
+    id="guruMapelBody"
+    class="collapse guru-collapse-body guru-panel-body">
 
+    <div class="guru-search-box mb-3">
 
-<div class="card card-summary mb-4">
+      <input
+        type="text"
+        class="form-control"
+        id="guruSearchMapel"
+        placeholder="Cari mata pelajaran..."
+        onkeyup="filterMapel()">
 
-  <div class="table-responsive">
+    </div>
 
-    <table
-      class="table table-hover align-middle mb-0">
+    <div class="table-responsive">
 
-      <thead>
+      <table
+        class="table table-hover align-middle mb-0">
 
-        <tr>
+        <thead>
 
-          <th>Nama Mapel</th>
+          <tr>
 
-          <th width="160">
+            <th>Nama Mapel</th>
 
-            Kelompok
+            <th width="160">
 
-          </th>
+              Kelompok
 
-          <th width="120">
+            </th>
 
-            Status
+            <th width="120">
 
-          </th>
+              Status
 
-          <th width="120">
+            </th>
 
-            Aksi
+            <th width="120">
 
-          </th>
+              Aksi
 
-        </tr>
+            </th>
 
-      </thead>
+          </tr>
 
-      <tbody id="tableMapel">
+        </thead>
 
-        <tr>
+        <tbody id="tableMapel">
 
-          <td
-            colspan="4"
-            class="text-center py-4 text-muted">
+          <tr>
 
-            Belum ada data mata pelajaran
+            <td
+              colspan="4"
+              class="text-center py-4 text-muted">
 
-          </td>
+              Belum ada data mata pelajaran
 
-        </tr>
+            </td>
 
-      </tbody>
+          </tr>
 
-    </table>
+        </tbody>
+
+      </table>
+
+    </div>
 
   </div>
 
 </div>
 
-<div class="card card-summary">
+<!-- =========================================================
+  PANEL 2: GURU MENGAJAR
+========================================================= -->
+<div class="card card-summary mb-4">
 
-  <div class="d-flex justify-content-between align-items-center flex-wrap">
+  <!-- Header panel -->
+  <div class="d-flex justify-content-between align-items-center flex-wrap guru-panel-header">
 
     <div>
 
@@ -130,7 +244,20 @@
 
     </div>
 
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 align-items-center">
+
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm guru-collapse-toggle"
+        data-bs-toggle="collapse"
+        data-bs-target="#guruGuruMengajarBody"
+        aria-expanded="false"
+        aria-controls="guruGuruMengajarBody"
+        title="Tampilkan / Sembunyikan daftar guru mengajar">
+
+        <i class="fa-solid fa-chevron-up guru-collapse-icon guru-collapse-icon-rotate"></i>
+
+      </button>
 
       <button
         class="btn btn-outline-primary"
@@ -158,53 +285,67 @@
 
   </div>
 
-</div>
+  <!-- Body panel (default closed) -->
+  <div
+    id="guruGuruMengajarBody"
+    class="collapse guru-collapse-body guru-panel-body">
 
+    <div class="guru-search-box mb-3">
 
-<div class="card card-summary mt-3">
+      <input
+        type="text"
+        class="form-control"
+        id="guruSearchGuruMengajar"
+        placeholder="Cari guru, kelas, hari, mapel..."
+        onkeyup="filterGuruMengajar()">
 
-  <div class="table-responsive">
+    </div>
 
-    <table
-      class="table table-hover align-middle mb-0">
+    <div class="table-responsive">
 
-      <thead>
+      <table
+        class="table table-hover align-middle mb-0">
 
-        <tr>
+        <thead>
 
-          <th>Guru</th>
-          <th>Kelas</th>
-          <th>Hari</th>
-          <th>Mapel</th>
-          <th>Status</th>
-          <th width="120">Aksi</th>
+          <tr>
 
-        </tr>
+            <th>Guru</th>
+            <th>Kelas</th>
+            <th>Hari</th>
+            <th>Mapel</th>
+            <th>Status</th>
+            <th width="120">Aksi</th>
 
-      </thead>
+          </tr>
 
-      <tbody id="tableGuruMengajar">
+        </thead>
 
-        <tr>
+        <tbody id="tableGuruMengajar">
 
-          <td
-            colspan="6"
-            class="text-center py-4">
+          <tr>
 
-            Memuat data...
+            <td
+              colspan="6"
+              class="text-center py-4">
 
-          </td>
+              Memuat data...
 
-        </tr>
+            </td>
 
-      </tbody>
+          </tr>
 
-    </table>
+        </tbody>
+
+      </table>
+
+    </div>
 
   </div>
 
 </div>
 
+<!-- MODAL IMPORT MAPEL -->
 <div
   class="modal fade"
   id="modalImportMapel"
@@ -320,6 +461,7 @@
 
 </div>
 
+<!-- MODAL GURU MENGAJAR (Tambah/Edit) -->
 <div
   class="modal fade"
   id="modalGuruMengajar"
@@ -503,6 +645,7 @@
 
 </div>
 
+<!-- MODAL IMPORT GURU MENGAJAR -->
 <div
   class="modal fade"
   id="modalImportGuruMengajar"
@@ -631,6 +774,7 @@
 
 </div>
 
+<!-- MODAL TAMBAH/UBAH MAPEL -->
 <div
   class="modal fade"
   id="modalMapel"
@@ -771,6 +915,7 @@
 
 </div>
 
+<!-- MODAL KONFIRMASI HAPUS -->
 <div
   class="modal fade"
   id="modalDeleteConfirm"
@@ -839,6 +984,7 @@
 
 </div>
 
+<!-- MODAL: MAPEL MASIH DIGUNAKAN -->
 <div
   class="modal fade"
   id="modalMapelUsage"
