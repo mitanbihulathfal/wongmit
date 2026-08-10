@@ -31,6 +31,45 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-10
+
+### Sprint DS.4 — Data Siswa Access & Export Stabilization
+
+Judul
+
+Data Siswa — Access & Export Stabilization
+
+Perubahan
+
+- Menghapus tombol/fitur duplikasi Tambah Siswa Manual.
+- Tambah Siswa Manual dan Import Massal kini hanya dapat diakses oleh Admin dan Kepala Sekolah.
+- Edit dan Hapus Siswa kini hanya dapat diakses oleh Admin dan Kepala Sekolah.
+- Halaman Data Siswa kini dapat diakses oleh seluruh role (Admin, Kepala Sekolah, Wali Kelas, Guru Mapel).
+- Menambahkan Download Data Siswa Excel dan PDF yang tersedia untuk seluruh role.
+- Menambahkan modal Download Data Siswa dengan filter kelas (Semua Kelas atau per kelas).
+- Menambahkan permission check pada backend `addStudent()`, `updateStudent()`, dan `deleteStudent()`.
+- Menambahkan utility backend `exportSpreadsheetAsPdf()`, `getNamaBySession()`, `buildSiswaExportSheet()`, `exportSiswaExcel()`, dan `exportSiswaPdf()`.
+- Menambahkan library client-side `xlsx-js-style`, `jspdf`, dan `jspdf-autotable` untuk export Excel/PDF.
+- Memperbarui logo aplikasi.
+
+Status
+
+SELESAI
+
+Commit
+
+Belum dilakukan (commit belum dibuat).
+
+Catatan
+
+- Perubahan diverifikasi melalui audit `git diff`.
+- `git diff --check` menemukan trailing whitespace pada `index.html` baris 4262, 4265, dan 4581; tidak diperbaiki pada sesi dokumentasi karena source code DS.4 tidak boleh disentuh.
+- Permission backend menggunakan `checkRole()` yang sudah ada.
+- Caller frontend `addStudent()`, `updateStudent()`, `deleteStudent()` telah mengirim `sessionId`.
+- Download Excel/PDF dilakukan client-side sehingga tersedia untuk seluruh role.
+
+---
+
 ## 2026-08-08
 
 ### Sprint Guru Mengajar — UX Polish

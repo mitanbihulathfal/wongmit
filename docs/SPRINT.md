@@ -443,6 +443,54 @@ Hasil
 
 ---
 
+# Sprint DS.4 — Data Siswa Access & Export Stabilization
+
+Status
+DONE
+
+Target
+
+Data Siswa — Access & Export Stabilization.
+
+Fokus
+
+- Menghapus tombol/fitur duplikasi Tambah Siswa Manual.
+- Tambah Siswa Manual dan Import Massal hanya untuk Admin dan Kepala Sekolah.
+- Edit dan Hapus Siswa hanya untuk Admin dan Kepala Sekolah.
+- Halaman Data Siswa dapat diakses seluruh role.
+- Download Data Siswa Excel dan PDF tersedia untuk seluruh role.
+- Perbaikan bug/regresi terkait perubahan tersebut.
+
+Hasil
+
+✅ Tombol/fitur duplikasi Tambah Siswa Manual dihapus
+
+✅ Tambah Manual dan Import Massal hanya Admin dan Kepala Sekolah
+
+✅ Edit dan Hapus hanya Admin dan Kepala Sekolah
+
+✅ Halaman Data Siswa dapat diakses seluruh role
+
+✅ Download Excel dan PDF tersedia untuk seluruh role
+
+✅ Modal Download Data Siswa dengan filter kelas
+
+✅ Permission check backend pada `addStudent()`, `updateStudent()`, `deleteStudent()`
+
+✅ Utility backend export (`exportSiswaExcel()`, `exportSiswaPdf()`, `buildSiswaExportSheet()`, `getNamaBySession()`, `exportSpreadsheetAsPdf()`)
+
+✅ Library client-side `xlsx-js-style`, `jspdf`, `jspdf-autotable`
+
+✅ Caller frontend mengirim `sessionId` pada operasi siswa
+
+✅ Audit `git diff` selesai
+
+✅ node --check Code.js LOLOS
+
+✅ git diff --check menemukan trailing whitespace pada `index.html` baris 4262, 4265, dan 4581; tidak diperbaiki pada sesi dokumentasi karena source code DS.4 tidak boleh disentuh
+
+---
+
 # Sprint Pengaturan
 
 Status

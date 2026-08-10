@@ -12,54 +12,58 @@
       </div>
     </div>
 
-    <div class="btn-group">
+    <div class="d-flex gap-2">
 
       <button
-        class="btn btn-primary"
-        onclick="showTambahSiswa()">
+        class="btn btn-outline-primary"
+        id="btnDownloadSiswa"
+        onclick="showModalDownloadSiswa()">
 
-        <i class="fa-solid fa-plus"></i>
-        Tambah Siswa
+        <i class="fa-solid fa-download"></i>
+        <span class="d-none d-sm-inline">Download</span>
 
       </button>
 
-      <button
-        class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-        data-bs-toggle="dropdown">
+      <div class="btn-group" id="grupTambahSiswa">
 
-        <span class="visually-hidden">
-          Toggle Dropdown
-        </span>
+        <button
+          class="btn btn-primary dropdown-toggle"
+          data-bs-toggle="dropdown"
+          aria-label="Menu tambah siswa">
 
-      </button>
+          <i class="fa-solid fa-plus"></i>
 
-      <ul class="dropdown-menu dropdown-menu-end">
+        </button>
 
-        <li>
+        <ul class="dropdown-menu dropdown-menu-end">
 
-          <a class="dropdown-item" href="javascript:void(0)" onclick="showTambahSiswa()">
+          <li>
 
-            <i class="fa-solid fa-user-plus me-2"></i>
+            <a class="dropdown-item" href="javascript:void(0)" onclick="showTambahSiswa()">
 
-            Tambah Manual
+              <i class="fa-solid fa-user-plus me-2"></i>
 
-          </a>
+              Tambah Manual
 
-        </li>
+            </a>
 
-        <li>
+          </li>
 
-          <a class="dropdown-item" href="javascript:void(0)" onclick="showImportSiswa()">
+          <li>
 
-            <i class="fa-solid fa-file-import me-2"></i>
+            <a class="dropdown-item" href="javascript:void(0)" onclick="showImportSiswa()">
 
-            Import Massal
+              <i class="fa-solid fa-file-import me-2"></i>
 
-          </a>
+              Import Massal
 
-        </li>
+            </a>
 
-      </ul>
+          </li>
+
+        </ul>
+
+      </div>
 
     </div>
 
@@ -395,6 +399,73 @@
           <i class="fa-solid fa-upload"></i>
 
           Upload
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- MODAL DOWNLOAD DATA SISWA -->
+
+<div class="modal fade" id="modalDownloadSiswa" tabindex="-1">
+
+  <div class="modal-dialog modal-dialog-centered">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5 class="modal-title">
+          <i class="fa-solid fa-download me-2"></i>
+          Download Data Siswa
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal">
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <label class="form-label">Pilih Kelas</label>
+
+        <select
+          class="form-select"
+          id="kelasDownloadSiswa">
+
+          <option value="">Semua Kelas</option>
+
+        </select>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="btn btn-success flex-fill"
+          id="btnDownloadSiswaExcel"
+          onclick="downloadSiswaExcel()">
+
+          <i class="fa-solid fa-file-excel"></i>
+          Excel
+
+        </button>
+
+        <button
+          class="btn btn-danger flex-fill"
+          id="btnDownloadSiswaPdf"
+          onclick="downloadSiswaPdf()">
+
+          <i class="fa-solid fa-file-pdf"></i>
+          PDF
 
         </button>
 

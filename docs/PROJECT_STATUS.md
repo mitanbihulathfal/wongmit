@@ -41,6 +41,9 @@ Kondisi:
 - Export tersedia.
 - Layout modern.
 - Responsive.
+- Halaman Data Siswa dapat diakses oleh seluruh role (Admin, Kepala Sekolah, Wali Kelas, Guru Mapel).
+- Tambah Manual, Import Massal, Edit, dan Hapus hanya untuk Admin dan Kepala Sekolah.
+- Download Data Siswa Excel dan PDF tersedia untuk seluruh role (dengan filter kelas).
 
 Masih dapat menerima penyempurnaan apabila diperlukan.
 

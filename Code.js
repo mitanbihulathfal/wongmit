@@ -444,7 +444,17 @@ function getStudents() {
 
 }
 
-function addStudent(data) {
+function addStudent(sessionId, data) {
+
+  const allowed =
+    checkRole(
+      sessionId,
+      ["Admin", "KepalaSekolah"]
+    );
+
+  if (!allowed) {
+    throw new Error("Akses ditolak");
+  }
 
   const sheet = SS.getSheetByName("Siswa");
 
@@ -493,7 +503,17 @@ function getStudentById(id) {
 
 }
 
-function updateStudent(data) {
+function updateStudent(sessionId, data) {
+
+  const allowed =
+    checkRole(
+      sessionId,
+      ["Admin", "KepalaSekolah"]
+    );
+
+  if (!allowed) {
+    throw new Error("Akses ditolak");
+  }
 
   const sheet = SS.getSheetByName("Siswa");
 
@@ -524,7 +544,17 @@ function updateStudent(data) {
 
 }
 
-function deleteStudent(id) {
+function deleteStudent(sessionId, id) {
+
+  const allowed =
+    checkRole(
+      sessionId,
+      ["Admin", "KepalaSekolah"]
+    );
+
+  if (!allowed) {
+    throw new Error("Akses ditolak");
+  }
 
   const sheet = SS.getSheetByName("Siswa");
 
@@ -5461,6 +5491,371 @@ function cleanupExportSpreadsheet(
     .setTrashed(
       true
     );
+
+}
+
+function exportSpreadsheetAsPdf(
+  spreadsheetId
+) {
+
+  return (
+
+    "https://docs.google.com/spreadsheets/d/"
+
+    +
+
+    spreadsheetId
+
+    +
+
+    "/export?format=pdf&size=A4&portrait=true&fitw=true&gridlines=false&printtitle=false&sheetnames=false&pagenum=false"
+
+  );
+
+}
+
+/* =========================
+   EXPORT DATA SISWA (UTILITY)
+========================= */
+
+function getNamaBySession(
+  sessionId
+) {
+
+  const sessionSheet =
+    SS.getSheetByName("Session");
+
+  const sessionData =
+    sessionSheet.getDataRange().getValues();
+
+  for (let i = 1; i < sessionData.length; i++) {
+
+    if (
+
+      String(sessionData[i][0]) ===
+      String(sessionId)
+
+      &&
+
+      String(sessionData[i][5]) ===
+      "Aktif"
+
+    ) {
+
+      return sessionData[i][2];
+
+    }
+
+  }
+
+  return "-";
+
+}
+
+function buildSiswaExportSheet(
+  sessionId,
+  kelas
+) {
+
+  const allowed =
+    checkRole(
+      sessionId,
+      ["Admin", "KepalaSekolah", "WaliKelas"]
+    );
+
+  if (!allowed) {
+    throw new Error(
+      "Akses ditolak"
+    );
+  }
+
+  const siswaSheet =
+    SS.getSheetByName("Siswa");
+
+  const siswaData =
+    siswaSheet.getDataRange().getValues();
+
+  const pengaturanSheet =
+    SS.getSheetByName("Pengaturan");
+
+  const config = {};
+
+  pengaturanSheet
+    .getDataRange()
+    .getValues()
+    .slice(1)
+    .forEach(function (row) {
+
+      config[row[0]] = row[1];
+
+    });
+
+  const baris = [];
+
+  for (let i = 1; i < siswaData.length; i++) {
+
+    const row = siswaData[i];
+
+    const kelasSiswa = row[6];
+
+    if (
+      kelas &&
+      kelas !== "" &&
+      String(kelasSiswa) !== String(kelas)
+    ) {
+
+      continue;
+
+    }
+
+    baris.push([
+
+      baris.length + 1,
+      row[1],
+      row[2],
+      row[4],
+      row[5],
+      row[3],
+      row[6],
+      row[7]
+
+    ]);
+
+  }
+
+  const spreadsheet =
+    SpreadsheetApp.create(
+      "EXPORT_DATA_SISWA_" + new Date().getTime()
+    );
+
+  const sheet =
+    spreadsheet.getSheets()[0];
+
+  sheet.setName("Data Siswa");
+
+  sheet.setColumnWidth(1, 50);
+  sheet.setColumnWidth(2, 110);
+  sheet.setColumnWidth(3, 250);
+  sheet.setColumnWidth(4, 140);
+  sheet.setColumnWidth(5, 110);
+  sheet.setColumnWidth(6, 50);
+  sheet.setColumnWidth(7, 70);
+  sheet.setColumnWidth(8, 90);
+
+  sheet
+    .getRange("A1:H1")
+    .merge();
+
+  sheet
+    .getRange("A2:H2")
+    .merge();
+
+  sheet
+    .getRange("A3:H3")
+    .merge();
+
+  sheet
+    .getRange("A1")
+    .setValue(
+      "DATA SISWA"
+    );
+
+  sheet
+    .getRange("A2")
+    .setValue(
+      "MIS TANBIHUL ATHFAL"
+    );
+
+  sheet
+    .getRange("A3")
+    .setValue(
+      "TAHUN AJARAN " + (config.tahun_ajaran || "-")
+    );
+
+  sheet
+    .getRange("A1")
+    .setFontWeight("bold")
+    .setFontSize(16)
+    .setHorizontalAlignment("center");
+
+  sheet
+    .getRange("A2:A3")
+    .setFontWeight("bold")
+    .setFontSize(12)
+    .setHorizontalAlignment("center");
+
+  sheet
+    .getRange("A5")
+    .setValue("Kelas");
+
+  sheet
+    .getRange("A6")
+    .setValue("Jumlah");
+
+  sheet
+    .getRange("E5")
+    .setValue("Tanggal Export");
+
+  sheet
+    .getRange("E6")
+    .setValue("Didownload oleh");
+
+  sheet
+    .getRange("A5:A6")
+    .setFontWeight("bold");
+
+  sheet
+    .getRange("E5:E6")
+    .setFontWeight("bold");
+
+  sheet
+    .getRange("B5:D5")
+    .merge();
+
+  sheet
+    .getRange("B6:D6")
+    .merge();
+
+  sheet
+    .getRange("F5:H5")
+    .merge();
+
+  sheet
+    .getRange("F6:H6")
+    .merge();
+
+  const kelasText =
+    kelas || "Semua Kelas";
+
+  const tanggalExport =
+
+    Utilities.formatDate(
+
+      new Date(),
+
+      Session.getScriptTimeZone(),
+
+      "dd MMMM yyyy HH:mm"
+
+    ) + " WIB";
+
+  const namaPengunduh =
+    getNamaBySession(sessionId);
+
+  sheet
+    .getRange("B5")
+    .setValue(
+      kelasText
+    );
+
+  sheet
+    .getRange("B6")
+    .setValue(
+      baris.length + " siswa"
+    );
+
+  sheet
+    .getRange("F5")
+    .setValue(
+      tanggalExport
+    );
+
+  sheet
+    .getRange("F6")
+    .setValue(
+      namaPengunduh
+    );
+
+  const header = [
+    "No",
+    "NISN",
+    "Nama",
+    "Tempat Lahir",
+    "Tanggal Lahir",
+    "JK",
+    "Kelas",
+    "Status"
+  ];
+
+  sheet.getRange(8, 1, 1, header.length)
+    .setValues([header])
+    .setFontWeight("bold")
+    .setBackground("#4a90d9")
+    .setFontColor("#ffffff");
+
+  if (baris.length > 0) {
+
+    sheet
+      .getRange(9, 1, baris.length, 8)
+      .setValues(baris);
+
+    for (let i = 0; i < baris.length; i++) {
+
+      const warnaBaris =
+        (i % 2 === 0) ? "#ffffff" : "#f2f6fc";
+
+      sheet
+        .getRange(9 + i, 1, 1, 8)
+        .setBackground(warnaBaris);
+
+    }
+
+    sheet
+      .getRange(8, 1, baris.length + 1, 8)
+      .setBorder(
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      );
+
+  }
+
+  SpreadsheetApp.flush();
+
+  return spreadsheet.getId();
+
+}
+
+function exportSiswaExcel(
+  sessionId,
+  kelas
+) {
+
+  const spreadsheetId =
+    buildSiswaExportSheet(
+      sessionId,
+      kelas
+    );
+
+  return {
+
+    spreadsheetId: spreadsheetId,
+    exportUrl: exportSpreadsheetAsXlsx(spreadsheetId)
+
+  };
+
+}
+
+function exportSiswaPdf(
+  sessionId,
+  kelas
+) {
+
+  const spreadsheetId =
+    buildSiswaExportSheet(
+      sessionId,
+      kelas
+    );
+
+  return {
+
+    spreadsheetId: spreadsheetId,
+    exportUrl: exportSpreadsheetAsPdf(spreadsheetId)
+
+  };
 
 }
 
