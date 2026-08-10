@@ -33,6 +33,45 @@ Catatan
 
 ## 2026-08-10
 
+### Sprint Code Cleanup — Phase 1
+
+Judul
+
+Penghapusan 10 Fungsi UNUSED dari Code.js
+
+Perubahan
+
+- Menghapus 10 fungsi unused dari Code.js: `include`, `getMasterAbsensi`, `getNamaGuruById`, `isMapelUsed`, `getKelasByNama`, `getMapelByNama`, `getKelasByGuru`, `getTemplateFolder`, `getGuruMengajarTemplateFile`, `createGuruMengajarTemplate`.
+- Static audit + global reference scan menyatakan 10 fungsi aman dihapus (tidak ada caller di Code.js, HTML, atau docs/).
+- Runtime regression test setelah clasp push + deploy dinyatakan LOLOS.
+- `getDataRekap` TIDAK dihapus karena terbukti masih dibutuhkan di runtime
+- `getAppInfo` dan `getRelasiMengajar` tetap dipertahankan untuk roadmap Pengaturan/Dashboard.
+- 3 fungsi export siswa (`buildSiswaExportSheet`, `exportSiswaExcel`, `exportSiswaPdf`) TIDAK dihapus, ditunda ke sprint mendatang.
+- `downloadTemplateGuruMengajar` tetap menggunakan `createTemplateSpreadsheet()`.
+- Tidak ada perubahan arsitektur, database, atau fitur aplikasi; perubahan source hanya berupa cleanup 10 fungsi unused. Dokumentasi sprint diperbarui.
+- Tidak ada perubahan fitur selain cleanup kode mati (dead code).
+
+Status
+
+SELESAI
+
+Commit
+
+Belum dilakukan (belum di-commit).
+
+Catatan
+
+- Verifikasi: `git diff` menampilkan 451 deletions dan 11 insertions.
+- 11 insertions tersebut adalah 2 blok komentar DRAFT yang sudah dibuat sebelumnya oleh user untuk `getAppInfo` dan `getRelasiMengajar`, bukan bagian dari cleanup 10 fungsi.
+- `node --check Code.js` LOLOS.
+- `git diff --check` LOLOS (tidak ada trailing whitespace atau line-ending issue).
+- CRLF line endings di Code.js dipertahankan.
+- 4 section comment terpinggirkan (MASTER ABSENSI, LOOKUP KELAS, LOOKUP MAPEL, TEMPLATE MANAGER) dibiarkan sesuai aturan "hapus hanya definisi fungsi target".
+
+---
+
+## 2026-08-10
+
 ### Sprint DS.4 — Data Siswa Access & Export Stabilization
 
 Judul

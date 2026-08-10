@@ -164,6 +164,7 @@ Hasil
 # Sprint Rekap 2F
 
 Status
+
 DONE
 
 Target
@@ -202,6 +203,7 @@ Hasil
 # Sprint Export Baru
 
 Status
+
 DONE
 
 Target
@@ -230,6 +232,7 @@ Hasil
 # Sprint Cleanup Legacy Rekap
 
 Status
+
 DONE
 
 Target
@@ -264,6 +267,7 @@ Hasil
 # Sprint Rekap 6
 
 Status
+
 DONE
 
 Target
@@ -307,6 +311,7 @@ Hasil
 # Sprint Rekap 7B
 
 Status
+
 DONE
 
 Target
@@ -367,6 +372,7 @@ Daftar sprint Rekap yang telah selesai:
 # Sprint Guru Mengajar — UX Panel & Search
 
 Status
+
 DONE
 
 Target
@@ -405,6 +411,7 @@ Hasil
 # Sprint Guru Mengajar — UX Polish
 
 Status
+
 DONE
 
 Target
@@ -446,6 +453,7 @@ Hasil
 # Sprint DS.4 — Data Siswa Access & Export Stabilization
 
 Status
+
 DONE
 
 Target
@@ -494,6 +502,7 @@ Hasil
 # Sprint Pengaturan
 
 Status
+
 ACTIVE
 
 Target
@@ -510,6 +519,51 @@ Fokus
 Hasil
 
 - (akan diisi progress sprint berjalan)
+
+---
+
+# Sprint Code Cleanup Phase 1
+
+Status
+
+DONE
+
+Target
+
+Penghapusan 10 fungsi unused dari Code.js.
+
+Fokus
+
+- Audit + global reference scan terhadap 10 target fungsi.
+- 10 fungsi target: `include`, `getMasterAbsensi`, `getNamaGuruById`, `isMapelUsed`, `getKelasByNama`, `getMapelByNama`, `getKelasByGuru`, `getTemplateFolder`, `getGuruMengajarTemplateFile`, `createGuruMengajarTemplate`.
+- Hapus definisi fungsi hanya — tidak ada refactor lain.
+- Verifikasi: node --check, git diff --check, git diff --stat.
+- Audit regression statis: Rekap, Guru Mengajar, Data Siswa, Pengaturan, Dashboard.
+
+Hasil
+
+✅ 10 fungsi berhasil dihapus: `include`, `getMasterAbsensi`, `getNamaGuruById`, `isMapelUsed`, `getKelasByNama`, `getMapelByNama`, `getKelasByGuru`, `getTemplateFolder`, `getGuruMengajarTemplateFile`, `createGuruMengajarTemplate`
+
+✅ Static audit: 0 caller ditemukan di Code.js, HTML, docs/
+
+✅ Runtime regression test setelah deploy LOLOS
+
+✅ `getDataRekap` tidak dihapus — terbukti masih dibutuhkan di runtime
+
+✅ `getAppInfo` dan `getRelasiMengajar` dipertahankan untuk roadmap Pengaturan/Dashboard
+
+✅ 3 fungsi export siswa (`buildSiswaExportSheet`, `exportSiswaExcel`, `exportSiswaPdf`) tidak dihapus, ditunda
+
+✅ `downloadTemplateGuruMengajar` tetap menggunakan `createTemplateSpreadsheet()`
+
+✅ Tidak ada perubahan arsitektur, database, atau fitur aplikasi; perubahan source hanya cleanup 10 fungsi unused. Dokumentasi sprint diperbarui.
+
+✅ `git diff`: 451 deletions dan 11 insertions
+- 11 insertions = 2 blok komentar DRAFT yang sudah ada sebelumnya untuk `getAppInfo` dan `getRelasiMengajar`, bukan bagian cleanup
+
+✅ `node --check Code.js` LOLOS
+
+✅ `git diff --check` LOLOS
 
 ---
 

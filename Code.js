@@ -33,11 +33,10 @@ function doGet() {
 
 }
 
-function include(filename) {
-  return HtmlService
-    .createHtmlOutputFromFile(filename)
-    .getContent();
-}
+/*
+ * DRAFT - dipersiapkan untuk fitur "Pengaturan Sistem" (menu bukaPengaturanSistem
+ * di page_pengaturan.html, saat ini masih placeholder). Belum dipanggil di client.
+ */
 
 function getAppInfo() {
 
@@ -597,19 +596,6 @@ function getMasterSiswa() {
    MASTER ABSENSI (UTILITY)
 ========================= */
 
-function getMasterAbsensi() {
-
-  const sheet =
-    SS.getSheetByName(
-      "Absensi"
-    );
-
-  return sheet
-    .getDataRange()
-    .getValues();
-
-}
-
 function getTeachers(sessionId) {
 
   const allowed =
@@ -847,48 +833,6 @@ function getTeacherById(id) {
   }
 
   return null;
-
-}
-
-function getNamaGuruById(idGuru) {
-
-  const sheet =
-    SS.getSheetByName(
-      "Guru"
-    );
-
-  const data =
-    sheet
-      .getDataRange()
-      .getValues();
-
-  for (
-    let i = 1;
-    i < data.length;
-    i++
-  ) {
-
-    if (
-
-      String(
-        data[i][0]
-      ).trim()
-
-      ===
-
-      String(
-        idGuru
-      ).trim()
-
-    ) {
-
-      return data[i][1];
-
-    }
-
-  }
-
-  return "";
 
 }
 
@@ -2073,65 +2017,6 @@ function deleteMapel(
       );
 
       return true;
-
-    }
-
-  }
-
-  return false;
-
-}
-
-function isMapelUsed(
-  namaMapel
-) {
-
-  const sheet =
-
-    SS.getSheetByName(
-      "GuruMengajar"
-    );
-
-  const data =
-
-    sheet
-      .getDataRange()
-      .getValues();
-
-  for (
-    let i = 1;
-    i < data.length;
-    i++
-  ) {
-
-    const daftarMapel =
-
-      String(
-        data[i][4]
-      )
-        .split("|");
-
-    for (
-      let j = 0;
-      j < daftarMapel.length;
-      j++
-    ) {
-
-      if (
-
-        daftarMapel[j].trim()
-
-        ===
-
-        String(
-          namaMapel
-        ).trim()
-
-      ) {
-
-        return true;
-
-      }
 
     }
 
@@ -3503,153 +3388,9 @@ function getGuruIdByNama(
    LOOKUP KELAS (UTILITY)
 ========================= */
 
-function getKelasByNama(
-
-  namaKelas
-
-) {
-
-  const sheet =
-
-    SS.getSheetByName(
-
-      "Kelas"
-
-    );
-
-  const data =
-
-    sheet
-      .getDataRange()
-      .getValues();
-
-  for (
-
-    let i = 1;
-
-    i < data.length;
-
-    i++
-
-  ) {
-
-    if (
-
-      String(
-
-        data[i][1]
-
-      ).trim()
-
-      ===
-
-      String(
-
-        namaKelas
-
-      ).trim()
-
-    ) {
-
-      return {
-
-        id:
-
-          data[i][0],
-
-        nama:
-
-          data[i][1],
-
-        status:
-
-          data[i][3]
-
-      };
-
-    }
-
-  }
-
-  return null;
-
-}
-
 /* =========================
    LOOKUP MAPEL (UTILITY)
 ========================= */
-
-function getMapelByNama(
-
-  namaMapel
-
-) {
-
-  const sheet =
-
-    SS.getSheetByName(
-
-      "Mapel"
-
-    );
-
-  const data =
-
-    sheet
-      .getDataRange()
-      .getValues();
-
-  for (
-
-    let i = 1;
-
-    i < data.length;
-
-    i++
-
-  ) {
-
-    if (
-
-      String(
-
-        data[i][1]
-
-      ).trim()
-
-      ===
-
-      String(
-
-        namaMapel
-
-      ).trim()
-
-    ) {
-
-      return {
-
-        id:
-
-          data[i][0],
-
-        nama:
-
-          data[i][1],
-
-        status:
-
-          data[i][3]
-
-      };
-
-    }
-
-  }
-
-  return null;
-
-}
 
 /* =========================
    IMPORT GURU MENGAJAR (UTILITY)
@@ -3924,92 +3665,6 @@ function getGuruMengajar(sessionId) {
 
 }
 
-function getKelasByGuru(
-  sessionId,
-  idGuru
-) {
-
-  const allowed =
-    checkRole(
-      sessionId,
-      [
-        "Admin",
-        "KepalaSekolah",
-        "WaliKelas",
-        "GuruMapel"
-      ]
-    );
-
-  if (!allowed) {
-
-    throw new Error(
-      "Akses ditolak"
-    );
-
-  }
-
-  const sheet =
-
-    SS.getSheetByName(
-      "GuruMengajar"
-    );
-
-  const data =
-
-    sheet
-      .getDataRange()
-      .getValues();
-
-  const daftarKelas = [];
-
-  for (
-    let i = 1;
-    i < data.length;
-    i++
-  ) {
-
-    if (
-
-      String(
-        data[i][1]
-      ).trim()
-
-      !==
-
-      String(
-        idGuru
-      ).trim()
-
-    ) {
-
-      continue;
-
-    }
-
-    const kelas =
-
-      String(
-        data[i][2]
-      ).trim();
-
-    if (
-      !daftarKelas.includes(
-        kelas
-      )
-    ) {
-
-      daftarKelas.push(
-        kelas
-      );
-
-    }
-
-  }
-
-  return daftarKelas;
-
-}
-
 function splitMapelRekapValue(value) {
 
   return String(
@@ -4216,6 +3871,13 @@ function getMapelRekap(
 /* =========================
    RELASI MENGAJAR
 ========================= */
+
+/*
+ * DRAFT - dipersiapkan untuk fitur "Jadwal Guru Hari Ini" di Dashboard
+ * (rencana shortcut menuju halaman Absensi). Belum dipanggil di client.
+ * Beda dari getRelasiMengajarByHari yang mem-filter per kelas; fungsi ini
+ * mem-filter per guru (idGuru) + tanggal, cocok untuk widget personal guru yang login.
+ */
 
 function getRelasiMengajar(
 
@@ -4712,108 +4374,6 @@ function getGuruMengajarById(
 /* =========================
    TEMPLATE MANAGER
 ========================= */
-
-function getTemplateFolder() {
-
-  const folderName =
-
-    "WONG MIT - Template";
-
-  const folders =
-
-    DriveApp.getFoldersByName(
-      folderName
-    );
-
-  if (
-
-    folders.hasNext()
-
-  ) {
-
-    return folders.next();
-
-  }
-
-  return DriveApp.createFolder(
-    folderName
-  );
-
-}
-
-function getGuruMengajarTemplateFile() {
-
-  const folder =
-
-    getTemplateFolder();
-
-  const files =
-
-    folder.getFilesByName(
-      "GuruMengajar.xlsx"
-    );
-
-  if (
-
-    files.hasNext()
-
-  ) {
-
-    return files.next();
-
-  }
-
-  return null;
-
-}
-
-function createGuruMengajarTemplate() {
-
-  const ss =
-
-    SpreadsheetApp.create(
-      "GuruMengajar"
-    );
-
-  const sheet =
-
-    ss.getSheets()[0];
-
-  sheet.setName(
-    "GuruMengajar"
-  );
-
-  sheet
-    .getRange(
-      1,
-      1,
-      1,
-      5
-    )
-    .setValues([[
-      "Guru",
-      "Kelas",
-      "Hari",
-      "Mata Pelajaran",
-      "Status"
-    ]]);
-
-  sheet
-    .getRange(
-      "A1:E1"
-    )
-    .setFontWeight(
-      "bold"
-    );
-
-  sheet.autoResizeColumns(
-    1,
-    5
-  );
-
-  return ss;
-
-}
 
 /* =========================
    ABSENSI

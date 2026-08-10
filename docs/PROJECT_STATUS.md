@@ -26,6 +26,7 @@ Kondisi:
 - Dashboard telah menggunakan desain modern.
 - Responsive desktop dan mobile.
 - Menampilkan informasi utama aplikasi.
+- `getRelasiMengajar` tetap dipertahankan untuk kebutuhan Dashboard.
 
 ---
 
@@ -159,6 +160,7 @@ Kondisi saat ini:
 - Duplikasi `getFilteredGuruMengajar()` telah dihilangkan.
 - `mergeDataRekap()` menggunakan lookup berbasis `Map` (kompleksitas O(n+m)).
 - `renderRekapTable()` menggunakan `join("")` tanpa `innerHTML +=` di dalam loop.
+- `getDataRekap` tetap dipertahankan — terbukti masih dibutuhkan di runtime (Sprint Code Cleanup Phase 1).
 
 Sprint berikutnya:
 
@@ -174,6 +176,7 @@ SELESAI
 Kondisi:
 
 - Digunakan sebagai pusat konfigurasi aplikasi.
+- `getAppInfo` tetap dipertahankan untuk kebutuhan Pengaturan Sistem (roadmap).
 
 ---
 
