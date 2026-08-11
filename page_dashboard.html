@@ -56,45 +56,69 @@
 
   </div>
 
-  <div class="card card-summary p-4 mt-3">
+  <div class="card card-summary p-4 mt-3 dashboard-profile">
 
-    <h5 id="sapaanDashboard" class="fw-bold">
+    <div class="dashboard-profile-info">
 
-      Selamat Datang
+      <h5 id="sapaanDashboard" class="fw-bold">
 
-    </h5>
+        Selamat Datang
 
-    <h4 id="namaGuruLogin">
-      -
-    </h4>
+      </h5>
 
-    <div class="mt-3">
-
-      <strong>Peran:</strong>
-
-      <div id="roleGuruLogin">
+      <h4 id="namaGuruLogin">
         -
+      </h4>
+
+      <div class="mt-3">
+
+        <strong>Peran:</strong>
+
+        <div id="roleGuruLogin">
+          -
+        </div>
+
+      </div>
+
+      <div class="mt-3">
+
+        <strong>Mengajar:</strong>
+
+        <div id="kelasMengajar">
+          -
+        </div>
+
+      </div>
+
+      <div class="mt-3">
+
+        <strong>Wali Kelas:</strong>
+
+        <div id="waliKelasLogin">
+          -
+        </div>
+
       </div>
 
     </div>
 
-    <div class="mt-3">
+    <div class="dashboard-profile-actions">
 
-      <strong>Mengajar:</strong>
+      <a
+        href="javascript:void(0)"
+        class="dashboard-action-btn"
+        onclick="loadPage('page_absensi'); return false;">
 
-      <div id="kelasMengajar">
-        -
-      </div>
+        <span class="dashboard-action-btn-icon">
+          <i class="fa-solid fa-calendar-check"></i>
+        </span>
 
-    </div>
+        <span class="dashboard-action-btn-text">
+          <strong>Mulai Absensi</strong>
+          <small>Absensi Harian</small>
+        </span>
 
-    <div class="mt-3">
-
-      <strong>Wali Kelas:</strong>
-
-      <div id="waliKelasLogin">
-        -
-      </div>
+      </a>
 
     </div>
 

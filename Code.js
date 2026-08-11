@@ -192,14 +192,35 @@ function getDashboardAttendanceSummary() {
   const kelasSheet =
     SS.getSheetByName("Kelas");
 
+  const guruMengajarSheet =
+    SS.getSheetByName("GuruMengajar");
+
+  const guruSheet =
+    SS.getSheetByName("Guru");
+
   const kelasData =
     kelasSheet
-      .getRange(2, 1, kelasSheet.getLastRow() - 1, 1)
+      .getRange(
+        2,
+        1,
+        kelasSheet.getLastRow() - 1,
+        1
+      )
       .getValues()
       .flat();
 
   const absensi =
     sheet
+      .getDataRange()
+      .getValues();
+
+  const guruMengajarData =
+    guruMengajarSheet
+      .getDataRange()
+      .getValues();
+
+  const guruData =
+    guruSheet
       .getDataRange()
       .getValues();
 
@@ -210,9 +231,108 @@ function getDashboardAttendanceSummary() {
       "yyyy-MM-dd"
     );
 
+  const namaHariIni =
+    Utilities.formatDate(
+      new Date(),
+      Session.getScriptTimeZone(),
+      "EEEE"
+    );
+
+  const hariIndonesia = {
+
+    Sunday: "Ahad",
+    Monday: "Senin",
+    Tuesday: "Selasa",
+    Wednesday: "Rabu",
+    Thursday: "Kamis",
+    Friday: "Jumat",
+    Saturday: "Sabtu"
+
+  };
+
+  const hariSekarang =
+    hariIndonesia[namaHariIni];
+
   const hasil = [];
 
   kelasData.forEach(function (kelas) {
+
+    /* =========================
+       CARI GURU MENGAJAR
+       BERDASARKAN KELAS + HARI
+    ========================= */
+
+    let guruMengajar = "-";
+
+    for (
+      let i = 1;
+      i < guruMengajarData.length;
+      i++
+    ) {
+
+      const kelasGuru =
+        String(
+          guruMengajarData[i][2]
+        ).trim();
+
+      const hariGuru =
+        String(
+          guruMengajarData[i][3]
+        ).trim();
+
+      const statusGuru =
+        String(
+          guruMengajarData[i][5]
+        ).trim();
+
+      if (
+        kelasGuru ===
+          String(kelas).trim() &&
+
+        hariGuru ===
+          String(hariSekarang).trim() &&
+
+        statusGuru === "Aktif"
+      ) {
+
+        const idGuru =
+          String(
+            guruMengajarData[i][1]
+          ).trim();
+
+        for (
+          let j = 1;
+          j < guruData.length;
+          j++
+        ) {
+
+          const idGuruMaster =
+            String(
+              guruData[j][0]
+            ).trim();
+
+          if (
+            idGuruMaster === idGuru
+          ) {
+
+            guruMengajar =
+              guruData[j][1];
+
+            break;
+
+          }
+
+        }
+
+        break;
+
+      }
+
+    }
+
+    /* =========================
+       DATA ABSENSI HARI INI
+    ========================= */
 
     const dataKelas =
       absensi.filter(function (r) {
@@ -224,24 +344,42 @@ function getDashboardAttendanceSummary() {
             "yyyy-MM-dd"
           );
 
-        return tgl === hariIni &&
-          String(r[3]).trim() === String(kelas).trim();
+        return (
+          tgl === hariIni &&
+
+          String(r[3]).trim() ===
+            String(kelas).trim()
+        );
 
       });
 
-    if (dataKelas.length === 0) {
+    /* =========================
+       BELUM DIABSEN
+    ========================= */
+
+    if (
+      dataKelas.length === 0
+    ) {
 
       hasil.push({
 
         kelas: kelas,
 
-        status: "Belum diabsen"
+        guruMengajar:
+          guruMengajar,
+
+        status:
+          "Belum diabsen"
 
       });
 
       return;
 
     }
+
+    /* =========================
+       REKAP ABSENSI
+    ========================= */
 
     let hadir = 0;
     let sakit = 0;
@@ -276,6 +414,9 @@ function getDashboardAttendanceSummary() {
 
       kelas: kelas,
 
+      guruMengajar:
+        guruMengajar,
+
       hadir: hadir,
 
       sakit: sakit,
@@ -284,7 +425,8 @@ function getDashboardAttendanceSummary() {
 
       alpa: alpa,
 
-      total: dataKelas.length
+      total:
+        dataKelas.length
 
     });
 
@@ -292,19 +434,14 @@ function getDashboardAttendanceSummary() {
 
   hasil.sort(function (a, b) {
 
-    return String(a.kelas).localeCompare(
-
-      String(b.kelas),
-
-      undefined,
-
-      {
-
-        numeric: true
-
-      }
-
-    );
+    return String(a.kelas)
+      .localeCompare(
+        String(b.kelas),
+        undefined,
+        {
+          numeric: true
+        }
+      );
 
   });
 
