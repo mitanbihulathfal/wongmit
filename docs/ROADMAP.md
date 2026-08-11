@@ -14,7 +14,7 @@ FOUNDATION
 
 Status
 
-SELESAI
+ACTIVE
 
 Meliputi
 

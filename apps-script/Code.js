@@ -453,7 +453,19 @@ function getDashboardAttendanceSummary() {
    PENGATURAN AKADEMIK
 ========================= */
 
-function getAcademicSettings() {
+function getAcademicSettings(sessionId) {
+
+  const allowed =
+    checkRole(
+      sessionId,
+      ["Admin"]
+    );
+
+  if (!allowed) {
+    throw new Error(
+      "Akses ditolak"
+    );
+  }
 
   const sheet =
 
@@ -509,7 +521,22 @@ function getAcademicSettings() {
 
 }
 
-function saveAcademicSettings(data) {
+function saveAcademicSettings(
+  sessionId,
+  data
+) {
+
+  const allowed =
+    checkRole(
+      sessionId,
+      ["Admin"]
+    );
+
+  if (!allowed) {
+    throw new Error(
+      "Akses ditolak"
+    );
+  }
 
   const sheet =
 
