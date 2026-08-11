@@ -31,6 +31,40 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-11
+
+### Sprint Dashboard — Absensi Shortcut & Attendance Monitoring UX
+
+Judul
+
+Absensi Shortcut & Attendance Monitoring UX — Dashboard
+
+Perubahan
+
+- Menambahkan shortcut "Mulai Absensi" pada Dashboard yang mengarah ke halaman Absensi (`page_absensi`).
+- Penempatan responsif untuk desktop dan mobile.
+- Modal Dashboard Attendance kini memiliki feedback loading dengan animasi tadpole.
+- Mencegah klik berulang selama proses loading berlangsung.
+- Menambahkan tampilan hari/tanggal saat ini pada modal Attendance.
+- Menambahkan info guru mengajar per kelas pada monitoring absensi.
+- Layout lebih compact dengan truncation untuk nama guru yang panjang.
+- Runtime testing di Apps Script dinyatakan LOLOS.
+- File source yang berubah pada sprint ini: `Code.js`, `index.html`, `page_dashboard.html`.
+
+Status
+
+SELESAI
+
+Commit
+
+9c31e82
+
+Catatan
+
+- Working tree bersih setelah commit.
+
+---
+
 ## 2026-08-10
 
 ### Sprint Code Cleanup — Phase 1

@@ -567,6 +567,44 @@ Hasil
 
 ---
 
+# Sprint Dashboard — Absensi Shortcut & Attendance Monitoring UX
+
+Status
+
+DONE
+
+Target
+
+Menambahkan shortcut Absensi dan penyempurnaan UX monitoring kehadiran di Dashboard.
+
+Fokus
+
+- Shortcut "Mulai Absensi" dari Dashboard menuju halaman Absensi.
+- Penempatan responsif desktop/mobile.
+- Dashboard Attendance modal: feedback loading (animasi tadpole), pencegahan klik berulang, tampilan hari/tanggal saat ini, dan info guru mengajar per kelas.
+- Layout compact dengan truncation nama guru yang panjang.
+
+Hasil
+
+✅ Shortcut "Mulai Absensi" → `page_absensi` ditambahkan
+
+✅ Penempatan responsif desktop/mobile
+
+✅ Modal Attendance: feedback loading tadpole, cegah klik berulang, hari/tanggal saat ini, guru mengajar per kelas
+
+✅ Layout compact + truncation nama guru panjang
+
+✅ Runtime testing di Apps Script LOLOS
+
+✅ File source berubah: `Code.js`, `index.html`, `page_dashboard.html`
+
+✅ Working tree bersih setelah commit
+
+✅ Commit: 9c31e82
+
+---
+
+
 # Aturan Sprint
 
 Setiap sprint wajib melalui tahapan berikut.

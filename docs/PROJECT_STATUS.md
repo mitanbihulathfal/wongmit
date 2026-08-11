@@ -26,6 +26,9 @@ Kondisi:
 - Dashboard telah menggunakan desain modern.
 - Responsive desktop dan mobile.
 - Menampilkan informasi utama aplikasi.
+- Menambahkan shortcut "Mulai Absensi" dari Dashboard menuju halaman Absensi (`page_absensi`), responsif desktop dan mobile.
+- Dashboard Attendance modal memiliki feedback loading (animasi tadpole), mencegah klik berulang, menampilkan hari/tanggal saat ini, dan info guru mengajar per kelas.
+- Layout monitoring kehadiran lebih compact dengan truncation nama guru panjang.
 - `getRelasiMengajar` tetap dipertahankan untuk kebutuhan Dashboard.
 
 ---
