@@ -10302,6 +10302,68 @@
 
       }
 
+      function loadHariMengajar(callback) {
+
+        google.script.run
+          .withSuccessHandler(function (hari) {
+
+            const select =
+              document.getElementById(
+                "hariMengajar"
+              );
+
+            if (!select) {
+              return;
+            }
+
+            select.innerHTML = "";
+
+            const optionDefault =
+              document.createElement("option");
+
+            optionDefault.value = "";
+
+            optionDefault.textContent =
+              "Pilih Hari";
+
+            select.appendChild(
+              optionDefault
+            );
+
+            hari.forEach(function (namaHari) {
+
+              const option =
+                document.createElement("option");
+
+              option.value = namaHari;
+
+              option.textContent = namaHari;
+
+              select.appendChild(option);
+
+            });
+
+            if (typeof callback === "function") {
+              callback();
+            }
+
+          })
+          .withFailureHandler(function (error) {
+
+            console.error(
+              "Gagal memuat daftar hari:",
+              error
+            );
+
+            if (typeof callback === "function") {
+              callback();
+            }
+
+          })
+          .getWeekDays();
+
+      }
+      
       function loadMapelCheckbox(callback) {
 
         google.script.run
@@ -11068,6 +11130,7 @@
           "statusMengajar"
         ).value = "Aktif";
 
+        loadHariMengajar();
         loadMapelCheckbox();
 
         const modal =
@@ -13419,49 +13482,49 @@
               data.kelas;
 
             document.getElementById(
-              "hariMengajar"
-            ).value =
-              data.hari;
-
-            document.getElementById(
               "statusMengajar"
             ).value =
               data.status;
 
-            loadMapelCheckbox(function () {
+            loadHariMengajar(function () {
 
-              const daftarMapel =
+              document.getElementById(
+                "hariMengajar"
+              ).value =
+                data.hari;
 
-                String(
-                  data.mapel
-                ).split("|");
+              loadMapelCheckbox(function () {
 
-              document
-                .querySelectorAll(
-                  "#listMapelMengajar .mapel-check"
-                )
-                .forEach(function (item) {
+                const daftarMapel =
+                  String(
+                    data.mapel
+                  ).split("|");
 
-                  item.checked =
-                    daftarMapel.includes(
-                      item.value
-                    );
+                document
+                  .querySelectorAll(
+                    "#listMapelMengajar .mapel-check"
+                  )
+                  .forEach(function (item) {
 
-                });
+                    item.checked =
+                      daftarMapel.includes(
+                        item.value
+                      );
+
+                  });
+
+                const modal =
+                  new bootstrap.Modal(
+                    document.getElementById(
+                      "modalGuruMengajar"
+                    )
+                  );
+
+                modal.show();
+
+              });
 
             });
-
-            const modal =
-
-              new bootstrap.Modal(
-
-                document.getElementById(
-                  "modalGuruMengajar"
-                )
-
-              );
-
-            modal.show();
 
           })
 

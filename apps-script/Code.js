@@ -593,6 +593,42 @@ function saveAcademicSettings(
    KALENDER SEKOLAH
 ========================= */
 
+function getWeekDays() {
+  return [
+    "Ahad",
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu"
+  ];
+}
+
+function validateWeekDay(hari) {
+
+  const hariNormalized =
+    String(
+      hari || ""
+    ).trim();
+
+  if (
+    !getWeekDays().includes(
+      hariNormalized
+    )
+  ) {
+
+    throw new Error(
+      "Hari tidak valid. Gunakan salah satu dari: " +
+      getWeekDays().join(", ")
+    );
+
+  }
+
+  return hariNormalized;
+
+}
+
 function getWeeklyHolidays() {
 
   const sheet =
@@ -642,7 +678,6 @@ function getWeeklyHolidays() {
   return [];
 
 }
-
 
 function isSchoolHoliday(date) {
 
@@ -2958,16 +2993,8 @@ function downloadTemplateGuruMengajar() {
     "Hari"
   );
 
-  const hari = [
-
-    "Ahad",
-    "Senin",
-    "Selasa",
-    "Rabu",
-    "Kamis",
-    "Sabtu"
-
-  ];
+  const hari =
+    getWeekDays();
 
   for (
     let i = 0;
@@ -3715,6 +3742,23 @@ function importGuruMengajar(
 
       rows[i];
 
+    let hari;
+
+    try {
+
+      hari =
+        validateWeekDay(
+          row[2]
+        );
+
+    } catch (error) {
+
+      hasil.gagal++;
+
+      continue;
+
+    }
+
     const idGuru =
 
       getGuruIdByNama(
@@ -3779,7 +3823,7 @@ function importGuruMengajar(
 
       row[1],
 
-      row[2],
+      hari,
 
       daftarMapel.join("|"),
 
@@ -4155,17 +4199,8 @@ function getRelasiMengajar(
       .getValues();
 
   const hariIni =
-
-    [
-      "Minggu",
-      "Senin",
-      "Selasa",
-      "Rabu",
-      "Kamis",
-      "Jumat",
-      "Sabtu"
-    ][
-    new Date(tanggal).getDay()
+    getWeekDays()[
+      new Date(tanggal).getDay()
     ];
 
   for (
@@ -4400,12 +4435,17 @@ function addGuruMengajar(
       "GuruMengajar"
     );
 
+  const hari =
+    validateWeekDay(
+      data.hari
+    );
+  
   sheet.appendRow([
 
     data.idRelasi,
     data.idGuru,
     data.kelas,
-    data.hari,
+    hari,
     data.mapel,
     data.status
 
@@ -4443,6 +4483,11 @@ function updateGuruMengajar(
       "GuruMengajar"
     );
 
+  const hari =
+    validateWeekDay(
+      data.hari
+    );
+
   sheet.getRange(
     rowIndex,
     1
@@ -4468,7 +4513,7 @@ function updateGuruMengajar(
     rowIndex,
     4
   ).setValue(
-    data.hari
+    hari
   );
 
   sheet.getRange(
