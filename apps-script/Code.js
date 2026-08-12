@@ -589,6 +589,93 @@ function saveAcademicSettings(
 
 }
 
+/* =========================
+   KALENDER SEKOLAH
+========================= */
+
+function getWeeklyHolidays() {
+
+  const sheet =
+    SS.getSheetByName(
+      "Pengaturan"
+    );
+
+  if (!sheet) {
+    throw new Error(
+      "Sheet Pengaturan tidak ditemukan"
+    );
+  }
+
+  const data =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  for (
+    let i = 1;
+    i < data.length;
+    i++
+  ) {
+
+    const key =
+      String(
+        data[i][0]
+      ).trim();
+
+    if (key === "hari_libur") {
+
+      return String(
+        data[i][1] || ""
+      )
+        .split(",")
+        .map(function (hari) {
+          return String(hari).trim();
+        })
+        .filter(function (hari) {
+          return hari !== "";
+        });
+
+    }
+
+  }
+
+  return [];
+
+}
+
+
+function isSchoolHoliday(date) {
+
+  if (!date) {
+    return false;
+  }
+
+  const hariIndonesia = [
+    "Ahad",
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu"
+  ];
+
+  const hari =
+    hariIndonesia[
+      new Date(date).getDay()
+    ];
+
+  const hariLibur =
+    getWeeklyHolidays();
+
+  return hariLibur.some(function (libur) {
+
+    return String(libur).trim() === hari;
+
+  });
+
+}
+
 function getPage(pageName) {
 
   return HtmlService
