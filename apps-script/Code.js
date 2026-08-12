@@ -231,27 +231,10 @@ function getDashboardAttendanceSummary() {
       "yyyy-MM-dd"
     );
 
-  const namaHariIni =
-    Utilities.formatDate(
-      new Date(),
-      Session.getScriptTimeZone(),
-      "EEEE"
-    );
-
-  const hariIndonesia = {
-
-    Sunday: "Ahad",
-    Monday: "Senin",
-    Tuesday: "Selasa",
-    Wednesday: "Rabu",
-    Thursday: "Kamis",
-    Friday: "Jumat",
-    Saturday: "Sabtu"
-
-  };
-
   const hariSekarang =
-    hariIndonesia[namaHariIni];
+    getWeekDays()[
+      new Date().getDay()
+    ];
 
   const hasil = [];
 
