@@ -28,6 +28,38 @@ Meliputi
 
 ---
 
+# CHECKPOINT — SPRINT 2F
+
+Status
+
+🟢 SELESAI & TERUJI
+
+Target
+
+Menjadikan `Pengaturan.hari_libur` sebagai Single Source of Truth untuk kalender sekolah dan mengintegrasikannya secara aman ke konsumen Guru Mengajar dan Absensi.
+
+Hasil
+
+- ✅ Kontrak nama hari distandarkan menggunakan `Ahad` sebagai istilah aplikasi untuk Sunday/Minggu.
+- ✅ `getWeekDays()` menjadi sumber tunggal 7 hari standar aplikasi.
+- ✅ Dropdown Hari Guru Mengajar tidak lagi hardcode.
+- ✅ Template Excel Guru Mengajar tidak lagi hardcode.
+- ✅ Validasi backend Guru Mengajar menggunakan kontrak hari standar.
+- ✅ Dashboard menggunakan kontrak hari standar.
+- ✅ Absensi mengenali hari libur dari `Pengaturan.hari_libur`.
+- ✅ Guru mendapat peringatan jika tanggal yang dipilih tidak sesuai jadwal mengajarnya.
+- ✅ Hari libur + tidak ada jadwal Guru menghasilkan peringatan gabungan, tetapi Absensi tetap dapat dilanjutkan.
+- ✅ Admin dan Kepala Sekolah tidak terkena peringatan jadwal Guru.
+- ✅ Popup peringatan diperbaiki agar tidak muncul ganda dan tidak meninggalkan overlay.
+- ✅ Regression test dan integration test di GAS UJI LOLOS.
+- ✅ Source production kemudian dideploy setelah seluruh pengujian dinyatakan LOLOS.
+
+Catatan Arsitektur
+
+Hari libur adalah kalender sekolah, bukan larangan universal seluruh aktivitas. Arsitektur ini tetap membuka jalan untuk kegiatan Ekstrakurikuler yang nantinya dapat memiliki jadwal aktivitas sendiri, termasuk pada hari libur sekolah.
+
+---
+
 # FASE 2
 
 ABSENSI
