@@ -6919,25 +6919,64 @@
               context.shouldWarn
             ) {
 
-              const pesan =
-                context.warningType === "teacher_schedule"
-                  ?
-                    "Anda tidak memiliki jadwal mengajar untuk kelas " +
-                    kelas +
-                    " pada hari " +
-                    context.hari +
-                    ". Periksa kembali tanggal yang dipilih.\n\nApakah Anda tetap ingin melanjutkan absensi?"
-                  :
-                    "Tanggal " +
-                    tanggal +
-                    " adalah hari libur sekolah (" +
-                    context.hari +
-                    ").\n\nApakah Anda tetap ingin melanjutkan absensi?";
+              const isHariLibur =
+                !!context.isSchoolHoliday;
 
-              const judulPeringatan =
-                context.warningType === "teacher_schedule"
-                  ? "Periksa Jadwal Mengajar"
-                  : "Hari Libur Sekolah";
+              const isTidakAdaJadwalGuru =
+                context.warningType === "teacher_schedule";
+
+              let judulPeringatan =
+                "Periksa Absensi";
+
+              let pesan =
+                "Periksa kembali tanggal dan jadwal mengajar yang dipilih.\n\nApakah Anda tetap ingin melanjutkan absensi?";
+
+              if (
+                isHariLibur &&
+                isTidakAdaJadwalGuru
+              ) {
+
+                judulPeringatan =
+                  "Periksa Hari & Jadwal Mengajar";
+
+                pesan =
+                  "Tanggal " +
+                  tanggal +
+                  " adalah hari libur sekolah (" +
+                  context.hari +
+                  "). Anda juga tidak memiliki jadwal mengajar untuk kelas " +
+                  kelas +
+                  " pada hari tersebut.\n\nPeriksa kembali tanggal dan jadwal Anda. Apakah Anda tetap ingin melanjutkan absensi?";
+
+              } else if (
+                isTidakAdaJadwalGuru
+              ) {
+
+                judulPeringatan =
+                  "Periksa Jadwal Mengajar";
+
+                pesan =
+                  "Anda tidak memiliki jadwal mengajar untuk kelas " +
+                  kelas +
+                  " pada hari " +
+                  context.hari +
+                  ". Periksa kembali tanggal yang dipilih.\n\nApakah Anda tetap ingin melanjutkan absensi?";
+
+              } else if (
+                isHariLibur
+              ) {
+
+                judulPeringatan =
+                  "Hari Libur Sekolah";
+
+                pesan =
+                  "Tanggal " +
+                  tanggal +
+                  " adalah hari libur sekolah (" +
+                  context.hari +
+                  ").\n\nApakah Anda tetap ingin melanjutkan absensi?";
+
+              }
 
               const modalElement =
                 document.getElementById(
