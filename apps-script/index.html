@@ -2529,6 +2529,8 @@
 
       let callbackKonfirmasiGlobal = null;
 
+      let attendanceCalendarRequestId = 0;
+
       let editGuruRow = null;
       let editKelasRow = null;
 
@@ -2930,6 +2932,15 @@
         callback
       ) {
 
+        const modalElement =
+          document.getElementById(
+            "modalKonfirmasiGlobal"
+          );
+
+        if (!modalElement) {
+          return;
+        }
+
         callbackKonfirmasiGlobal =
           callback;
 
@@ -2946,35 +2957,42 @@
           .innerText = pesan;
 
         const modal =
-          new bootstrap.Modal(
-
-            document.getElementById(
-              "modalKonfirmasiGlobal"
-            )
-
+          bootstrap.Modal.getOrCreateInstance(
+            modalElement
           );
 
-        modal.show();
-
-        document
-          .getElementById(
+        const btnYa =
+          document.getElementById(
             "btnYaKonfirmasiGlobal"
-          )
-          .onclick = function () {
+          );
 
-            modal.hide();
+        btnYa.onclick = function () {
 
-            setTimeout(function () {
+          const callbackSaatIni =
+            callbackKonfirmasiGlobal;
 
-              if (callbackKonfirmasiGlobal) {
+          callbackKonfirmasiGlobal = null;
 
-                callbackKonfirmasiGlobal();
+          modalElement.addEventListener(
+            "hidden.bs.modal",
+            function () {
 
+              if (
+                typeof callbackSaatIni ===
+                "function"
+              ) {
+                callbackSaatIni();
               }
 
-            }, 200);
+            },
+            { once: true }
+          );
 
-          };
+          modal.hide();
+
+        };
+
+        modal.show();
 
       }
 
@@ -6853,6 +6871,9 @@
 
       function loadExistingAttendance() {
 
+        const requestId =
+          ++attendanceCalendarRequestId;
+
         const kelas =
           document.getElementById(
             "filterKelasAbsensi"
@@ -6887,6 +6908,13 @@
           .withSuccessHandler(function (context) {
 
             if (
+              requestId !==
+              attendanceCalendarRequestId
+            ) {
+              return;
+            }
+
+            if (
               context &&
               context.shouldWarn
             ) {
@@ -6906,8 +6934,25 @@
                     context.hari +
                     ").\n\nApakah Anda tetap ingin melanjutkan absensi?";
 
+              const judulPeringatan =
+                context.warningType === "teacher_schedule"
+                  ? "Periksa Jadwal Mengajar"
+                  : "Hari Libur Sekolah";
+
+              const modalElement =
+                document.getElementById(
+                  "modalKonfirmasiGlobal"
+                );
+
+              if (
+                modalElement &&
+                modalElement.classList.contains("show")
+              ) {
+                return;
+              }
+
               showConfirmModal(
-                "Hari Libur Sekolah",
+                judulPeringatan,
                 pesan,
                 function () {
                   loadExistingAttendanceCore();
