@@ -690,7 +690,8 @@ function isSchoolHoliday(date) {
 
 function getAttendanceCalendarContext(
   kelas,
-  tanggal
+  tanggal,
+  namaGuru = ""
 ) {
 
   const hari =
@@ -699,32 +700,130 @@ function getAttendanceCalendarContext(
   const hariLibur =
     isSchoolHoliday(tanggal);
 
-  const relasi =
-    getRelasiMengajarByHari(
-      kelas,
-      hari
-    );
+  const namaGuruNormalized =
+    String(namaGuru || "").trim();
+
+  let roleGuru = "";
+  let idGuru = "";
+
+  if (namaGuruNormalized) {
+
+    const guruSheet =
+      SS.getSheetByName("Guru");
+
+    const guruData =
+      guruSheet
+        .getDataRange()
+        .getValues();
+
+    for (let i = 1; i < guruData.length; i++) {
+
+      if (
+        String(guruData[i][1]).trim()
+        === namaGuruNormalized
+      ) {
+
+        idGuru = guruData[i][0];
+        roleGuru = String(guruData[i][2] || "").trim();
+        break;
+
+      }
+
+    }
+
+  }
+
+  const rolesGuru =
+    roleGuru
+      .split(",")
+      .map(function (role) {
+        return String(role).trim();
+      })
+      .filter(Boolean);
+
+  const isExemptRole =
+    rolesGuru.includes("Admin")
+    ||
+    rolesGuru.includes("KepalaSekolah");
+
+  let hasTeacherSchedule = false;
+  let teacherSchedule = null;
+
+  if (idGuru && !isExemptRole) {
+
+    const sheetGuruMengajar =
+      SS.getSheetByName("GuruMengajar");
+
+    const dataMengajar =
+      sheetGuruMengajar
+        .getDataRange()
+        .getValues();
+
+    for (let i = 1; i < dataMengajar.length; i++) {
+
+      if (
+        String(dataMengajar[i][1]).trim()
+        !== String(idGuru).trim()
+      ) {
+        continue;
+      }
+
+      if (
+        String(dataMengajar[i][2]).trim()
+        !== String(kelas).trim()
+      ) {
+        continue;
+      }
+
+      if (
+        String(dataMengajar[i][3]).trim()
+        !== String(hari).trim()
+      ) {
+        continue;
+      }
+
+      if (
+        String(dataMengajar[i][5]).trim()
+        !== "Aktif"
+      ) {
+        continue;
+      }
+
+      hasTeacherSchedule = true;
+
+      teacherSchedule = {
+        idRelasi: dataMengajar[i][0],
+        hari: dataMengajar[i][3],
+        mapel: dataMengajar[i][4]
+      };
+
+      break;
+
+    }
+
+  }
+
+  const shouldWarnTeacherSchedule =
+    !!idGuru
+    &&
+    !isExemptRole
+    &&
+    !hasTeacherSchedule;
 
   return {
 
     tanggal: tanggal,
-
     hari: hari,
-
     isSchoolHoliday: hariLibur,
-
-    hasFormalActivity: !!relasi,
-
-    shouldWarn:
-      hariLibur && !relasi,
-
-    formalActivity: relasi
-      ? {
-          idRelasi: relasi.idRelasi,
-          idGuru: relasi.idGuru,
-          mapel: relasi.mapel
-        }
-      : null
+    roleGuru: roleGuru,
+    isExemptRole: isExemptRole,
+    hasFormalActivity: hasTeacherSchedule,
+    hasTeacherSchedule: hasTeacherSchedule,
+    shouldWarn: shouldWarnTeacherSchedule,
+    warningType: shouldWarnTeacherSchedule
+      ? "teacher_schedule"
+      : "",
+    teacherSchedule: teacherSchedule
 
   };
 

@@ -6892,13 +6892,19 @@
             ) {
 
               const pesan =
-                "Tanggal " +
-                tanggal +
-                " adalah hari libur sekolah (" +
-                context.hari +
-                ") dan belum ditemukan jadwal kegiatan formal untuk kelas " +
-                kelas +
-                ".\n\nApakah Anda tetap ingin melanjutkan absensi?";
+                context.warningType === "teacher_schedule"
+                  ?
+                    "Anda tidak memiliki jadwal mengajar untuk kelas " +
+                    kelas +
+                    " pada hari " +
+                    context.hari +
+                    ". Periksa kembali tanggal yang dipilih.\n\nApakah Anda tetap ingin melanjutkan absensi?"
+                  :
+                    "Tanggal " +
+                    tanggal +
+                    " adalah hari libur sekolah (" +
+                    context.hari +
+                    ").\n\nApakah Anda tetap ingin melanjutkan absensi?";
 
               showConfirmModal(
                 "Hari Libur Sekolah",
@@ -6927,7 +6933,10 @@
           })
           .getAttendanceCalendarContext(
             kelas,
-            tanggal
+            tanggal,
+            localStorage.getItem(
+              "wongmit_nama"
+            ) || ""
           );
 
       }
