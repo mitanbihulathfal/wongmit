@@ -668,18 +668,8 @@ function isSchoolHoliday(date) {
     return false;
   }
 
-  const hariIndonesia = [
-    "Ahad",
-    "Senin",
-    "Selasa",
-    "Rabu",
-    "Kamis",
-    "Jumat",
-    "Sabtu"
-  ];
-
   const hari =
-    hariIndonesia[
+    getWeekDays()[
       new Date(date).getDay()
     ];
 
@@ -691,6 +681,52 @@ function isSchoolHoliday(date) {
     return String(libur).trim() === hari;
 
   });
+
+}
+
+/* =========================
+   KONTEKS KALENDER ABSENSI
+========================= */
+
+function getAttendanceCalendarContext(
+  kelas,
+  tanggal
+) {
+
+  const hari =
+    getNamaHariIndonesia(tanggal);
+
+  const hariLibur =
+    isSchoolHoliday(tanggal);
+
+  const relasi =
+    getRelasiMengajarByHari(
+      kelas,
+      hari
+    );
+
+  return {
+
+    tanggal: tanggal,
+
+    hari: hari,
+
+    isSchoolHoliday: hariLibur,
+
+    hasFormalActivity: !!relasi,
+
+    shouldWarn:
+      hariLibur && !relasi,
+
+    formalActivity: relasi
+      ? {
+          idRelasi: relasi.idRelasi,
+          idGuru: relasi.idGuru,
+          mapel: relasi.mapel
+        }
+      : null
+
+  };
 
 }
 
@@ -6526,27 +6562,7 @@ function getNamaHariIndonesia(
 
 ) {
 
-  const hari =
-
-    [
-
-      "Ahad",
-
-      "Senin",
-
-      "Selasa",
-
-      "Rabu",
-
-      "Kamis",
-
-      "Jumat",
-
-      "Sabtu"
-
-    ];
-
-  return hari[
+  return getWeekDays()[
 
     new Date(
       tanggal

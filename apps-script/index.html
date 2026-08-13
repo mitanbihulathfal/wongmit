@@ -6884,22 +6884,82 @@
         }
 
         google.script.run
+          .withSuccessHandler(function (context) {
+
+            if (
+              context &&
+              context.shouldWarn
+            ) {
+
+              const pesan =
+                "Tanggal " +
+                tanggal +
+                " adalah hari libur sekolah (" +
+                context.hari +
+                ") dan belum ditemukan jadwal kegiatan formal untuk kelas " +
+                kelas +
+                ".\n\nApakah Anda tetap ingin melanjutkan absensi?";
+
+              showConfirmModal(
+                "Hari Libur Sekolah",
+                pesan,
+                function () {
+                  loadExistingAttendanceCore();
+                }
+              );
+
+              return;
+
+            }
+
+            loadExistingAttendanceCore();
+
+          })
+          .withFailureHandler(function (error) {
+
+            console.error(error);
+
+            showToast(
+              "Gagal memeriksa kalender sekolah. Silakan coba lagi.",
+              "error"
+            );
+
+          })
+          .getAttendanceCalendarContext(
+            kelas,
+            tanggal
+          );
+
+      }
+
+      function loadExistingAttendanceCore() {
+
+        const kelas =
+          document.getElementById(
+            "filterKelasAbsensi"
+          ).value;
+
+        const tanggal =
+          document.getElementById(
+            "tanggalAbsensi"
+          ).value;
+
+        if (!kelas || !tanggal) {
+          return;
+        }
+
+        google.script.run
           .withSuccessHandler(function (result) {
 
             result =
               JSON.parse(result);
 
-            if (
-              !result.info.ditemukan
-            ) {
+            if (!result.info.ditemukan) {
 
               modeAbsensi = "baru";
 
               resetStatusAbsensi();
-
-              // Pulihkan draft yang belum disimpan
               pulihkanDraftAbsensi();
-
               modeEditAbsensi = false;
 
               setSimpanAbsensiText(
@@ -6907,140 +6967,60 @@
                 "btn-primary"
               );
 
-              setSimpanAbsensiDisabled(
-                false
-              );
+              setSimpanAbsensiDisabled(false);
+              setHadirSemuaDisabled(false);
 
-              setHadirSemuaDisabled(
-                false
-              );
-
-              document
-                .getElementById(
-                  "infoAbsenWaktu"
-                )
-                .innerHTML =
+              document.getElementById("infoAbsenWaktu").innerHTML =
                 "--/--/---- --:--:--";
-
-              document
-                .getElementById(
-                  "infoAbsenOleh"
-                )
-                .innerHTML =
+              document.getElementById("infoAbsenOleh").innerHTML =
                 "---";
 
               return;
 
             }
 
-            const waktuAbsen =
-              new Date(
-                result.info.timestamp
-              );
+            const waktuAbsen = new Date(result.info.timestamp);
 
-            const pad =
-              function (angka) {
-
-                return String(
-                  angka
-                ).padStart(
-                  2,
-                  "0"
-                );
-
-              };
+            const pad = function (angka) {
+              return String(angka).padStart(2, "0");
+            };
 
             const waktuFormat =
+              pad(waktuAbsen.getDate()) + "/" +
+              pad(waktuAbsen.getMonth() + 1) + "/" +
+              waktuAbsen.getFullYear() + " " +
+              pad(waktuAbsen.getHours()) + ":" +
+              pad(waktuAbsen.getMinutes()) + ":" +
+              pad(waktuAbsen.getSeconds());
 
-              pad(
-                waktuAbsen.getDate()
-              )
-
-              + "/"
-
-              +
-
-              pad(
-                waktuAbsen.getMonth() + 1
-              )
-
-              + "/"
-
-              +
-
-              waktuAbsen.getFullYear()
-
-              + " "
-
-              +
-
-              pad(
-                waktuAbsen.getHours()
-              )
-
-              + ":"
-
-              +
-
-              pad(
-                waktuAbsen.getMinutes()
-              )
-
-              + ":"
-
-              +
-
-              pad(
-                waktuAbsen.getSeconds()
-              );
-
-            document
-              .getElementById(
-                "infoAbsenWaktu"
-              )
-              .innerHTML =
+            document.getElementById("infoAbsenWaktu").innerHTML =
               waktuFormat;
-
-            document
-              .getElementById(
-                "infoAbsenOleh"
-              )
-              .innerHTML =
+            document.getElementById("infoAbsenOleh").innerHTML =
               result.info.inputOleh;
 
             modeAbsensi = "revisi";
-
             modeEditAbsensi = false;
 
             setSimpanAbsensiText(
               '<i class="fa-solid fa-pen"></i> Revisi Absen',
               "btn-primary"
             );
-
-            setSimpanAbsensiDisabled(
-              false
-            );
-
-            setHadirSemuaDisabled(
-              true
-            );
+            setSimpanAbsensiDisabled(false);
+            setHadirSemuaDisabled(true);
 
             modeEditAbsensi = true;
-
             result.data.forEach(function (item) {
-
-              setStatusAbsen(
-
-                item.nisn,
-
-                item.status
-
-              );
-
+              setStatusAbsen(item.nisn, item.status);
             });
-
             modeEditAbsensi = false;
 
+          })
+          .withFailureHandler(function (error) {
+            console.error(error);
+            showToast(
+              "Gagal memuat data absensi.",
+              "error"
+            );
           })
           .getAttendanceByClassAndDate(
             kelas,
@@ -7049,7 +7029,7 @@
 
       }
 
-      function initAbsensiTanggal() {
+      function initAbsensiTanggal( {
 
         const today =
           new Date();
@@ -7085,7 +7065,6 @@
         }
 
         const hariList = [
-
           "Ahad",
           "Senin",
           "Selasa",
@@ -7093,7 +7072,6 @@
           "Kamis",
           "Jumat",
           "Sabtu"
-
         ];
 
         const hari =
