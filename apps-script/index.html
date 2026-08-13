@@ -7053,7 +7053,6 @@
       function updateHariAbsensi() {
 
         const tanggal =
-
           document
             .getElementById(
               'tanggalAbsensi'
@@ -7064,23 +7063,18 @@
           return;
         }
 
-        const hariList = [
-          "Ahad",
-          "Senin",
-          "Selasa",
-          "Rabu",
-          "Kamis",
-          "Jumat",
-          "Sabtu"
-        ];
+        const hariLocale =
+          new Intl.DateTimeFormat(
+            'id-ID',
+            { weekday: 'long' }
+          ).format(
+            new Date(tanggal)
+          );
 
         const hari =
-
-          hariList[
-          new Date(
-            tanggal
-          ).getDay()
-          ];
+          hariLocale === 'Minggu'
+            ? 'Ahad'
+            : hariLocale;
 
         document
           .getElementById(
