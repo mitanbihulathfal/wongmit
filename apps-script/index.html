@@ -3545,11 +3545,15 @@
 
       }
 
-      function showDashboardAttendance() {
+      function showDashboardAttendance(card) {
 
-        const card = event.currentTarget;
+        if (!card) {
+          return;
+        }
 
-        if (card.dataset.loading === "true") {
+        if (
+          card.dataset.loading === "true"
+        ) {
           return;
         }
 
@@ -3596,7 +3600,10 @@
         const tanggal =
           String(
             tanggalSekarang.getDate()
-          ).padStart(2, "0");
+          ).padStart(
+            2,
+            "0"
+          );
 
         const namaBulan = [
           "Januari",
@@ -3618,19 +3625,26 @@
         const tahun =
           tanggalSekarang.getFullYear();
 
-        document.getElementById(
-          "dashboardAttendanceDate"
-        ).textContent =
-          namaHari +
-          ", " +
-          tanggal +
-          " " +
-          namaBulan +
-          " " +
-          tahun;
+        const dateElement =
+          document.getElementById(
+            "dashboardAttendanceDate"
+          );
+
+        if (dateElement) {
+
+          dateElement.textContent =
+            namaHari +
+            ", " +
+            tanggal +
+            " " +
+            namaBulan +
+            " " +
+            tahun;
+
+        }
 
         /* =========================
-          LOADING
+          LAZY-LOAD LOADING
         ========================= */
 
         body.innerHTML = `
@@ -3649,171 +3663,221 @@
 
         `;
 
+        /*
+          Modal dibuka segera.
+          Data detail baru diminta setelah
+          pengguna benar-benar membuka Card.
+        */
+
         modal.show();
 
         /* =========================
-          AMBIL DATA ABSENSI
+          LAZY-LOAD DATA DETAIL
         ========================= */
 
         google.script.run
 
-          .withSuccessHandler(function (data) {
+          .withSuccessHandler(
+            function (data) {
 
-            let html = "";
+              if (
+                !Array.isArray(data)
+              ) {
 
-            data.forEach(function (item) {
+                throw new Error(
+                  "Format data absensi Dashboard tidak valid."
+                );
 
-              /* =========================
-                BELUM DIABSEN
-              ========================= */
+              }
 
-              if (item.status) {
+              let html = "";
 
-                html += `
+              if (
+                data.length === 0
+              ) {
 
-                  <div class="dashboard-summary-card">
+                html = `
 
-                    <div class="d-flex align-items-center">
+                  <div class="text-center text-muted py-4">
 
-                      <strong class="flex-shrink-0">
-                        Kelas ${item.kelas}
-                      </strong>
-
-                      <small
-                        class="dashboard-attendance-guru"
-                        title="${item.guruMengajar || "-"}">
-
-                        ${item.guruMengajar || "-"}
-
-                      </small>
-
-                      <span class="badge bg-danger flex-shrink-0">
-
-                        Belum Diabsen
-
-                      </span>
-
-                    </div>
-
-                    <small class="text-muted d-block mt-2">
-
-                      Menunggu guru melakukan absensi.
-
-                    </small>
+                    Tidak ada data kelas.
 
                   </div>
 
                 `;
 
               }
-
-              /* =========================
-                SUDAH DIABSEN
-              ========================= */
 
               else {
 
-                html += `
+                data.forEach(
+                  function (item) {
 
-                  <div class="dashboard-summary-card">
+                    /* =========================
+                      BELUM DIABSEN
+                    ========================= */
 
-                    <div class="d-flex align-items-center">
+                    if (
+                      item.status
+                    ) {
 
-                      <strong class="flex-shrink-0">
-                        Kelas ${item.kelas}
-                      </strong>
+                      html += `
 
-                      <small
-                        class="dashboard-attendance-guru"
-                        title="${item.guruMengajar || "-"}">
+                        <div class="dashboard-summary-card">
 
-                        ${item.guruMengajar || "-"}
+                          <div class="d-flex align-items-center">
 
-                      </small>
+                            <strong class="flex-shrink-0">
+                              Kelas ${item.kelas}
+                            </strong>
 
-                      <span class="badge bg-light text-dark flex-shrink-0">
+                            <small
+                              class="dashboard-attendance-guru"
+                              title="${item.guruMengajar || "-"}">
 
-                        ${item.total} siswa
+                              ${item.guruMengajar || "-"}
 
-                      </span>
+                            </small>
 
-                    </div>
+                            <span class="badge bg-danger flex-shrink-0">
 
-                    <div class="d-flex flex-wrap gap-2 mt-2">
+                              Belum Diabsen
 
-                      <span class="badge bg-success">
-                        ${item.hadir} hadir
-                      </span>
+                            </span>
 
-                      <span class="badge bg-warning text-dark">
-                        ${item.sakit} sakit
-                      </span>
+                          </div>
 
-                      <span class="badge bg-info text-dark">
-                        ${item.izin} izin
-                      </span>
+                          <small class="text-muted d-block mt-2">
 
-                      <span class="badge bg-danger">
-                        ${item.alpa} alpa
-                      </span>
+                            Menunggu guru melakukan absensi.
 
-                    </div>
+                          </small>
 
-                  </div>
+                        </div>
 
-                `;
+                      `;
+
+                      return;
+
+                    }
+
+                    /* =========================
+                      SUDAH DIABSEN
+                    ========================= */
+
+                    html += `
+
+                      <div class="dashboard-summary-card">
+
+                        <div class="d-flex align-items-center">
+
+                          <strong class="flex-shrink-0">
+                            Kelas ${item.kelas}
+                          </strong>
+
+                          <small
+                            class="dashboard-attendance-guru"
+                            title="${item.guruMengajar || "-"}">
+
+                            ${item.guruMengajar || "-"}
+
+                          </small>
+
+                          <span class="badge bg-light text-dark flex-shrink-0">
+
+                            ${item.total} siswa
+
+                          </span>
+
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 mt-2">
+
+                          <span class="badge bg-success">
+
+                            ${item.hadir} hadir
+
+                          </span>
+
+                          <span class="badge bg-warning text-dark">
+
+                            ${item.sakit} sakit
+
+                          </span>
+
+                          <span class="badge bg-info text-dark">
+
+                            ${item.izin} izin
+
+                          </span>
+
+                          <span class="badge bg-danger">
+
+                            ${item.alpa} alpa
+
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                    `;
+
+                  }
+                );
 
               }
 
-            });
+              body.innerHTML =
+                html;
 
-            body.innerHTML =
-              html;
+              card.dataset.loading =
+                "false";
 
-            card.dataset.loading =
-              "false";
+              card.classList.remove(
+                "card-clicking"
+              );
 
-            card.classList.remove(
-              "card-clicking"
-            );
+            }
+          )
 
-          })
+          .withFailureHandler(
+            function (error) {
 
-          .withFailureHandler(function (error) {
+              console.error(
+                "showDashboardAttendance:",
+                error
+              );
 
-            body.innerHTML = `
+              body.innerHTML = `
 
-              <div class="dashboard-attendance-loading">
+                <div class="dashboard-attendance-loading">
 
-                <div class="dashboard-attendance-loading-text">
+                  <div class="dashboard-attendance-loading-text">
 
-                  Gagal memuat data kehadiran.
+                    Gagal memuat data kehadiran.
+
+                  </div>
+
+                  <small class="text-muted">
+
+                    Silakan coba lagi.
+
+                  </small>
 
                 </div>
 
-                <small class="text-muted">
+              `;
 
-                  Silakan coba lagi.
+              card.dataset.loading =
+                "false";
 
-                </small>
+              card.classList.remove(
+                "card-clicking"
+              );
 
-              </div>
-
-            `;
-
-            card.dataset.loading =
-              "false";
-
-            card.classList.remove(
-              "card-clicking"
-            );
-
-            console.error(
-              "showDashboardAttendance:",
-              error
-            );
-
-          })
+            }
+          )
 
           .getDashboardAttendanceSummary();
 

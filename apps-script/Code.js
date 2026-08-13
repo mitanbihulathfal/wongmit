@@ -65,17 +65,32 @@ function getDashboardData() {
   const pengaturanSheet =
     SS.getSheetByName("Pengaturan");
 
+  /* =========================
+     PENGATURAN — BATCH READ
+  ========================= */
+
+  const configData =
+    pengaturanSheet
+      .getDataRange()
+      .getValues();
+
   const config = {};
 
-  pengaturanSheet
-    .getDataRange()
-    .getValues()
-    .slice(1)
-    .forEach(function (row) {
+  for (
+    let i = 1;
+    i < configData.length;
+    i++
+  ) {
 
-      config[row[0]] = row[1];
+    config[
+      configData[i][0]
+    ] = configData[i][1];
 
-    });
+  }
+
+  /* =========================
+     MASTER — READ MINIMAL
+  ========================= */
 
   const totalSiswa =
     Math.max(
@@ -83,34 +98,36 @@ function getDashboardData() {
       0
     );
 
-  const dataGuru =
+  const guruLastRow =
+    guruSheet.getLastRow();
 
-    guruSheet
-      .getDataRange()
-      .getValues();
+  const guruData =
+    guruLastRow > 1
+      ? guruSheet
+          .getRange(
+            2,
+            1,
+            guruLastRow - 1,
+            3
+          )
+          .getValues()
+      : [];
 
   let totalGuru = 0;
 
   for (
-
-    let i = 1;
-
-    i < dataGuru.length;
-
+    let i = 0;
+    i < guruData.length;
     i++
-
   ) {
 
     const role =
-
       String(
-        dataGuru[i][2]
+        guruData[i][2] || ""
       ).trim();
 
     if (
-
       role !== "Admin"
-
     ) {
 
       totalGuru++;
@@ -125,33 +142,78 @@ function getDashboardData() {
       0
     );
 
-  const dataAbsensi =
-    absensiSheet
-      .getDataRange()
-      .getValues();
+  /* =========================
+     ABSENSI HARI INI
+     BACA KOLOM YANG DIPERLUKAN
+  ========================= */
 
-  const hariIni =
-    Utilities.formatDate(
-      new Date(),
-      Session.getScriptTimeZone(),
-      "yyyy-MM-dd"
-    );
+  const absensiLastRow =
+    absensiSheet.getLastRow();
+
+  const absensiData =
+    absensiLastRow > 1
+      ? absensiSheet
+          .getRange(
+            2,
+            1,
+            absensiLastRow - 1,
+            4
+          )
+          .getValues()
+      : [];
+
+  const sekarang =
+    new Date();
+
+  const awalHari =
+    new Date(sekarang);
+
+  awalHari.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+  const awalBesok =
+    new Date(awalHari);
+
+  awalBesok.setDate(
+    awalBesok.getDate() + 1
+  );
 
   const kelasSudahAbsen =
     new Set();
 
-  for (let i = 1; i < dataAbsensi.length; i++) {
+  for (
+    let i = 0;
+    i < absensiData.length;
+    i++
+  ) {
 
-    const tanggal = Utilities.formatDate(
-      new Date(dataAbsensi[i][0]),
-      Session.getScriptTimeZone(),
-      "yyyy-MM-dd"
-    );
+    const tanggal =
+      absensiData[i][0];
 
-    if (tanggal === hariIni) {
+    if (
+      !tanggal
+    ) {
+      continue;
+    }
+
+    const tanggalAbsensi =
+      tanggal instanceof Date
+        ? tanggal
+        : new Date(tanggal);
+
+    if (
+      tanggalAbsensi >= awalHari &&
+      tanggalAbsensi < awalBesok
+    ) {
 
       kelasSudahAbsen.add(
-        String(dataAbsensi[i][3]).trim()
+        String(
+          absensiData[i][3] || ""
+        ).trim()
       );
 
     }
@@ -161,7 +223,9 @@ function getDashboardData() {
   return {
 
     totalSiswa,
+
     totalGuru,
+
     totalKelas,
 
     hadir:
@@ -171,7 +235,9 @@ function getDashboardData() {
       totalKelas,
 
     izin: 0,
+
     sakit: 0,
+
     alpa: 0,
 
     tahunAjaran:
@@ -198,151 +264,356 @@ function getDashboardAttendanceSummary() {
   const guruSheet =
     SS.getSheetByName("Guru");
 
+  if (
+    !sheet ||
+    !kelasSheet ||
+    !guruMengajarSheet ||
+    !guruSheet
+  ) {
+
+    throw new Error(
+      "Sheet Dashboard Absensi tidak lengkap."
+    );
+
+  }
+
+  /* =========================
+     KELAS — KOLOM A SAJA
+  ========================= */
+
+  const kelasLastRow =
+    kelasSheet.getLastRow();
+
   const kelasData =
-    kelasSheet
-      .getRange(
-        2,
-        1,
-        kelasSheet.getLastRow() - 1,
-        1
-      )
-      .getValues()
-      .flat();
+    kelasLastRow > 1
+      ? kelasSheet
+          .getRange(
+            2,
+            1,
+            kelasLastRow - 1,
+            1
+          )
+          .getValues()
+          .flat()
+      : [];
 
-  const absensi =
-    sheet
-      .getDataRange()
-      .getValues();
+  /* =========================
+     GURU — KOLOM A:B
+  ========================= */
 
-  const guruMengajarData =
-    guruMengajarSheet
-      .getDataRange()
-      .getValues();
+  const guruLastRow =
+    guruSheet.getLastRow();
 
   const guruData =
-    guruSheet
-      .getDataRange()
-      .getValues();
+    guruLastRow > 1
+      ? guruSheet
+          .getRange(
+            2,
+            1,
+            guruLastRow - 1,
+            2
+          )
+          .getValues()
+      : [];
 
-  const hariIni =
-    Utilities.formatDate(
-      new Date(),
-      Session.getScriptTimeZone(),
-      "yyyy-MM-dd"
+  const guruById =
+    new Map();
+
+  for (
+    let i = 0;
+    i < guruData.length;
+    i++
+  ) {
+
+    const idGuru =
+      String(
+        guruData[i][0] || ""
+      ).trim();
+
+    if (
+      !idGuru
+    ) {
+      continue;
+    }
+
+    guruById.set(
+      idGuru,
+      String(
+        guruData[i][1] || ""
+      ).trim()
     );
+
+  }
+
+  /* =========================
+     GURU MENGAJAR
+     KOLOM B:F
+  ========================= */
+
+  const guruMengajarLastRow =
+    guruMengajarSheet.getLastRow();
+
+  const guruMengajarData =
+    guruMengajarLastRow > 1
+      ? guruMengajarSheet
+          .getRange(
+            2,
+            2,
+            guruMengajarLastRow - 1,
+            5
+          )
+          .getValues()
+      : [];
 
   const hariSekarang =
     getWeekDays()[
       new Date().getDay()
     ];
 
-  const hasil = [];
+  const guruMengajarByKelasHari =
+    new Map();
 
-  kelasData.forEach(function (kelas) {
+  for (
+    let i = 0;
+    i < guruMengajarData.length;
+    i++
+  ) {
 
-    /* =========================
-       CARI GURU MENGAJAR
-       BERDASARKAN KELAS + HARI
-    ========================= */
+    const idGuru =
+      String(
+        guruMengajarData[i][0] || ""
+      ).trim();
 
-    let guruMengajar = "-";
+    const kelasGuru =
+      String(
+        guruMengajarData[i][1] || ""
+      ).trim();
 
-    for (
-      let i = 1;
-      i < guruMengajarData.length;
-      i++
+    const hariGuru =
+      String(
+        guruMengajarData[i][2] || ""
+      ).trim();
+
+    const statusGuru =
+      String(
+        guruMengajarData[i][4] || ""
+      ).trim();
+
+    if (
+      statusGuru !== "Aktif" ||
+      !idGuru ||
+      !kelasGuru ||
+      !hariGuru
+    ) {
+      continue;
+    }
+
+    const key =
+      kelasGuru +
+      "\u0000" +
+      hariGuru;
+
+    if (
+      !guruMengajarByKelasHari.has(
+        key
+      )
     ) {
 
-      const kelasGuru =
-        String(
-          guruMengajarData[i][2]
-        ).trim();
-
-      const hariGuru =
-        String(
-          guruMengajarData[i][3]
-        ).trim();
-
-      const statusGuru =
-        String(
-          guruMengajarData[i][5]
-        ).trim();
-
-      if (
-        kelasGuru ===
-          String(kelas).trim() &&
-
-        hariGuru ===
-          String(hariSekarang).trim() &&
-
-        statusGuru === "Aktif"
-      ) {
-
-        const idGuru =
-          String(
-            guruMengajarData[i][1]
-          ).trim();
-
-        for (
-          let j = 1;
-          j < guruData.length;
-          j++
-        ) {
-
-          const idGuruMaster =
-            String(
-              guruData[j][0]
-            ).trim();
-
-          if (
-            idGuruMaster === idGuru
-          ) {
-
-            guruMengajar =
-              guruData[j][1];
-
-            break;
-
-          }
-
-        }
-
-        break;
-
-      }
+      guruMengajarByKelasHari.set(
+        key,
+        guruById.get(
+          idGuru
+        ) || "-"
+      );
 
     }
 
-    /* =========================
-       DATA ABSENSI HARI INI
-    ========================= */
+  }
 
-    const dataKelas =
-      absensi.filter(function (r) {
+  /* =========================
+     ABSENSI — KOLOM A:E SAJA
+     SATU KALI READ
+  ========================= */
 
-        const tgl =
-          Utilities.formatDate(
-            new Date(r[0]),
-            Session.getScriptTimeZone(),
-            "yyyy-MM-dd"
-          );
+  const absensiLastRow =
+    sheet.getLastRow();
 
-        return (
-          tgl === hariIni &&
+  const absensi =
+    absensiLastRow > 1
+      ? sheet
+          .getRange(
+            2,
+            1,
+            absensiLastRow - 1,
+            5
+          )
+          .getValues()
+      : [];
 
-          String(r[3]).trim() ===
-            String(kelas).trim()
-        );
+  /* =========================
+     BATAS HARI
+     TANPA formatDate PER BARIS
+  ========================= */
 
-      });
+  const sekarang =
+    new Date();
 
-    /* =========================
-       BELUM DIABSEN
-    ========================= */
+  const awalHari =
+    new Date(sekarang);
+
+  awalHari.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+  const awalBesok =
+    new Date(awalHari);
+
+  awalBesok.setDate(
+    awalBesok.getDate() + 1
+  );
+
+  const absensiByKelas =
+    new Map();
+
+  for (
+    let i = 0;
+    i < absensi.length;
+    i++
+  ) {
+
+    const nilaiTanggal =
+      absensi[i][0];
 
     if (
-      dataKelas.length === 0
+      !nilaiTanggal
     ) {
+      continue;
+    }
+
+    const tanggal =
+      nilaiTanggal instanceof Date
+        ? nilaiTanggal
+        : new Date(
+            nilaiTanggal
+          );
+
+    if (
+      tanggal < awalHari ||
+      tanggal >= awalBesok
+    ) {
+      continue;
+    }
+
+    const kelas =
+      String(
+        absensi[i][3] || ""
+      ).trim();
+
+    if (
+      !kelas
+    ) {
+      continue;
+    }
+
+    let summary =
+      absensiByKelas.get(
+        kelas
+      );
+
+    if (!summary) {
+
+      summary = {
+        hadir: 0,
+        sakit: 0,
+        izin: 0,
+        alpa: 0,
+        total: 0
+      };
+
+      absensiByKelas.set(
+        kelas,
+        summary
+      );
+
+    }
+
+    const status =
+      String(
+        absensi[i][4] || ""
+      ).trim();
+
+    switch (status) {
+
+      case "Hadir":
+        summary.hadir++;
+        break;
+
+      case "Sakit":
+        summary.sakit++;
+        break;
+
+      case "Izin":
+        summary.izin++;
+        break;
+
+      case "Alpa":
+        summary.alpa++;
+        break;
+
+    }
+
+    summary.total++;
+
+  }
+
+  /* =========================
+     BENTUK HASIL
+  ========================= */
+
+  const hasil = [];
+
+  kelasData.forEach(
+    function (kelas) {
+
+      const kelasKey =
+        String(
+          kelas || ""
+        ).trim();
+
+      const guruMengajar =
+        guruMengajarByKelasHari.get(
+          kelasKey +
+          "\u0000" +
+          String(
+            hariSekarang
+          ).trim()
+        ) || "-";
+
+      const summary =
+        absensiByKelas.get(
+          kelasKey
+        );
+
+      if (!summary) {
+
+        hasil.push({
+
+          kelas: kelas,
+
+          guruMengajar:
+            guruMengajar,
+
+          status:
+            "Belum diabsen"
+
+        });
+
+        return;
+
+      }
 
       hasil.push({
 
@@ -351,82 +622,47 @@ function getDashboardAttendanceSummary() {
         guruMengajar:
           guruMengajar,
 
-        status:
-          "Belum diabsen"
+        hadir:
+          summary.hadir,
+
+        sakit:
+          summary.sakit,
+
+        izin:
+          summary.izin,
+
+        alpa:
+          summary.alpa,
+
+        total:
+          summary.total
 
       });
 
-      return;
-
     }
+  );
 
-    /* =========================
-       REKAP ABSENSI
-    ========================= */
+  /* =========================
+     SORT KELAS
+  ========================= */
 
-    let hadir = 0;
-    let sakit = 0;
-    let izin = 0;
-    let alpa = 0;
+  hasil.sort(
+    function (a, b) {
 
-    dataKelas.forEach(function (r) {
-
-      switch (r[4]) {
-
-        case "Hadir":
-          hadir++;
-          break;
-
-        case "Sakit":
-          sakit++;
-          break;
-
-        case "Izin":
-          izin++;
-          break;
-
-        case "Alpa":
-          alpa++;
-          break;
-
-      }
-
-    });
-
-    hasil.push({
-
-      kelas: kelas,
-
-      guruMengajar:
-        guruMengajar,
-
-      hadir: hadir,
-
-      sakit: sakit,
-
-      izin: izin,
-
-      alpa: alpa,
-
-      total:
-        dataKelas.length
-
-    });
-
-  });
-
-  hasil.sort(function (a, b) {
-
-    return String(a.kelas)
-      .localeCompare(
-        String(b.kelas),
+      return String(
+        a.kelas
+      ).localeCompare(
+        String(
+          b.kelas
+        ),
         undefined,
         {
           numeric: true
         }
       );
 
-  });
+    }
+  );
 
   return hasil;
 
@@ -6367,114 +6603,178 @@ function exportRekapExcel(
 function saveAttendance(data) {
 
   const sheet =
-
     SS.getSheetByName(
       "Absensi"
     );
 
-  const namaGuru =
+  if (
+    !Array.isArray(data) ||
+    data.length === 0
+  ) {
+    return true;
+  }
 
-    String(
-      data[0].inputOleh
-    ).trim();
+  /* =========================
+     BATCH LOOKUP GURU MENGAJAR
+  ========================= */
 
-  const guruSheet =
-
+  const sheetGuruMengajar =
     SS.getSheetByName(
-      "Guru"
+      "GuruMengajar"
     );
 
-  const guruData =
-
-    guruSheet
+  const dataMengajar =
+    sheetGuruMengajar
       .getDataRange()
       .getValues();
 
-  let idGuru = "";
+  const relasiByKelasHari =
+    new Map();
 
   for (
-
     let i = 1;
-
-    i < guruData.length;
-
+    i < dataMengajar.length;
     i++
-
   ) {
 
     if (
+      String(
+        dataMengajar[i][5]
+      ).trim() !==
+      "Aktif"
+    ) {
+      continue;
+    }
 
-      String(guruData[i][1]).trim()
+    const kelas =
+      String(
+        dataMengajar[i][2]
+      ).trim();
 
-      ===
+    const hari =
+      String(
+        dataMengajar[i][3]
+      ).trim();
 
-      namaGuru
+    const key =
+      kelas +
+      "\u0000" +
+      hari;
 
+    /*
+     * Pertahankan perilaku lama:
+     * getRelasiMengajarByHari()
+     * menggunakan relasi aktif pertama
+     * yang ditemukan.
+     */
+    if (
+      !relasiByKelasHari.has(key)
     ) {
 
-      idGuru =
+      relasiByKelasHari.set(
+        key,
+        {
+          idRelasi:
+            dataMengajar[i][0],
 
-        guruData[i][0];
+          hari:
+            dataMengajar[i][3],
 
-      break;
+          mapel:
+            dataMengajar[i][4]
+        }
+      );
 
     }
 
   }
 
-  data.forEach(function (item) {
+  /* =========================
+     BATCH BUILD ROWS
+  ========================= */
 
-    const relasi =
+  const timestamp =
+    new Date();
 
-      getRelasiMengajarByHari(
+  const rows = [];
+
+  data.forEach(
+    function (item) {
+
+      const hari =
+        getNamaHariIndonesia(
+          item.tanggal
+        );
+
+      const key =
+        String(
+          item.kelas
+        ).trim() +
+        "\u0000" +
+        String(
+          hari
+        ).trim();
+
+      const relasi =
+        relasiByKelasHari.get(
+          key
+        ) || null;
+
+      rows.push([
+
+        item.tanggal,
+
+        item.nisn,
+
+        item.nama,
 
         item.kelas,
 
-        getNamaHariIndonesia(
-          item.tanggal
-        )
+        item.status,
 
+        "",
+
+        item.inputOleh,
+
+        relasi
+          ? relasi.idRelasi
+          : "",
+
+        relasi
+          ? relasi.hari
+          : "",
+
+        relasi
+          ? relasi.mapel
+          : "",
+
+        timestamp
+
+      ]);
+
+    }
+  );
+
+  /* =========================
+     SINGLE BATCH WRITE
+  ========================= */
+
+  if (
+    rows.length > 0
+  ) {
+
+    sheet
+      .getRange(
+        sheet.getLastRow() + 1,
+        1,
+        rows.length,
+        11
+      )
+      .setValues(
+        rows
       );
 
-    sheet.appendRow([
-
-      item.tanggal,
-
-      item.nisn,
-
-      item.nama,
-
-      item.kelas,
-
-      item.status,
-
-      "",
-
-      item.inputOleh,
-
-      relasi
-
-        ? relasi.idRelasi
-
-        : "",
-
-      relasi
-
-        ? relasi.hari
-
-        : "",
-
-      relasi
-
-        ? relasi.mapel
-
-        : "",
-
-      new Date()
-
-    ]);
-
-  });
+  }
 
   return true;
 
@@ -6487,165 +6787,284 @@ function reviseAttendance(
 ) {
 
   const sheet =
-
     SS.getSheetByName(
       "Absensi"
     );
 
-  const allData =
+  if (
+    !Array.isArray(data) ||
+    data.length === 0
+  ) {
+    return true;
+  }
 
+  const allData =
     sheet
       .getDataRange()
       .getValues();
 
+  const kelasTarget =
+    String(
+      kelas
+    ).trim();
+
+  const tanggalTarget =
+    String(
+      tanggal
+    ).trim();
+
+  /*
+   * Cari semua baris Absensi yang
+   * termasuk kelas + tanggal target.
+   *
+   * Kita tidak menghapus satu per satu.
+   */
+  const targetRows = [];
+
   for (
-    let i = allData.length - 1;
-    i >= 1;
-    i--
+    let i = 1;
+    i < allData.length;
+    i++
   ) {
 
     const tgl =
-
       Utilities.formatDate(
-
         new Date(
           allData[i][0]
         ),
-
         Session.getScriptTimeZone(),
-
         "yyyy-MM-dd"
-
       );
 
     const kelasData =
-
       String(
         allData[i][3]
       ).trim();
 
     if (
-
-      tgl === tanggal
-
-      &&
-
-      kelasData ===
-      String(kelas).trim()
-
+      tgl === tanggalTarget &&
+      kelasData === kelasTarget
     ) {
 
-      sheet.deleteRow(
-        i + 1
+      targetRows.push(
+        i
       );
 
     }
 
   }
 
-  const namaGuru =
+  if (
+    targetRows.length === 0
+  ) {
 
-    String(
-      data[0].inputOleh
-    ).trim();
-
-  const guruSheet =
-
-    SS.getSheetByName(
-      "Guru"
+    throw new Error(
+      "Data absensi yang akan direvisi tidak ditemukan."
     );
 
-  const guruData =
+  }
 
-    guruSheet
+  /*
+   * Untuk menjaga keamanan data,
+   * jumlah data revisi harus sama
+   * dengan jumlah record yang sudah ada.
+   */
+  if (
+    targetRows.length !==
+    data.length
+  ) {
+
+    throw new Error(
+      "Jumlah data revisi (" +
+      data.length +
+      ") tidak sama dengan data absensi sebelumnya (" +
+      targetRows.length +
+      "). Revisi dibatalkan untuk mencegah data tidak sinkron."
+    );
+
+  }
+
+  /* =========================
+     BATCH LOOKUP GURU MENGAJAR
+  ========================= */
+
+  const sheetGuruMengajar =
+    SS.getSheetByName(
+      "GuruMengajar"
+    );
+
+  const dataMengajar =
+    sheetGuruMengajar
       .getDataRange()
       .getValues();
 
-  let idGuru = "";
+  const relasiByKelasHari =
+    new Map();
 
   for (
-
     let i = 1;
-
-    i < guruData.length;
-
+    i < dataMengajar.length;
     i++
-
   ) {
 
     if (
+      String(
+        dataMengajar[i][5]
+      ).trim() !==
+      "Aktif"
+    ) {
+      continue;
+    }
 
-      String(guruData[i][1]).trim()
+    const kelasData =
+      String(
+        dataMengajar[i][2]
+      ).trim();
 
-      ===
+    const hariData =
+      String(
+        dataMengajar[i][3]
+      ).trim();
 
-      namaGuru
+    const key =
+      kelasData +
+      "\u0000" +
+      hariData;
 
+    /*
+     * Pertahankan perilaku lama:
+     * gunakan relasi aktif pertama.
+     */
+    if (
+      !relasiByKelasHari.has(
+        key
+      )
     ) {
 
-      idGuru =
+      relasiByKelasHari.set(
+        key,
+        {
+          idRelasi:
+            dataMengajar[i][0],
 
-        guruData[i][0];
+          hari:
+            dataMengajar[i][3],
 
-      break;
+          mapel:
+            dataMengajar[i][4]
+        }
+      );
 
     }
 
   }
 
-  data.forEach(function (item) {
+  /* =========================
+     BATCH BUILD DATA REVISI
+  ========================= */
 
-    const relasi =
+  const timestamp =
+    new Date();
 
-      getRelasiMengajarByHari(
+  const rows = [];
+
+  data.forEach(
+    function (item) {
+
+      const hari =
+        getNamaHariIndonesia(
+          item.tanggal
+        );
+
+      const key =
+        String(
+          item.kelas
+        ).trim() +
+        "\u0000" +
+        String(
+          hari
+        ).trim();
+
+      const relasi =
+        relasiByKelasHari.get(
+          key
+        ) || null;
+
+      rows.push([
+
+        item.tanggal,
+
+        item.nisn,
+
+        item.nama,
 
         item.kelas,
 
-        getNamaHariIndonesia(
-          item.tanggal
-        )
+        item.status,
 
+        "",
+
+        item.inputOleh,
+
+        relasi
+          ? relasi.idRelasi
+          : "",
+
+        relasi
+          ? relasi.hari
+          : "",
+
+        relasi
+          ? relasi.mapel
+          : "",
+
+        timestamp
+
+      ]);
+
+    }
+  );
+
+  /*
+   * Pastikan seluruh baris target
+   * benar-benar berurutan.
+   *
+   * Ini penting karena kita akan
+   * melakukan satu setValues().
+   */
+  for (
+    let i = 1;
+    i < targetRows.length;
+    i++
+  ) {
+
+    if (
+      targetRows[i] !==
+      targetRows[0] + i
+    ) {
+
+      throw new Error(
+        "Data absensi target tidak berurutan. Revisi dibatalkan demi keamanan data."
       );
 
-    sheet.appendRow([
+    }
 
-      item.tanggal,
+  }
 
-      item.nisn,
+  /* =========================
+     SINGLE BATCH UPDATE
+  ========================= */
 
-      item.nama,
-
-      item.kelas,
-
-      item.status,
-
-      "",
-
-      item.inputOleh,
-
-      relasi
-
-        ? relasi.idRelasi
-
-        : "",
-
-      relasi
-
-        ? relasi.hari
-
-        : "",
-
-      relasi
-
-        ? relasi.mapel
-
-        : "",
-
-      new Date()
-
-    ]);
-
-  });
+  sheet
+    .getRange(
+      targetRows[0] + 1,
+      1,
+      rows.length,
+      11
+    )
+    .setValues(
+      rows
+    );
 
   return true;
 
