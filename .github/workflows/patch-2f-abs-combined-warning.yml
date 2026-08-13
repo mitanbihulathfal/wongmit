@@ -1,0 +1,40 @@
+name: Patch 2F ABS combined warning
+
+on:
+  push:
+    paths:
+      - .sprint-2f-abs-combined-warning-trigger
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Apply fix
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('apps-script/index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '''              const pesan =\n                context.warningType === "teacher_schedule"\n                  ?\n                    "Anda tidak memiliki jadwal mengajar untuk kelas " +\n                    kelas +\n                    " pada hari " +\n                    context.hari +\n                    ". Periksa kembali tanggal yang dipilih.\\n\\nApakah Anda tetap ingin melanjutkan absensi?"\n                  :\n                    "Tanggal " +\n                    tanggal +\n                    " adalah hari libur sekolah (" +\n                    context.hari +\n                    ").\\n\\nApakah Anda tetap ingin melanjutkan absensi?";\n\n              const judulPeringatan =\n                context.warningType === "teacher_schedule"\n                  ? "Periksa Jadwal Mengajar"\n                  : "Hari Libur Sekolah";'''
+          new = '''              const isHariLibur =\n                !!context.isSchoolHoliday;\n\n              const isTidakAdaJadwalGuru =\n                context.warningType === "teacher_schedule";\n\n              let judulPeringatan =\n                "Periksa Absensi";\n\n              let pesan =\n                "Periksa kembali tanggal dan jadwal mengajar yang dipilih.\\n\\nApakah Anda tetap ingin melanjutkan absensi?";\n\n              if (\n                isHariLibur &&\n                isTidakAdaJadwalGuru\n              ) {\n\n                judulPeringatan =\n                  "Periksa Hari & Jadwal Mengajar";\n\n                pesan =\n                  "Tanggal " +\n                  tanggal +\n                  " adalah hari libur sekolah (" +\n                  context.hari +\n                  "). Anda juga tidak memiliki jadwal mengajar untuk kelas " +\n                  kelas +\n                  " pada hari tersebut.\\n\\nPeriksa kembali tanggal dan jadwal Anda. Apakah Anda tetap ingin melanjutkan absensi?";\n\n              } else if (\n                isTidakAdaJadwalGuru\n              ) {\n\n                judulPeringatan =\n                  "Periksa Jadwal Mengajar";\n\n                pesan =\n                  "Anda tidak memiliki jadwal mengajar untuk kelas " +\n                  kelas +\n                  " pada hari " +\n                  context.hari +\n                  ". Periksa kembali tanggal yang dipilih.\\n\\nApakah Anda tetap ingin melanjutkan absensi?";\n\n              } else if (\n                isHariLibur\n              ) {\n\n                judulPeringatan =\n                  "Hari Libur Sekolah";\n\n                pesan =\n                  "Tanggal " +\n                  tanggal +\n                  " adalah hari libur sekolah (" +\n                  context.hari +\n                  ").\\n\\nApakah Anda tetap ingin melanjutkan absensi?";\n\n              }'''
+          if old not in s:
+              raise SystemExit('PATCH FAILED: warning message block not found')
+          s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          assert 'Periksa Hari & Jadwal Mengajar' in s
+          assert 'isHariLibur &&' in s
+          assert 'context.isSchoolHoliday' in s
+          trigger = Path('.sprint-2f-abs-combined-warning-trigger')
+          if trigger.exists(): trigger.unlink()
+      - name: Commit and clean up
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps-script/index.html .sprint-2f-abs-combined-warning-trigger
+          git rm -f .github/workflows/patch-2f-abs-combined-warning.yml
+          git commit -m "fix: show combined holiday and teacher schedule warning"
+          git push
