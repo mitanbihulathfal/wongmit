@@ -14,67 +14,69 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Apply patch
+      - name: Apply modal and request de-duplication fix
         shell: python
         run: |
           from pathlib import Path
-          import re
 
           root = Path('.')
-          code_path = root / 'apps-script' / 'Code.js'
           index_path = root / 'apps-script' / 'index.html'
-
-          code = code_path.read_text(encoding='utf-8')
           index = index_path.read_text(encoding='utf-8')
 
-          old = '''function getAttendanceCalendarContext(\n  kelas,\n  tanggal\n) {\n\n  const hari =\n    getNamaHariIndonesia(tanggal);\n\n  const hariLibur =\n    isSchoolHoliday(tanggal);\n\n  const relasi =\n    getRelasiMengajarByHari(\n      kelas,\n      hari\n    );\n\n  return {\n\n    tanggal: tanggal,\n\n    hari: hari,\n\n    isSchoolHoliday: hariLibur,\n\n    hasFormalActivity: !!relasi,\n\n    shouldWarn:\n      hariLibur && !relasi,\n\n    formalActivity: relasi\n      ? {\n          idRelasi: relasi.idRelasi,\n          idGuru: relasi.idGuru,\n          mapel: relasi.mapel\n        }\n      : null\n\n  };\n\n}\n'''
+          old_vars = '''      let callbackKonfirmasiGlobal = null;\n\n      let editGuruRow = null;'''
+          new_vars = '''      let callbackKonfirmasiGlobal = null;\n\n      let attendanceCalendarRequestId = 0;\n\n      let editGuruRow = null;'''
+          if old_vars not in index:
+              raise SystemExit('PATCH FAILED: global variable anchor not found')
+          index = index.replace(old_vars, new_vars, 1)
 
-          new = '''function getAttendanceCalendarContext(\n  kelas,\n  tanggal,\n  namaGuru = ""\n) {\n\n  const hari =\n    getNamaHariIndonesia(tanggal);\n\n  const hariLibur =\n    isSchoolHoliday(tanggal);\n\n  const namaGuruNormalized =\n    String(namaGuru || "").trim();\n\n  let roleGuru = "";\n  let idGuru = "";\n\n  if (namaGuruNormalized) {\n\n    const guruSheet =\n      SS.getSheetByName("Guru");\n\n    const guruData =\n      guruSheet\n        .getDataRange()\n        .getValues();\n\n    for (let i = 1; i < guruData.length; i++) {\n\n      if (\n        String(guruData[i][1]).trim()\n        === namaGuruNormalized\n      ) {\n\n        idGuru = guruData[i][0];\n        roleGuru = String(guruData[i][2] || "").trim();\n        break;\n\n      }\n\n    }\n\n  }\n\n  const rolesGuru =\n    roleGuru\n      .split(",")\n      .map(function (role) {\n        return String(role).trim();\n      })\n      .filter(Boolean);\n\n  const isExemptRole =\n    rolesGuru.includes("Admin")\n    ||\n    rolesGuru.includes("KepalaSekolah");\n\n  let hasTeacherSchedule = false;\n  let teacherSchedule = null;\n\n  if (idGuru && !isExemptRole) {\n\n    const sheetGuruMengajar =\n      SS.getSheetByName("GuruMengajar");\n\n    const dataMengajar =\n      sheetGuruMengajar\n        .getDataRange()\n        .getValues();\n\n    for (let i = 1; i < dataMengajar.length; i++) {\n\n      if (\n        String(dataMengajar[i][1]).trim()\n        !== String(idGuru).trim()\n      ) {\n        continue;\n      }\n\n      if (\n        String(dataMengajar[i][2]).trim()\n        !== String(kelas).trim()\n      ) {\n        continue;\n      }\n\n      if (\n        String(dataMengajar[i][3]).trim()\n        !== String(hari).trim()\n      ) {\n        continue;\n      }\n\n      if (\n        String(dataMengajar[i][5]).trim()\n        !== "Aktif"\n      ) {\n        continue;\n      }\n\n      hasTeacherSchedule = true;\n\n      teacherSchedule = {\n        idRelasi: dataMengajar[i][0],\n        hari: dataMengajar[i][3],\n        mapel: dataMengajar[i][4]\n      };\n\n      break;\n\n    }\n\n  }\n\n  const shouldWarnTeacherSchedule =\n    !!idGuru\n    &&\n    !isExemptRole\n    &&\n    !hasTeacherSchedule;\n\n  return {\n\n    tanggal: tanggal,\n    hari: hari,\n    isSchoolHoliday: hariLibur,\n    roleGuru: roleGuru,\n    isExemptRole: isExemptRole,\n    hasFormalActivity: hasTeacherSchedule,\n    hasTeacherSchedule: hasTeacherSchedule,\n    shouldWarn: shouldWarnTeacherSchedule,\n    warningType: shouldWarnTeacherSchedule\n      ? "teacher_schedule"\n      : "",\n    teacherSchedule: teacherSchedule\n\n  };\n\n}\n'''
+          old_modal = '''      function showConfirmModal(\n        judul,\n        pesan,\n        callback\n      ) {\n\n        callbackKonfirmasiGlobal =\n          callback;\n\n        document\n          .getElementById(\n            "judulKonfirmasiGlobal"\n          )\n          .innerText = judul;\n\n        document\n          .getElementById(\n            "pesanKonfirmasiGlobal"\n          )\n          .innerText = pesan;\n\n        const modal =\n          new bootstrap.Modal(\n\n            document.getElementById(\n              "modalKonfirmasiGlobal"\n            )\n\n          );\n\n        modal.show();\n\n        document\n          .getElementById(\n            "btnYaKonfirmasiGlobal"\n          )\n          .onclick = function () {\n\n            modal.hide();\n\n            setTimeout(function () {\n\n              if (callbackKonfirmasiGlobal) {\n\n                callbackKonfirmasiGlobal();\n\n              }\n\n            }, 200);\n\n          };\n\n      }'''
 
-          if old not in code:
-              raise SystemExit('PATCH FAILED: getAttendanceCalendarContext block not found')
-          code = code.replace(old, new, 1)
+          new_modal = '''      function showConfirmModal(\n        judul,\n        pesan,\n        callback\n      ) {\n\n        const modalElement =\n          document.getElementById(\n            "modalKonfirmasiGlobal"\n          );\n\n        if (!modalElement) {\n          return;\n        }\n\n        callbackKonfirmasiGlobal =\n          callback;\n\n        document\n          .getElementById(\n            "judulKonfirmasiGlobal"\n          )\n          .innerText = judul;\n\n        document\n          .getElementById(\n            "pesanKonfirmasiGlobal"\n          )\n          .innerText = pesan;\n\n        const modal =\n          bootstrap.Modal.getOrCreateInstance(\n            modalElement\n          );\n\n        const btnYa =\n          document.getElementById(\n            "btnYaKonfirmasiGlobal"\n          );\n\n        btnYa.onclick = function () {\n\n          const callbackSaatIni =\n            callbackKonfirmasiGlobal;\n\n          callbackKonfirmasiGlobal = null;\n\n          modalElement.addEventListener(\n            "hidden.bs.modal",\n            function () {\n\n              if (\n                typeof callbackSaatIni ===\n                "function"\n              ) {\n                callbackSaatIni();\n              }\n\n            },\n            { once: true }\n          );\n\n          modal.hide();\n\n        };\n\n        modal.show();\n\n      }'''
+          if old_modal not in index:
+              raise SystemExit('PATCH FAILED: showConfirmModal block not found')
+          index = index.replace(old_modal, new_modal, 1)
 
-          old_call = '''          .getAttendanceCalendarContext(\n            kelas,\n            tanggal\n          );'''
-          new_call = '''          .getAttendanceCalendarContext(\n            kelas,\n            tanggal,\n            localStorage.getItem(\n              "wongmit_nama"\n            ) || ""\n          );'''
+          old_load = '''      function loadExistingAttendance() {\n\n        const kelas ='''
+          new_load = '''      function loadExistingAttendance() {\n\n        const requestId =\n          ++attendanceCalendarRequestId;\n\n        const kelas ='''
+          if old_load not in index:
+              raise SystemExit('PATCH FAILED: loadExistingAttendance anchor not found')
+          index = index.replace(old_load, new_load, 1)
 
-          if old_call not in index:
-              raise SystemExit('PATCH FAILED: frontend calendar context call not found')
-          index = index.replace(old_call, new_call, 1)
+          old_success = '''          .withSuccessHandler(function (context) {\n\n            if (\n              context &&\n              context.shouldWarn\n            ) {'''
+          new_success = '''          .withSuccessHandler(function (context) {\n\n            if (\n              requestId !==\n              attendanceCalendarRequestId\n            ) {\n              return;\n            }\n\n            if (\n              context &&\n              context.shouldWarn\n            ) {'''
+          if old_success not in index:
+              raise SystemExit('PATCH FAILED: attendance calendar success handler anchor not found')
+          index = index.replace(old_success, new_success, 1)
 
-          old_message = '''              const pesan =\n                "Tanggal " +\n                tanggal +\n                " adalah hari libur sekolah (" +\n                context.hari +\n                ") dan belum ditemukan jadwal kegiatan formal untuk kelas " +\n                kelas +\n                ".\\n\\nApakah Anda tetap ingin melanjutkan absensi?";'''
+          old_warning = '''              showConfirmModal(\n                "Hari Libur Sekolah",\n                pesan,\n                function () {\n                  loadExistingAttendanceCore();\n                }\n              );'''
+          new_warning = '''              const judulPeringatan =\n                context.warningType === "teacher_schedule"\n                  ? "Periksa Jadwal Mengajar"\n                  : "Hari Libur Sekolah";\n\n              const modalElement =\n                document.getElementById(\n                  "modalKonfirmasiGlobal"\n                );\n\n              if (\n                modalElement &&\n                modalElement.classList.contains("show")\n              ) {\n                return;\n              }\n\n              showConfirmModal(\n                judulPeringatan,\n                pesan,\n                function () {\n                  loadExistingAttendanceCore();\n                }\n              );'''
+          if old_warning not in index:
+              raise SystemExit('PATCH FAILED: warning modal call block not found')
+          index = index.replace(old_warning, new_warning, 1)
 
-          new_message = '''              const pesan =\n                context.warningType === "teacher_schedule"\n                  ?\n                    "Anda tidak memiliki jadwal mengajar untuk kelas " +\n                    kelas +\n                    " pada hari " +\n                    context.hari +\n                    ". Periksa kembali tanggal yang dipilih.\\n\\nApakah Anda tetap ingin melanjutkan absensi?"\n                  :\n                    "Tanggal " +\n                    tanggal +\n                    " adalah hari libur sekolah (" +\n                    context.hari +\n                    ").\\n\\nApakah Anda tetap ingin melanjutkan absensi?";'''
-
-          if old_message not in index:
-              raise SystemExit('PATCH FAILED: warning message block not found')
-          index = index.replace(old_message, new_message, 1)
-
-          code_path.write_text(code, encoding='utf-8')
           index_path.write_text(index, encoding='utf-8')
 
+          # Structural assertions.
+          index = index_path.read_text(encoding='utf-8')
+          assert 'let attendanceCalendarRequestId = 0;' in index
+          assert 'bootstrap.Modal.getOrCreateInstance(' in index
+          assert '{ once: true }' in index
+          assert 'requestId !==' in index
+          assert 'context.warningType === "teacher_schedule"' in index
+          assert 'modalElement.classList.contains("show")' in index
+
+          # Remove trigger and this temporary workflow after the patch is committed.
           trigger = root / '.sprint-2f-abs-teacher-warning-trigger'
           if trigger.exists():
               trigger.unlink()
+          workflow = root / '.github' / 'workflows' / 'patch-2f-abs-teacher-warning.yml'
 
-          # Structural checks
-          code = code_path.read_text(encoding='utf-8')
-          index = index_path.read_text(encoding='utf-8')
-          assert 'namaGuru = ""' in code
-          assert 'shouldWarnTeacherSchedule' in code
-          assert 'rolesGuru.includes("Admin")' in code
-          assert 'rolesGuru.includes("KepalaSekolah")' in code
-          assert 'localStorage.getItem(' in index
-          assert 'teacher_schedule' in index
-          assert 'function getAttendanceCalendarContext(' in code
-          assert 'const hariIndonesia = [' not in code
-          assert 'function initAbsensiTanggal( {' not in index
-
-      - name: Commit patch and remove trigger
+      - name: Commit fix and remove temporary workflow
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps-script/Code.js apps-script/index.html .sprint-2f-abs-teacher-warning-trigger
+          git add apps-script/index.html .sprint-2f-abs-teacher-warning-trigger
+          git rm -f .github/workflows/patch-2f-abs-teacher-warning.yml
           git diff --cached --quiet && exit 0
-          git commit -m "feat: warn teachers on unscheduled attendance dates"
+          git commit -m "fix: prevent duplicate attendance warning modal"
           git push
