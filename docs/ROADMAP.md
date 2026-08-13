@@ -152,7 +152,9 @@ Roadmap aktif berikutnya:
 
 OPTIMIZATION
 
-Belum dimulai
+Status
+
+🟢 ACTIVE — P1–P3 SELESAI & TERUJI
 
 Target
 
@@ -160,6 +162,41 @@ Target
 - Optimasi Database
 - Optimasi Loading
 - Optimasi Responsive
+
+Progress
+
+✅ P1 — Batch Write Absensi
+- `saveAttendance()` dioptimalkan menjadi batch write.
+- Data satu kelas ditulis sebagai array 2D menggunakan operasi batch.
+- Regression test di GAS UJI LOLOS.
+
+✅ P2 — Batch Update/Revisi Absensi
+- `reviseAttendance()` dioptimalkan agar tidak lagi menghapus dan menulis record siswa satu per satu.
+- Perubahan revisi diproses secara batch dengan jumlah record tetap terjaga.
+- ID Relasi, Hari, Mapel, Timestamp, dan status siswa tetap benar.
+- Regression test di GAS UJI LOLOS.
+
+✅ P3 — Dashboard Memory Lookup
+- Pembacaan Spreadsheet Dashboard dikurangi ke data yang diperlukan.
+- Lookup Guru/Kelas/Guru Mengajar diproses di memory menggunakan `Map`.
+- Pembacaan Absensi Dashboard dibatasi pada kolom yang diperlukan.
+- Perhitungan tanggal tidak lagi menggunakan `Utilities.formatDate()` untuk setiap baris Absensi.
+- Card `Diabsen` tetap menggunakan lazy-load dan backend-nya dioptimalkan.
+- Runtime test di GAS UJI LOLOS.
+
+Checkpoint
+
+🟢 P1–P3 CLOSED & PRODUCTION DEPLOYED
+
+Commit source
+
+`12d1a39` — `perf: optimize attendance and dashboard read write`
+
+Next
+
+🔄 P4 — Batch Read / Page Data
+
+Fokus berikutnya adalah audit dan optimasi batch read pada dropdown, Data Siswa, serta jalur page data lain yang memang terbukti membutuhkan optimasi. Perubahan tetap incremental, mempertahankan business logic, dan diterapkan setelah audit serta regression test.
 
 ---
 

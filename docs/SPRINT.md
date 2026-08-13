@@ -619,3 +619,91 @@ Setiap sprint wajib melalui tahapan berikut.
 8. Final Review
 9. Update Dokumentasi
 10. Baru boleh lanjut sprint berikutnya.
+
+---
+
+# PRE-SPRINT PERFORMANCE — Batch Read & Batch Write
+
+Status
+
+DONE — P1–P3 CLOSED
+
+Target
+
+Audit dan optimasi komunikasi Apps Script ↔ Google Spreadsheet dengan fokus pada efisiensi READ dan WRITE tanpa mengubah business logic yang sudah stabil.
+
+## P1 — Batch Write Absensi
+
+Status
+
+DONE
+
+Hasil
+
+✅ `saveAttendance()` menggunakan batch write untuk satu kelas.
+
+✅ Data absensi siswa diproses sebagai array 2D dan ditulis secara batch.
+
+✅ Jumlah record, ID Relasi, Hari, Mapel, Timestamp, dan status tetap benar.
+
+✅ Runtime test di GAS UJI LOLOS.
+
+## P2 — Batch Update/Revisi Absensi
+
+Status
+
+DONE
+
+Hasil
+
+✅ `reviseAttendance()` tidak lagi menghapus dan menulis record siswa satu per satu.
+
+✅ Perubahan revisi diproses secara batch.
+
+✅ Jumlah record tetap terjaga.
+
+✅ Status siswa yang direvisi tetap benar.
+
+✅ Data siswa yang tidak berubah tetap dipertahankan dengan benar.
+
+✅ Runtime regression test di GAS UJI LOLOS.
+
+## P3 — Dashboard Memory Lookup
+
+Status
+
+DONE
+
+Hasil
+
+✅ Pembacaan Dashboard dibatasi pada data Spreadsheet yang diperlukan.
+
+✅ Lookup Guru/Kelas/Guru Mengajar menggunakan `Map` di memory.
+
+✅ Pembacaan Absensi Dashboard dibatasi pada kolom yang diperlukan.
+
+✅ Perhitungan tanggal tidak lagi melakukan `Utilities.formatDate()` untuk setiap baris Absensi.
+
+✅ Card `Diabsen` tetap menggunakan lazy-load dan jalur backend telah dioptimalkan.
+
+✅ Runtime test di GAS UJI LOLOS.
+
+## Checkpoint
+
+🟢 P1–P3 CLOSED & PRODUCTION DEPLOYED
+
+Commit source:
+
+`12d1a39` — `perf: optimize attendance and dashboard read write`
+
+Tag checkpoint:
+
+`v1.3-performance-p1-p3`
+
+Next:
+
+🔄 P4 — Batch Read / Page Data
+
+Catatan:
+
+Optimasi berikutnya tetap melalui audit bottleneck terlebih dahulu. Cache, perubahan struktur Sheet, index/summary table, dan optimasi berisiko tinggi tidak diterapkan tanpa bukti kebutuhan dan impact analysis.
