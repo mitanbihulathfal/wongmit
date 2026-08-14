@@ -1,0 +1,580 @@
+name: WONG MIT P7-B Patch
+
+on:
+  push:
+    paths:
+      - '.github/workflows/wongmit-p7b-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply P7-B and Edit Siswa fixes
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          INDEX = Path('apps-script/index.html')
+          CODE = Path('apps-script/Code.js')
+          SISWA = Path('apps-script/page_siswa.html')
+
+          index = INDEX.read_text(encoding='utf-8')
+          code = CODE.read_text(encoding='utf-8')
+          siswa = SISWA.read_text(encoding='utf-8')
+
+          def span(src, name):
+              m = re.search(r'function\s+' + re.escape(name) + r'\s*\(', src)
+              if not m:
+                  raise RuntimeError('Function not found: ' + name)
+              brace = src.find('{', m.end())
+              depth = 0
+              quote = None
+              esc = False
+              for i in range(brace, len(src)):
+                  c = src[i]
+                  if quote:
+                      if esc:
+                          esc = False
+                      elif c == '\\':
+                          esc = True
+                      elif c == quote:
+                          quote = None
+                      continue
+                  if c in "'\"`":
+                      quote = c
+                  elif c == '{':
+                      depth += 1
+                  elif c == '}':
+                      depth -= 1
+                      if depth == 0:
+                          return m.start(), i + 1
+              raise RuntimeError('Unclosed function: ' + name)
+
+          def replace_fn(src, name, new):
+              a, b = span(src, name)
+              return src[:a] + new.rstrip() + '\n' + src[b:]
+
+          # ------------------------------------------------------------
+          # P7-B — Absensi request generation + modern loading state.
+          # ------------------------------------------------------------
+          helper = r'''/* =========================
+   P7-B — ABSENSI ASYNC STATE
+========================= */
+
+function ensureAbsensiDataLoadingUI() {
+
+  if (document.getElementById("absensiDataLoadingStyle")) {
+    return;
+  }
+
+  const style = document.createElement("style");
+  style.id = "absensiDataLoadingStyle";
+  style.textContent = `
+    .absensi-data-loading {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      min-height:84px;
+      margin:12px 0;
+      padding:18px 20px;
+      border:1px solid #e2e8f0;
+      border-radius:16px;
+      background:linear-gradient(135deg,#f8fbff,#ffffff);
+      color:#64748b;
+      font-size:14px;
+      font-weight:500;
+      box-shadow:0 6px 18px rgba(15,23,42,.05);
+    }
+    .absensi-data-loading .spinner-ring {
+      width:24px;
+      height:24px;
+      border:3px solid #dbe7f7;
+      border-top-color:#0b2d6b;
+      border-radius:50%;
+      animation:absensiSpin .75s linear infinite;
+      flex:0 0 auto;
+    }
+    @keyframes absensiSpin { to { transform:rotate(360deg); } }
+  `;
+  document.head.appendChild(style);
+}
+
+function setAbsensiDataLoading(active, message) {
+
+  ensureAbsensiDataLoadingUI();
+
+  const tableBody = document.getElementById("tableAbsensi");
+  const mobile = document.getElementById("mobileAbsensiContainer");
+  let loader = document.getElementById("absensiDataLoading");
+
+  if (!loader && tableBody) {
+    const wrapper = tableBody.closest(".table-responsive");
+    loader = document.createElement("div");
+    loader.id = "absensiDataLoading";
+    loader.className = "absensi-data-loading";
+    loader.setAttribute("aria-live", "polite");
+    loader.setAttribute("aria-busy", "true");
+    if (wrapper && wrapper.parentNode) {
+      wrapper.parentNode.insertBefore(loader, wrapper);
+    }
+  }
+
+  if (active) {
+    if (tableBody) tableBody.innerHTML = "";
+    if (mobile) {
+      mobile.innerHTML = "";
+      mobile.classList.add("d-none");
+    }
+    if (loader) {
+      loader.innerHTML = '<span class="spinner-ring"></span><span>' +
+        (message || "Memuat data...") + '</span>';
+      loader.style.display = "flex";
+      loader.setAttribute("aria-busy", "true");
+    }
+  } else if (loader) {
+    loader.style.display = "none";
+    loader.setAttribute("aria-busy", "false");
+  }
+}
+
+let rekapFilterRequestId = 0;
+
+'''
+
+          if 'function ensureAbsensiDataLoadingUI()' not in index:
+              marker = 'function loadStudentsByClass() {'
+              pos = index.find(marker)
+              if pos < 0:
+                  raise RuntimeError('Absensi insertion marker not found')
+              index = index[:pos] + helper + index[pos:]
+
+          # Add request-generation and loading behavior without changing the
+          # existing student rendering logic.
+          old = '''      function loadStudentsByClass() {
+
+        const kelas ='''
+          new = '''      function loadStudentsByClass() {
+
+        const requestId =
+          ++loadStudentsByClass.requestId;
+
+        const kelas ='''
+          if old not in index:
+              raise RuntimeError('loadStudentsByClass start not found')
+          index = index.replace(old, new, 1)
+
+          anchor = '''        if (!kelas) {
+
+          document'''
+          repl = '''        if (!kelas) {
+
+          setAbsensiDataLoading(false);
+
+          document'''
+          if anchor not in index:
+              raise RuntimeError('Absensi empty-class anchor not found')
+          index = index.replace(anchor, repl, 1)
+
+          anchor = '''        google.script.run
+          .withSuccessHandler(function (data) {
+
+            data = JSON.parse(data);'''
+          repl = '''        setAbsensiDataLoading(
+          true,
+          "Memuat data siswa " + kelas + "..."
+        );
+
+        google.script.run
+          .withSuccessHandler(function (data) {
+
+            if (
+              requestId !==
+              loadStudentsByClass.requestId
+            ) {
+              return;
+            }
+
+            if (
+              document.getElementById("filterKelasAbsensi").value !== kelas
+            ) {
+              return;
+            }
+
+            data = JSON.parse(data);'''
+          if anchor not in index:
+              raise RuntimeError('Absensi success anchor not found')
+          index = index.replace(anchor, repl, 1)
+
+          index = index.replace(
+              '            loadExistingAttendance();\n\n          })\n          .getStudentsByClass(kelas);',
+              '            loadExistingAttendance(requestId);\n\n          })\n          .withFailureHandler(function (error) {\n\n            if (requestId !== loadStudentsByClass.requestId) {\n              return;\n            }\n\n            setAbsensiDataLoading(false);\n            console.error(error);\n            showToast("Gagal memuat data siswa.", "error");\n\n          })\n          .getStudentsByClass(kelas);',
+              1
+          )
+
+          if 'loadStudentsByClass.requestId = 0;' not in index:
+              marker = '      function loadExistingAttendance() {'
+              pos = index.find(marker)
+              if pos < 0:
+                  raise RuntimeError('loadExistingAttendance marker not found')
+              index = index[:pos] + '      loadStudentsByClass.requestId = 0;\n\n' + index[pos:]
+
+          # Propagate student request generation through attendance calendar/core.
+          index = index.replace(
+              '      function loadExistingAttendance() {',
+              '      function loadExistingAttendance(studentRequestId) {',
+              1
+          )
+
+          anchor = '''        const requestId =
+          ++attendanceCalendarRequestId;'''
+          repl = '''        const requestId =
+          ++attendanceCalendarRequestId;
+
+        if (studentRequestId == null) {
+          studentRequestId = loadStudentsByClass.requestId;
+        }'''
+          if anchor not in index:
+              raise RuntimeError('attendance request id anchor not found')
+          index = index.replace(anchor, repl, 1)
+
+          index = index.replace(
+              '''            if (
+              requestId !==
+              attendanceCalendarRequestId
+            ) {
+              return;
+            }''',
+              '''            if (
+              requestId !==
+              attendanceCalendarRequestId
+            ) {
+              return;
+            }
+
+            if (
+              studentRequestId !==
+              loadStudentsByClass.requestId
+            ) {
+              return;
+            }''',
+              1
+          )
+
+          index = index.replace(
+              '                  loadExistingAttendanceCore();',
+              '                  loadExistingAttendanceCore(studentRequestId);',
+              1
+          )
+          index = index.replace(
+              '            loadExistingAttendanceCore();',
+              '            loadExistingAttendanceCore(studentRequestId);',
+              1
+          )
+
+          index = index.replace(
+              '      function loadExistingAttendanceCore() {',
+              '      function loadExistingAttendanceCore(studentRequestId) {',
+              1
+          )
+
+          core_marker = '''      function loadExistingAttendanceCore(studentRequestId) {
+
+        const kelas ='''
+          core_repl = '''      function loadExistingAttendanceCore(studentRequestId) {
+
+        const requestId =
+          ++loadExistingAttendanceCore.requestId;
+
+        const kelas ='''
+          if core_marker not in index:
+              raise RuntimeError('attendance core marker not found')
+          index = index.replace(core_marker, core_repl, 1)
+
+          core_anchor = '''          .withSuccessHandler(function (result) {
+
+            result =
+              JSON.parse(result);'''
+          core_repl = '''          .withSuccessHandler(function (result) {
+
+            if (
+              requestId !==
+              loadExistingAttendanceCore.requestId
+            ) {
+              return;
+            }
+
+            if (
+              studentRequestId !==
+              loadStudentsByClass.requestId
+            ) {
+              return;
+            }
+
+            if (
+              document.getElementById("filterKelasAbsensi").value !== kelas ||
+              document.getElementById("tanggalAbsensi").value !== tanggal
+            ) {
+              return;
+            }
+
+            result =
+              JSON.parse(result);'''
+          if core_anchor not in index:
+              raise RuntimeError('attendance core success anchor not found')
+          index = index.replace(core_anchor, core_repl, 1)
+
+          index = index.replace(
+              '''              document.getElementById("infoAbsenOleh").innerHTML =
+                "---";
+
+              return;''',
+              '''              document.getElementById("infoAbsenOleh").innerHTML =
+                "---";
+
+              setAbsensiDataLoading(false);
+
+              return;''',
+              1
+          )
+
+          index = index.replace(
+              '''            result.data.forEach(function (item) {
+              setStatusAbsen(item.nisn, item.status);
+            });
+            modeEditAbsensi = false;''',
+              '''            result.data.forEach(function (item) {
+              setStatusAbsen(item.nisn, item.status);
+            });
+            modeEditAbsensi = false;
+
+            setAbsensiDataLoading(false);''',
+              1
+          )
+
+          index = index.replace(
+              '''          .withFailureHandler(function (error) {
+            console.error(error);
+            showToast(
+              "Gagal memuat data absensi.",
+              "error"
+            );
+          })''',
+              '''          .withFailureHandler(function (error) {
+            console.error(error);
+            setAbsensiDataLoading(false);
+            showToast(
+              "Gagal memuat data absensi.",
+              "error"
+            );
+          })''',
+              1
+          )
+
+          if 'loadExistingAttendanceCore.requestId = 0;' not in index:
+              marker = '      function initAbsensiTanggal() {'
+              pos = index.find(marker)
+              if pos < 0:
+                  raise RuntimeError('initAbsensiTanggal marker not found')
+              index = index[:pos] + '      loadExistingAttendanceCore.requestId = 0;\n\n' + index[pos:]
+
+          # ------------------------------------------------------------
+          # P7-B — Rekap filter request generation + immediate loading state.
+          # ------------------------------------------------------------
+          if 'let rekapFilterRequestId = 0;' not in index:
+              raise RuntimeError('P7-B rekap request state missing')
+
+          # Guru -> Kelas transition.
+          index = index.replace(
+              '      function loadKelasGuruRekap(\n        idGuru,\n        selectedValue = "",\n        selectedMapel = ""\n      ) {',
+              '      function loadKelasGuruRekap(\n        idGuru,\n        selectedValue = "",\n        selectedMapel = "",\n        requestId = rekapFilterRequestId\n      ) {',
+              1
+          )
+
+          # All Kelas transition.
+          index = index.replace(
+              '      function loadSemuaKelasRekap() {',
+              '      function loadSemuaKelasRekap(requestId = rekapFilterRequestId) {',
+              1
+          )
+
+          index = index.replace(
+              '      function loadMapelRekap(\n        guru = "",\n        kelas = "",\n        selectedValue = ""\n      ) {',
+              '      function loadMapelRekap(\n        guru = "",\n        kelas = "",\n        selectedValue = "",\n        requestId = rekapFilterRequestId\n      ) {',
+              1
+          )
+
+          # Guard every dependent dropdown success response.
+          for fn_marker in [
+              '      function loadKelasGuruRekap(',
+              '      function loadSemuaKelasRekap(',
+              '      function loadMapelRekap('
+          ]:
+              pos = index.find(fn_marker)
+              if pos < 0:
+                  raise RuntimeError('Rekap function missing: ' + fn_marker)
+              tail = index[pos:]
+              guard_anchor = '          .withSuccessHandler(function (result) {\n\n            const data ='
+              guard_repl = '          .withSuccessHandler(function (result) {\n\n            if (requestId !== rekapFilterRequestId) {\n              return;\n            }\n\n            const data ='
+              if guard_anchor not in tail:
+                  raise RuntimeError('Rekap success anchor missing: ' + fn_marker)
+              tail = tail.replace(guard_anchor, guard_repl, 1)
+              index = index[:pos] + tail
+
+          # Propagate request id to chained Mapel loads.
+          index = index.replace(
+              '              selectedMapel\n            );',
+              '              selectedMapel,\n              requestId\n            );',
+              2
+          )
+
+          # Guru change invalidates all previous dependent requests.
+          old = '''      function updateFilterGuruRekap() {\n        const idGuru ='''
+          new = '''      function updateFilterGuruRekap() {\n\n        const requestId =\n          ++rekapFilterRequestId;\n\n        const kelasSelect = document.getElementById("filterKelasRekap");\n        const mapelSelect = document.getElementById("filterMapelRekap");\n\n        if (kelasSelect) {\n          kelasSelect.disabled = true;\n          kelasSelect.innerHTML = '<option value="">Memuat kelas...</option>';\n        }\n\n        if (mapelSelect) {\n          mapelSelect.disabled = true;\n          mapelSelect.innerHTML = '<option value="">Memuat mapel...</option>';\n        }\n\n        const idGuru ='''
+          if old not in index:
+              raise RuntimeError('updateFilterGuruRekap marker missing')
+          index = index.replace(old, new, 1)
+
+          index = index.replace(
+              '          loadSemuaKelasRekap();',
+              '          loadSemuaKelasRekap(requestId);',
+              1
+          )
+          index = index.replace(
+              '''        loadKelasGuruRekap(
+          idGuru,
+          selectedKelas,
+          selectedMapel
+        );''',
+              '''        loadKelasGuruRekap(
+          idGuru,
+          selectedKelas,
+          selectedMapel,
+          requestId
+        );''',
+              1
+          )
+
+          # Class change immediately invalidates previous Mapel request.
+          old = '''        document.getElementById(
+          "filterKelasRekap"
+        ).onchange = function () {
+
+          loadMapelRekap('''
+          new = '''        document.getElementById(
+          "filterKelasRekap"
+        ).onchange = function () {
+
+          const requestId = ++rekapFilterRequestId;
+          const mapelSelect = document.getElementById("filterMapelRekap");
+          if (mapelSelect) {
+            mapelSelect.disabled = true;
+            mapelSelect.innerHTML = '<option value="">Memuat mapel...</option>';
+          }
+
+          loadMapelRekap('''
+          if old not in index:
+              raise RuntimeError('Rekap class onchange marker missing')
+          index = index.replace(old, new, 1)
+
+          # Add request id to the class onchange call.
+          block = '''            document.getElementById(
+              "filterMapelRekap"
+            ).value
+          );'''
+          block2 = '''            document.getElementById(
+              "filterMapelRekap"
+            ).value,
+            requestId
+          );'''
+          if block not in index:
+              raise RuntimeError('Rekap class onchange call missing')
+          index = index.replace(block, block2, 1)
+
+          # Re-enable dependent selects after successful loads.
+          index = index.replace(
+              '            select.innerHTML =\n\n              \'<option value="">Semua Kelas</option>\';',
+              '            select.disabled = false;\n\n            select.innerHTML =\n\n              \'<option value="">Semua Kelas</option>\';',
+              1
+          )
+          index = index.replace(
+              '            select.innerHTML =\n              \'<option value="">Semua Mapel</option>\';',
+              '            select.disabled = false;\n\n            select.innerHTML =\n              \'<option value="">Semua Mapel</option>\';',
+              1
+          )
+
+          # Main Rekap request generation prevents stale result tables.
+          old = '''      function tampilkanRekap() {\n\n        const tanggalAwal ='''
+          new = '''      function tampilkanRekap() {\n\n        const requestId = ++rekapFilterRequestId;\n\n        const tanggalAwal ='''
+          if old not in index:
+              raise RuntimeError('tampilkanRekap marker missing')
+          index = index.replace(old, new, 1)
+
+          index = index.replace(
+              '''          .withSuccessHandler(function (result) {\n\n            successRekapLoading();''',
+              '''          .withSuccessHandler(function (result) {\n\n            if (requestId !== rekapFilterRequestId) {\n              return;\n            }\n\n            successRekapLoading();''',
+              1
+          )
+          index = index.replace(
+              '''          .withFailureHandler(function (error) {\n\n            stopRekapLoading();''',
+              '''          .withFailureHandler(function (error) {\n\n            if (requestId !== rekapFilterRequestId) {\n              return;\n            }\n\n            stopRekapLoading();''',
+              1
+          )
+
+          # ------------------------------------------------------------
+          # Edit Siswa regression: date input + modal title.
+          # ------------------------------------------------------------
+          date_old = '''        tanggalLahir: data[i][5],\n        kelas: data[i][6],'''
+          date_new = '''        tanggalLahir: data[i][5] instanceof Date\n          ? Utilities.formatDate(data[i][5], Session.getScriptTimeZone(), "yyyy-MM-dd")\n          : String(data[i][5] || ""),\n        kelas: data[i][6],'''
+          if date_old not in code:
+              raise RuntimeError('getStudentById date field not found')
+          code = code.replace(date_old, date_new, 1)
+
+          if 'id="modalSiswaTitle"' not in siswa:
+              siswa = siswa.replace(
+                  '<h5 class="modal-title">\n          Tambah Siswa\n        </h5>',
+                  '<h5 class="modal-title" id="modalSiswaTitle">\n          Tambah Siswa\n        </h5>',
+                  1
+              )
+          else:
+              raise RuntimeError('modalSiswaTitle already exists')
+
+          # Dynamic title for add/edit.
+          index = index.replace(
+              '''        modeForm = "tambah";\n\n        document.getElementById('idSiswa').value = '';''',
+              '''        modeForm = "tambah";\n\n        const modalSiswaTitle = document.getElementById("modalSiswaTitle");\n        if (modalSiswaTitle) modalSiswaTitle.textContent = "Tambah Siswa";\n\n        document.getElementById('idSiswa').value = '';''',
+              1
+          )
+          index = index.replace(
+              '''            modeForm = "edit";\n\n            document.getElementById('idSiswa').value = data.id;''',
+              '''            modeForm = "edit";\n\n            const modalSiswaTitle = document.getElementById("modalSiswaTitle");\n            if (modalSiswaTitle) modalSiswaTitle.textContent = "Edit Siswa";\n\n            document.getElementById('idSiswa').value = data.id;''',
+              1
+          )
+
+          INDEX.write_text(index, encoding='utf-8', newline='\n')
+          CODE.write_text(code, encoding='utf-8', newline='\n')
+          SISWA.write_text(siswa, encoding='utf-8', newline='\n')
+
+          import subprocess
+          subprocess.run(['git', 'diff', '--check'], check=True)
+          subprocess.run(['git', 'status', '--short'], check=True)
+
+      - name: Commit source changes and remove workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/wongmit-p7b-patch.yml
+          git add apps-script/index.html apps-script/Code.js apps-script/page_siswa.html
+          git diff --cached --check
+          git commit -m "fix: P7-B async state and edit siswa"
+          git push origin HEAD:main
