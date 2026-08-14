@@ -6774,7 +6774,16 @@
 
       }
 
+      /* =========================
+         P7-B.1 — ABSENSI REQUEST STATE
+      ========================= */
+      
+      let absensiStudentRequestId = 0;
+
       function loadStudentsByClass() {
+
+        const requestId =
+          ++absensiStudentRequestId;
 
         const kelas =
 
