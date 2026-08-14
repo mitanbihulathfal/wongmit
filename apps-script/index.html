@@ -7272,110 +7272,179 @@
           document.getElementById(
             "filterKelasAbsensi"
           ).value;
-
+      
         const tanggal =
           document.getElementById(
             "tanggalAbsensi"
           ).value;
-
+      
         if (!kelas || !tanggal) {
           return;
         }
-
+      
         google.script.run
           .withSuccessHandler(function (result) {
-
+      
             if (
               studentRequestId !==
               absensiStudentRequestId
             ) {
               return;
             }
-          
+      
+            const kelasSekarang =
+              document.getElementById(
+                "filterKelasAbsensi"
+              ).value;
+      
+            const tanggalSekarang =
+              document.getElementById(
+                "tanggalAbsensi"
+              ).value;
+      
+            if (
+              kelasSekarang !== kelas ||
+              tanggalSekarang !== tanggal
+            ) {
+              return;
+            }
+      
             result =
               JSON.parse(result);
-
+      
             if (!result.info.ditemukan) {
-
+      
               modeAbsensi = "baru";
-
+      
               resetStatusAbsensi();
               pulihkanDraftAbsensi();
               modeEditAbsensi = false;
-
+      
               setSimpanAbsensiText(
                 '<i class="fa-solid fa-floppy-disk"></i> Simpan',
                 "btn-primary"
               );
-
+      
               setSimpanAbsensiDisabled(false);
               setHadirSemuaDisabled(false);
-
-              document.getElementById("infoAbsenWaktu").innerHTML =
+      
+              document.getElementById(
+                "infoAbsenWaktu"
+              ).innerHTML =
                 "--/--/---- --:--:--";
-              document.getElementById("infoAbsenOleh").innerHTML =
+      
+              document.getElementById(
+                "infoAbsenOleh"
+              ).innerHTML =
                 "---";
-
+      
               return;
-
             }
-
-            const waktuAbsen = new Date(result.info.timestamp);
-
-            const pad = function (angka) {
-              return String(angka).padStart(2, "0");
-            };
-
+      
+            const waktuAbsen =
+              new Date(
+                result.info.timestamp
+              );
+      
+            const pad =
+              function (angka) {
+                return String(
+                  angka
+                ).padStart(2, "0");
+              };
+      
             const waktuFormat =
-              pad(waktuAbsen.getDate()) + "/" +
-              pad(waktuAbsen.getMonth() + 1) + "/" +
-              waktuAbsen.getFullYear() + " " +
-              pad(waktuAbsen.getHours()) + ":" +
-              pad(waktuAbsen.getMinutes()) + ":" +
-              pad(waktuAbsen.getSeconds());
-
-            document.getElementById("infoAbsenWaktu").innerHTML =
+              pad(waktuAbsen.getDate()) +
+              "/" +
+              pad(
+                waktuAbsen.getMonth() + 1
+              ) +
+              "/" +
+              waktuAbsen.getFullYear() +
+              " " +
+              pad(
+                waktuAbsen.getHours()
+              ) +
+              ":" +
+              pad(
+                waktuAbsen.getMinutes()
+              ) +
+              ":" +
+              pad(
+                waktuAbsen.getSeconds()
+              );
+      
+            document.getElementById(
+              "infoAbsenWaktu"
+            ).innerHTML =
               waktuFormat;
-            document.getElementById("infoAbsenOleh").innerHTML =
+      
+            document.getElementById(
+              "infoAbsenOleh"
+            ).innerHTML =
               result.info.inputOleh;
-
-            modeAbsensi = "revisi";
-            modeEditAbsensi = false;
-
+      
+            modeAbsensi =
+              "revisi";
+      
+            modeEditAbsensi =
+              false;
+      
             setSimpanAbsensiText(
               '<i class="fa-solid fa-pen"></i> Revisi Absen',
               "btn-primary"
             );
-            setSimpanAbsensiDisabled(false);
-            setHadirSemuaDisabled(true);
-
-            modeEditAbsensi = true;
-            result.data.forEach(function (item) {
-              setStatusAbsen(item.nisn, item.status);
-            });
-            modeEditAbsensi = false;
-
-          })
-          .withFailureHandler(function (error) {
-
-            if (
-              studentRequestId !==
-              absensiStudentRequestId
-            ) {
-              return;
-            }
-          
-            console.error(error);
-            showToast(
-              "Gagal memuat data absensi.",
-              "error"
+      
+            setSimpanAbsensiDisabled(
+              false
             );
+      
+            setHadirSemuaDisabled(
+              true
+            );
+      
+            modeEditAbsensi =
+              true;
+      
+            result.data.forEach(
+              function (item) {
+      
+                setStatusAbsen(
+                  item.nisn,
+                  item.status
+                );
+      
+              }
+            );
+      
+            modeEditAbsensi =
+              false;
+      
           })
+          .withFailureHandler(
+            function (error) {
+      
+              if (
+                studentRequestId !==
+                absensiStudentRequestId
+              ) {
+                return;
+              }
+      
+              console.error(error);
+      
+              showToast(
+                "Gagal memuat data absensi.",
+                "error"
+              );
+      
+            }
+          )
           .getAttendanceByClassAndDate(
             kelas,
             tanggal
           );
-
+      
       }
 
       function initAbsensiTanggal() {
