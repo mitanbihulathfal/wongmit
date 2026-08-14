@@ -1303,41 +1303,112 @@ function updateStudent(sessionId, data) {
   const allowed =
     checkRole(
       sessionId,
-      ["Admin", "KepalaSekolah"]
+      [
+        "Admin",
+        "KepalaSekolah"
+      ]
     );
 
   if (!allowed) {
-    throw new Error("Akses ditolak");
+
+    throw new Error(
+      "Akses ditolak"
+    );
+
   }
 
-  const sheet = SS.getSheetByName("Siswa");
+  if (!data) {
 
-  const allData = getMasterSheetData("Siswa");
+    throw new Error(
+      "Data siswa tidak tersedia."
+    );
 
-  for (let i = 1; i < allData.length; i++) {
+  }
 
-    if (String(allData[i][0]) === String(data.id)) {
+  const idTarget =
+    String(
+      data.id ?? ""
+    ).trim();
 
-      sheet.getRange(i + 1, 1, 1, 8).setValues([[
-        data.id,
-        data.nisn,
-        data.nama,
-        data.jk,
-        data.tempatLahir,
-        data.tanggalLahir,
-        data.kelas,
-        data.status
-      ]]);
+  if (!idTarget) {
 
-      invalidateMasterCache("Siswa");
-      
-      return true;
+    throw new Error(
+      "ID siswa wajib diisi."
+    );
+
+  }
+
+  const sheet =
+    SS.getSheetByName(
+      "Siswa"
+    );
+
+  if (!sheet) {
+
+    throw new Error(
+      "Sheet Siswa tidak ditemukan."
+    );
+
+  }
+
+  const allData =
+    getMasterSheetData(
+      "Siswa"
+    );
+
+  for (
+    let i = 1;
+    i < allData.length;
+    i++
+  ) {
+
+    const idData =
+      String(
+        allData[i][0] ?? ""
+      ).trim();
+
+    if (
+      idData !==
+      idTarget
+    ) {
+
+      continue;
 
     }
 
+    sheet
+      .getRange(
+        i + 1,
+        1,
+        1,
+        8
+      )
+      .setValues([
+        [
+          data.id,
+          data.nisn,
+          data.nama,
+          data.jk,
+          data.tempatLahir,
+          data.tanggalLahir,
+          data.kelas,
+          data.status
+        ]
+      ]);
+
+    invalidateMasterCache(
+      "Siswa"
+    );
+
+    return true;
+
   }
 
-  return false;
+  throw new Error(
+    "Data siswa dengan ID " +
+    idTarget +
+    " tidak ditemukan."
+  );
 
 }
 
