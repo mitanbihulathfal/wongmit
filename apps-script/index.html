@@ -7037,6 +7037,13 @@
 
             }
 
+            if (
+              requestId !==
+              absensiStudentRequestId
+            ) {
+              return;
+            }
+
             loadExistingAttendance();
 
           })
