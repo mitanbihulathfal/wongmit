@@ -1025,9 +1025,7 @@ function getWeeklyHolidays() {
   }
 
   const data =
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("Pengaturan");
 
   for (
     let i = 1;
@@ -1111,9 +1109,7 @@ function getAttendanceCalendarContext(
       SS.getSheetByName("Guru");
 
     const guruData =
-      guruSheet
-        .getDataRange()
-        .getValues();
+      getMasterSheetData("Guru");
 
     for (let i = 1; i < guruData.length; i++) {
 
@@ -1154,9 +1150,7 @@ function getAttendanceCalendarContext(
       SS.getSheetByName("GuruMengajar");
 
     const dataMengajar =
-      sheetGuruMengajar
-        .getDataRange()
-        .getValues();
+      getMasterSheetData("GuruMengajar");
 
     for (let i = 1; i < dataMengajar.length; i++) {
 
@@ -1318,7 +1312,7 @@ function updateStudent(sessionId, data) {
 
   const sheet = SS.getSheetByName("Siswa");
 
-  const allData = sheet.getDataRange().getValues();
+  const allData = getMasterSheetData("Siswa");
 
   for (let i = 1; i < allData.length; i++) {
 
@@ -1361,7 +1355,7 @@ function deleteStudent(sessionId, id) {
 
   const sheet = SS.getSheetByName("Siswa");
 
-  const data = sheet.getDataRange().getValues();
+  const data = getMasterSheetData("Siswa");
 
   for (let i = 1; i < data.length; i++) {
 
@@ -1657,7 +1651,7 @@ function deleteTeacher(
     SS.getSheetByName("Guru");
 
   const data =
-    sheet.getDataRange().getValues();
+    getMasterSheetData("Guru");
 
   for (let i = 1; i < data.length; i++) {
 
@@ -1900,7 +1894,7 @@ function deleteClass(
     SS.getSheetByName("Kelas");
 
   const data =
-    sheet.getDataRange().getValues();
+    getMasterSheetData("Kelas");
 
   for (let i = 1; i < data.length; i++) {
 
@@ -1998,7 +1992,7 @@ function checkLogin(username, password) {
     SS.getSheetByName("Guru");
 
   const data =
-    sheet.getDataRange().getValues();
+    getMasterSheetData("Guru");
 
   for (let i = 1; i < data.length; i++) {
 
@@ -2153,13 +2147,13 @@ function getGuruProfile(idGuru) {
     SS.getSheetByName("GuruMengajar");
 
   const guruData =
-    guruSheet.getDataRange().getValues();
+    getMasterSheetData("Guru");
 
   const kelasData =
-    kelasSheet.getDataRange().getValues();
+    getMasterSheetData("Kelas");
 
   const relasiData =
-    relasiSheet.getDataRange().getValues();
+    getMasterSheetData("GuruMengajar");
 
   let profile = null;
 
@@ -2246,7 +2240,7 @@ function getRoleBySession(sessionId) {
     sessionSheet.getDataRange().getValues();
 
   const guruData =
-    guruSheet.getDataRange().getValues();
+    getMasterSheetData("Guru");
 
   let idGuru = null;
 
@@ -2335,7 +2329,7 @@ function getStudentsByClass(kelas) {
     SS.getSheetByName("Siswa");
 
   const data =
-    sheet.getDataRange().getValues();
+    getMasterSheetData("Siswa");
 
   const hasil = [];
 
@@ -2389,7 +2383,7 @@ function getKelasAbsensi(sessionId) {
       SS.getSheetByName("Kelas");
 
     const data =
-      sheet.getDataRange().getValues();
+      getMasterSheetData("Kelas");
 
     for (let i = 1; i < data.length; i++) {
 
@@ -2463,9 +2457,7 @@ function getKelasAbsensi(sessionId) {
     );
 
   const dataMengajar =
-    sheetGuruMengajar
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("GuruMengajar");
 
   const daftarKelas = [];
 
@@ -2596,9 +2588,7 @@ function getMapelOptions() {
 
   const data =
 
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("Mapel");
 
   const hasil = [];
 
@@ -2819,14 +2809,10 @@ function getMapelUsage(
     );
 
   const dataMengajar =
-    sheetGuruMengajar
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("GuruMengajar");
 
   const dataGuru =
-    sheetGuru
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("Guru");
 
   const hasil = [];
 
