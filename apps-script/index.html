@@ -7271,6 +7271,13 @@
         google.script.run
           .withSuccessHandler(function (result) {
 
+            if (
+              studentRequestId !==
+              absensiStudentRequestId
+            ) {
+              return;
+            }
+          
             result =
               JSON.parse(result);
 
@@ -7336,6 +7343,14 @@
 
           })
           .withFailureHandler(function (error) {
+
+            if (
+              studentRequestId !==
+              absensiStudentRequestId
+            ) {
+              return;
+            }
+          
             console.error(error);
             showToast(
               "Gagal memuat data absensi.",
