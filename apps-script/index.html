@@ -7120,7 +7120,14 @@
             ) {
               return;
             }
-
+            
+            if (
+              studentRequestId !==
+              absensiStudentRequestId
+            ) {
+              return;
+            }
+            
             if (
               context &&
               context.shouldWarn
@@ -7218,6 +7225,13 @@
           })
           .withFailureHandler(function (error) {
 
+            if (
+              studentRequestId !==
+              absensiStudentRequestId
+            ) {
+              return;
+            }
+          
             console.error(error);
 
             showToast(
