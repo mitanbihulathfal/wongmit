@@ -7201,291 +7201,345 @@
 
         const requestId =
           ++absensiStudentRequestId;
-
+      
         const kelas =
           document.getElementById(
-            'filterKelasAbsensi'
+            "filterKelasAbsensi"
           ).value;
-        
+      
         if (!kelas) {
-        
+      
           ++absensiStudentRequestId;
-
-          document
-            .getElementById(
-              'tableAbsensi'
-            )
-            .innerHTML = `
-
-        <tr>
-
-          <td
-            colspan="3"
-            class="text-center">
-
-            Pilih kelas terlebih dahulu
-
-          </td>
-
-        </tr>
-
-      `;
-
-          document
-            .getElementById("mobileAbsensiContainer")
-            .innerHTML = "";
-
+      
+          document.getElementById(
+            "tableAbsensi"
+          ).innerHTML = `
+            <tr>
+              <td
+                colspan="3"
+                class="text-center">
+                Pilih kelas terlebih dahulu
+              </td>
+            </tr>
+          `;
+      
+          document.getElementById(
+            "mobileAbsensiContainer"
+          ).innerHTML = "";
+      
           return;
-
         }
-
+      
         showAbsensiLoadingState();
-
+      
         google.script.run
-          .withSuccessHandler(function (data) {
-        
-            if (
-              requestId !==
-              absensiStudentRequestId
-            ) {
-              return;
-            }
-        
-            data = JSON.parse(data);
-
-            const isMobile =
-              isMobileLayout();
-
-            let html = "";
-            let mobileHtml = "";
-
-            data.forEach(function (siswa, index) {
-
-              html += `
-
-          <tr>
-
-            <td class="no-cell">
-
-                ${index + 1}
-
-            </td>
-
-            <td class="nama-cell">
-
-                <div class="nama-siswa">
-
-                    ${siswa.nama}
-
-                </div>
-
-            </td>
-
-            <td class="status-cell">
-
-                <div class="status-mobile">
-
+      
+          .withSuccessHandler(
+            function (data) {
+      
+              if (
+                requestId !==
+                absensiStudentRequestId
+              ) {
+                return;
+              }
+      
+              data =
+                JSON.parse(data);
+      
+              const isMobile =
+                isMobileLayout();
+      
+              /*
+               * Spinner tetap dipertahankan.
+               * Data siswa disiapkan di belakang
+               * spinner dan dibuat invisible sampai
+               * status absensi + mode selesai.
+               */
+      
+              let html = `
+                <tr id="absensiLoadingRow">
+                  <td
+                    colspan="3"
+                    class="text-center py-4">
+      
                     <div
+                      class="d-flex justify-content-center align-items-center gap-2">
+      
+                      <div
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true">
+                      </div>
+      
+                      <span>
+                        Memuat data siswa &amp; status absensi...
+                      </span>
+      
+                    </div>
+      
+                  </td>
+                </tr>
+              `;
+      
+              let mobileHtml = `
+                <div
+                  id="absensiLoadingCard"
+                  class="text-center py-4">
+      
+                  <div
+                    class="d-flex justify-content-center align-items-center gap-2">
+      
+                    <div
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true">
+                    </div>
+      
+                    <span>
+                      Memuat data siswa &amp; status absensi...
+                    </span>
+      
+                  </div>
+      
+                </div>
+              `;
+      
+              data.forEach(
+                function (siswa, index) {
+      
+                  html += `
+                    <tr
+                      class="absensi-student-row"
+                      style="visibility:hidden;">
+      
+                      <td class="no-cell">
+                        ${index + 1}
+                      </td>
+      
+                      <td class="nama-cell">
+      
+                        <div class="nama-siswa">
+                          ${siswa.nama}
+                        </div>
+      
+                      </td>
+      
+                      <td class="status-cell">
+      
+                        <div class="status-mobile">
+      
+                          <div
+                            class="btn-group w-100"
+                            role="group">
+      
+                            <button
+                              type="button"
+                              class="btn btn-outline-secondary"
+                              id="H_${siswa.nisn}"
+                              onclick="setStatusAbsen('${siswa.nisn}','Hadir')">
+                              H
+                            </button>
+      
+                            <button
+                              type="button"
+                              class="btn btn-outline-secondary"
+                              id="S_${siswa.nisn}"
+                              onclick="setStatusAbsen('${siswa.nisn}','Sakit')">
+                              S
+                            </button>
+      
+                            <button
+                              type="button"
+                              class="btn btn-outline-secondary"
+                              id="I_${siswa.nisn}"
+                              onclick="setStatusAbsen('${siswa.nisn}','Izin')">
+                              I
+                            </button>
+      
+                            <button
+                              type="button"
+                              class="btn btn-outline-secondary"
+                              id="A_${siswa.nisn}"
+                              onclick="setStatusAbsen('${siswa.nisn}','Alpa')">
+                              A
+                            </button>
+      
+                          </div>
+      
+                        </div>
+      
+                        <input
+                          type="hidden"
+                          id="status_${siswa.nisn}"
+                          value="">
+      
+                      </td>
+      
+                    </tr>
+                  `;
+      
+                  mobileHtml += `
+                    <div
+                      class="absensi-card"
+                      style="visibility:hidden;">
+      
+                      <div class="absensi-card-header">
+      
+                        <div class="absensi-no">
+                          ${index + 1}
+                        </div>
+      
+                        <div class="absensi-nama">
+      
+                          <div class="nama-siswa">
+                            ${siswa.nama}
+                          </div>
+      
+                        </div>
+      
+                      </div>
+      
+                      <div
                         class="btn-group w-100"
                         role="group">
-
+      
                         <button
-                            type="button"
-                            class="btn btn-outline-secondary"
-                            id="H_${siswa.nisn}"
-                            onclick="setStatusAbsen('${siswa.nisn}','Hadir')">
-
-                            H
-
+                          type="button"
+                          class="btn btn-outline-secondary btn-sm"
+                          id="H_${siswa.nisn}"
+                          onclick="setStatusAbsen('${siswa.nisn}','Hadir')">
+                          H
                         </button>
-
+      
                         <button
-                            type="button"
-                            class="btn btn-outline-secondary"
-                            id="S_${siswa.nisn}"
-                            onclick="setStatusAbsen('${siswa.nisn}','Sakit')">
-
-                            S
-
+                          type="button"
+                          class="btn btn-outline-secondary btn-sm"
+                          id="S_${siswa.nisn}"
+                          onclick="setStatusAbsen('${siswa.nisn}','Sakit')">
+                          S
                         </button>
-
+      
                         <button
-                            type="button"
-                            class="btn btn-outline-secondary"
-                            id="I_${siswa.nisn}"
-                            onclick="setStatusAbsen('${siswa.nisn}','Izin')">
-
-                            I
-
+                          type="button"
+                          class="btn btn-outline-secondary btn-sm"
+                          id="I_${siswa.nisn}"
+                          onclick="setStatusAbsen('${siswa.nisn}','Izin')">
+                          I
                         </button>
-
+      
                         <button
-                            type="button"
-                            class="btn btn-outline-secondary"
-                            id="A_${siswa.nisn}"
-                            onclick="setStatusAbsen('${siswa.nisn}','Alpa')">
-
-                            A
-
+                          type="button"
+                          class="btn btn-outline-secondary btn-sm"
+                          id="A_${siswa.nisn}"
+                          onclick="setStatusAbsen('${siswa.nisn}','Alpa')">
+                          A
                         </button>
-
+      
+                      </div>
+      
+                      <input
+                        type="hidden"
+                        id="status_${siswa.nisn}"
+                        value="">
+      
                     </div>
-
-                </div>
-
-                <input
-                    type="hidden"
-                    id="status_${siswa.nisn}"
-                    value="">
-
-            </td>
-
-        </tr>
-
-        `;
-
-              mobileHtml += `
-
-        <div class="absensi-card">
-
-            <div class="absensi-card-header">
-
-                <div class="absensi-no">
-                    ${index + 1}
-                </div>
-
-                <div class="absensi-nama">
-
-                    <div class="nama-siswa">
-                        ${siswa.nama}
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="btn-group w-100" role="group">
-
-                <button
-                    type="button"
-                    class="btn btn-outline-secondary btn-sm"
-                    id="H_${siswa.nisn}"
-                    onclick="setStatusAbsen('${siswa.nisn}','Hadir')">
-
-                    H
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-outline-secondary btn-sm"
-                    id="S_${siswa.nisn}"
-                    onclick="setStatusAbsen('${siswa.nisn}','Sakit')">
-
-                    S
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-outline-secondary btn-sm"
-                    id="I_${siswa.nisn}"
-                    onclick="setStatusAbsen('${siswa.nisn}','Izin')">
-
-                    I
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn btn-outline-secondary btn-sm"
-                    id="A_${siswa.nisn}"
-                    onclick="setStatusAbsen('${siswa.nisn}','Alpa')">
-
-                    A
-
-                </button>
-
-            </div>
-
-            <input
-                type="hidden"
-                id="status_${siswa.nisn}"
-                value="">
-
-        </div>
-
-        `;
-
-            });
-
-            if (isMobile) {
-
-              document
-                .getElementById("tableAbsensi")
-                .innerHTML = "";
-
-              document
-                .getElementById("mobileAbsensiContainer")
-                .innerHTML = mobileHtml;
-
-              document
-                .querySelector(".desktop-only")
-                .style.display = "none";
-
-              document
-                .getElementById("mobileAbsensiContainer")
-                .classList.remove("d-none");
-
-            } else {
-
-              document
-                .getElementById("tableAbsensi")
-                .innerHTML = html;
-
-              document
-                .getElementById("mobileAbsensiContainer")
-                .innerHTML = "";
-
-              document
-                .querySelector(".desktop-only")
-                .style.display = "";
-
-              document
-                .getElementById("mobileAbsensiContainer")
-                .classList.add("d-none");
-
+                  `;
+      
+                }
+              );
+      
+              if (isMobile) {
+      
+                document.getElementById(
+                  "tableAbsensi"
+                ).innerHTML = "";
+      
+                document.getElementById(
+                  "mobileAbsensiContainer"
+                ).innerHTML =
+                  mobileHtml;
+      
+                document.querySelector(
+                  ".desktop-only"
+                ).style.display =
+                  "none";
+      
+                document.getElementById(
+                  "mobileAbsensiContainer"
+                ).classList.remove(
+                  "d-none"
+                );
+      
+              } else {
+      
+                document.getElementById(
+                  "tableAbsensi"
+                ).innerHTML =
+                  html;
+      
+                document.getElementById(
+                  "mobileAbsensiContainer"
+                ).innerHTML =
+                  "";
+      
+                document.querySelector(
+                  ".desktop-only"
+                ).style.display =
+                  "";
+      
+                document.getElementById(
+                  "mobileAbsensiContainer"
+                ).classList.add(
+                  "d-none"
+                );
+      
+              }
+      
+              if (
+                requestId !==
+                absensiStudentRequestId
+              ) {
+                return;
+              }
+      
+              /*
+               * Jangan matikan loading di sini.
+               * loadExistingAttendance() harus
+               * menyelesaikan seluruh state dahulu.
+               */
+      
+              loadExistingAttendance(
+                requestId
+              );
+      
             }
-
-            if (
-              requestId !==
-              absensiStudentRequestId
-            ) {
-              return;
+          )
+      
+          .withFailureHandler(
+            function (error) {
+      
+              if (
+                requestId !==
+                absensiStudentRequestId
+              ) {
+                return;
+              }
+      
+              console.error(error);
+      
+              showToast(
+                "Gagal memuat data siswa.",
+                "error"
+              );
+      
             }
-
-            loadExistingAttendance(requestId);
-
-          })
-
-          .withFailureHandler(function (error) {
-
-            if (
-              requestId !==
-              absensiStudentRequestId
-            ) {
-              return;
-            }
-
-            console.error(error);
-            showToast(
-              "Gagal memuat data siswa.",
-              "error"
-            );
-
-          })
-          .getStudentsByClass(kelas);
-
+          )
+      
+          .getStudentsByClass(
+            kelas
+          );
+      
       }
 
       function loadExistingAttendance(studentRequestId) {
@@ -7676,8 +7730,10 @@
         if (
           studentRequestId == null
         ) {
+      
           studentRequestId =
             absensiStudentRequestId;
+      
         }
       
         if (
@@ -7697,149 +7753,298 @@
             "tanggalAbsensi"
           ).value;
       
-        if (!kelas || !tanggal) {
+        if (
+          !kelas ||
+          !tanggal
+        ) {
           return;
         }
       
         google.script.run
-          .withSuccessHandler(function (result) {
       
-            if (
-              studentRequestId !==
-              absensiStudentRequestId
-            ) {
-              return;
-            }
+          .withSuccessHandler(
+            function (result) {
       
-            const kelasSekarang =
-              document.getElementById(
-                "filterKelasAbsensi"
-              ).value;
+              if (
+                studentRequestId !==
+                absensiStudentRequestId
+              ) {
+                return;
+              }
       
-            const tanggalSekarang =
-              document.getElementById(
-                "tanggalAbsensi"
-              ).value;
+              const kelasSekarang =
+                document.getElementById(
+                  "filterKelasAbsensi"
+                ).value;
       
-            if (
-              kelasSekarang !== kelas ||
-              tanggalSekarang !== tanggal
-            ) {
-              return;
-            }
+              const tanggalSekarang =
+                document.getElementById(
+                  "tanggalAbsensi"
+                ).value;
       
-            result =
-              JSON.parse(result);
+              if (
+                kelasSekarang !== kelas ||
+                tanggalSekarang !== tanggal
+              ) {
+                return;
+              }
       
-            if (!result.info.ditemukan) {
+              result =
+                JSON.parse(result);
       
-              modeAbsensi = "baru";
+              /*
+               * =====================================
+               * ABSENSI BARU
+               * =====================================
+               */
       
-              resetStatusAbsensi();
-              pulihkanDraftAbsensi();
-              modeEditAbsensi = false;
+              if (
+                !result.info.ditemukan
+              ) {
       
-              setSimpanAbsensiText(
-                '<i class="fa-solid fa-floppy-disk"></i> Simpan',
-                "btn-primary"
-              );
+                modeAbsensi =
+                  "baru";
       
-              setSimpanAbsensiDisabled(false);
-              setHadirSemuaDisabled(false);
+                resetStatusAbsensi();
+      
+                pulihkanDraftAbsensi();
+      
+                modeEditAbsensi =
+                  false;
+      
+                setSimpanAbsensiText(
+                  '<i class="fa-solid fa-floppy-disk"></i> Simpan',
+                  "btn-primary"
+                );
+      
+                setSimpanAbsensiDisabled(
+                  false
+                );
+      
+                setHadirSemuaDisabled(
+                  false
+                );
+      
+                document.getElementById(
+                  "infoAbsenWaktu"
+                ).innerHTML =
+                  "--/--/---- --:--:--";
+      
+                document.getElementById(
+                  "infoAbsenOleh"
+                ).innerHTML =
+                  "---";
+      
+                /*
+                 * State Absensi Baru sudah final.
+                 * Sekarang baru hilangkan loading.
+                 */
+      
+                const loadingRow =
+                  document.getElementById(
+                    "absensiLoadingRow"
+                  );
+      
+                if (loadingRow) {
+                  loadingRow.remove();
+                }
+      
+                const loadingCard =
+                  document.getElementById(
+                    "absensiLoadingCard"
+                  );
+      
+                if (loadingCard) {
+                  loadingCard.remove();
+                }
+      
+                document
+                  .querySelectorAll(
+                    ".absensi-student-row"
+                  )
+                  .forEach(
+                    function (element) {
+      
+                      element.style.visibility =
+                        "visible";
+      
+                    }
+                  );
+      
+                document
+                  .querySelectorAll(
+                    "#mobileAbsensiContainer .absensi-card"
+                  )
+                  .forEach(
+                    function (element) {
+      
+                      element.style.visibility =
+                        "visible";
+      
+                    }
+                  );
+      
+                return;
+      
+              }
+      
+              /*
+               * =====================================
+               * REVISI ABSENSI
+               * =====================================
+               */
+      
+              const waktuAbsen =
+                new Date(
+                  result.info.timestamp
+                );
+      
+              const pad =
+                function (angka) {
+      
+                  return String(
+                    angka
+                  ).padStart(
+                    2,
+                    "0"
+                  );
+      
+                };
+      
+              const waktuFormat =
+                pad(
+                  waktuAbsen.getDate()
+                ) +
+                "/" +
+                pad(
+                  waktuAbsen.getMonth() + 1
+                ) +
+                "/" +
+                waktuAbsen.getFullYear() +
+                " " +
+                pad(
+                  waktuAbsen.getHours()
+                ) +
+                ":" +
+                pad(
+                  waktuAbsen.getMinutes()
+                ) +
+                ":" +
+                pad(
+                  waktuAbsen.getSeconds()
+                );
       
               document.getElementById(
                 "infoAbsenWaktu"
               ).innerHTML =
-                "--/--/---- --:--:--";
+                waktuFormat;
       
               document.getElementById(
                 "infoAbsenOleh"
               ).innerHTML =
-                "---";
+                result.info.inputOleh;
       
-              return;
-            }
+              /*
+               * Aktifkan mode edit sementara
+               * agar setStatusAbsen() dapat
+               * memasukkan status lama.
+               */
       
-            const waktuAbsen =
-              new Date(
-                result.info.timestamp
+              modeAbsensi =
+                "revisi";
+      
+              modeEditAbsensi =
+                true;
+      
+              result.data.forEach(
+                function (item) {
+      
+                  setStatusAbsen(
+                    item.nisn,
+                    item.status
+                  );
+      
+                }
               );
       
-            const pad =
-              function (angka) {
-                return String(
-                  angka
-                ).padStart(2, "0");
-              };
+              /*
+               * Seluruh status siswa sudah
+               * selesai diterapkan.
+               */
       
-            const waktuFormat =
-              pad(waktuAbsen.getDate()) +
-              "/" +
-              pad(
-                waktuAbsen.getMonth() + 1
-              ) +
-              "/" +
-              waktuAbsen.getFullYear() +
-              " " +
-              pad(
-                waktuAbsen.getHours()
-              ) +
-              ":" +
-              pad(
-                waktuAbsen.getMinutes()
-              ) +
-              ":" +
-              pad(
-                waktuAbsen.getSeconds()
+              modeEditAbsensi =
+                false;
+      
+              /*
+               * Baru sekarang tentukan
+               * tombol final Revisi.
+               */
+      
+              setSimpanAbsensiText(
+                '<i class="fa-solid fa-pen"></i> Revisi Absen',
+                "btn-primary"
               );
       
-            document.getElementById(
-              "infoAbsenWaktu"
-            ).innerHTML =
-              waktuFormat;
+              setSimpanAbsensiDisabled(
+                false
+              );
       
-            document.getElementById(
-              "infoAbsenOleh"
-            ).innerHTML =
-              result.info.inputOleh;
+              setHadirSemuaDisabled(
+                true
+              );
       
-            modeAbsensi =
-              "revisi";
+              /*
+               * Seluruh state Revisi sudah final.
+               * Sekarang baru hilangkan loading.
+               */
       
-            modeEditAbsensi =
-              false;
-      
-            setSimpanAbsensiText(
-              '<i class="fa-solid fa-pen"></i> Revisi Absen',
-              "btn-primary"
-            );
-      
-            setSimpanAbsensiDisabled(
-              false
-            );
-      
-            setHadirSemuaDisabled(
-              true
-            );
-      
-            modeEditAbsensi =
-              true;
-      
-            result.data.forEach(
-              function (item) {
-      
-                setStatusAbsen(
-                  item.nisn,
-                  item.status
+              const loadingRow =
+                document.getElementById(
+                  "absensiLoadingRow"
                 );
       
+              if (loadingRow) {
+                loadingRow.remove();
               }
-            );
       
-            modeEditAbsensi =
-              false;
+              const loadingCard =
+                document.getElementById(
+                  "absensiLoadingCard"
+                );
       
-          })
+              if (loadingCard) {
+                loadingCard.remove();
+              }
+      
+              document
+                .querySelectorAll(
+                  ".absensi-student-row"
+                )
+                .forEach(
+                  function (element) {
+      
+                    element.style.visibility =
+                      "visible";
+      
+                  }
+                );
+      
+              document
+                .querySelectorAll(
+                  "#mobileAbsensiContainer .absensi-card"
+                )
+                .forEach(
+                  function (element) {
+      
+                    element.style.visibility =
+                      "visible";
+      
+                  }
+                );
+      
+            }
+          )
+      
           .withFailureHandler(
             function (error) {
       
@@ -7859,6 +8064,7 @@
       
             }
           )
+      
           .getAttendanceByClassAndDate(
             kelas,
             tanggal
