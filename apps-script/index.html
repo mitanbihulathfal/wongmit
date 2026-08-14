@@ -11061,174 +11061,221 @@
 
       }
 
-      function loadSemuaKelasRekap() {
-
+      function loadSemuaKelasRekap(
+        requestId = rekapFilterRequestId,
+        selectedKelas = "",
+        selectedMapel = ""
+      ) {
+      
         google.script.run
-
-          .withSuccessHandler(function (result) {
-
-            const data =
-
-              JSON.parse(result);
-
-            const select =
-
-              document.getElementById(
-                "filterKelasRekap"
+      
+          .withSuccessHandler(
+            function (result) {
+      
+              if (
+                requestId !==
+                rekapFilterRequestId
+              ) {
+                return;
+              }
+      
+              const data =
+                JSON.parse(result);
+      
+              const select =
+                document.getElementById(
+                  "filterKelasRekap"
+                );
+      
+              if (!select) {
+                return;
+              }
+      
+              select.innerHTML =
+                '<option value="">Semua Kelas</option>';
+      
+              for (
+                let i = 1;
+                i < data.length;
+                i++
+              ) {
+      
+                select.innerHTML +=
+                  '<option value="' +
+                  data[i][1] +
+                  '">' +
+                  data[i][1] +
+                  '</option>';
+      
+              }
+      
+              if (
+                selectedKelas &&
+                Array.from(
+                  select.options
+                ).some(
+                  function (option) {
+      
+                    return (
+                      option.value ===
+                      selectedKelas
+                    );
+      
+                  }
+                )
+              ) {
+      
+                select.value =
+                  selectedKelas;
+      
+              }
+      
+              loadMapelRekap(
+                document.getElementById(
+                  "filterGuruRekap"
+                ).value,
+                select.value,
+                selectedMapel,
+                requestId
               );
-
-            const selectedKelas =
-              loadSemuaKelasRekap.selectedValue || "";
-
-            const selectedMapel =
-              loadSemuaKelasRekap.selectedMapel || "";
-
-            select.innerHTML =
-
-              '<option value="">Semua Kelas</option>';
-
-            for (
-
-              let i = 1;
-
-              i < data.length;
-
-              i++
-
-            ) {
-
-              select.innerHTML +=
-
-                '<option value="' +
-
-                data[i][1] +
-
-                '">' +
-
-                data[i][1] +
-
-                '</option>';
-
+      
             }
-
-            if (
-              selectedKelas
-              &&
-              Array.from(select.options)
-                .some(function (option) {
-                  return option.value === selectedKelas;
-                })
-            ) {
-
-              select.value =
-                selectedKelas;
-
+          )
+      
+          .withFailureHandler(
+            function (error) {
+      
+              if (
+                requestId !==
+                rekapFilterRequestId
+              ) {
+                return;
+              }
+      
+              console.error(error);
+      
             }
-
-            loadMapelRekap(
-              document.getElementById(
-                "filterGuruRekap"
-              ).value,
-              select.value,
-              selectedMapel
-            );
-
-          })
-
-          .withFailureHandler(function (error) {
-
-            console.error(error);
-
-          })
-
+          )
+      
           .getAllClassesRekap(
-
             localStorage.getItem(
               "wongmit_session"
             )
-
           );
-
+      
       }
 
       function loadMapelRekap(
         guru = "",
         kelas = "",
-        selectedValue = ""
+        selectedValue = "",
+        requestId = rekapFilterRequestId
       ) {
-
+      
         google.script.run
-
-          .withSuccessHandler(function (result) {
-
-            const data =
-              JSON.parse(result);
-
-            const select =
-              document.getElementById(
-                "filterMapelRekap"
-              );
-
-            if (!select) {
-              return;
+      
+          .withSuccessHandler(
+            function (result) {
+      
+              if (
+                requestId !==
+                rekapFilterRequestId
+              ) {
+                return;
+              }
+      
+              const data =
+                JSON.parse(result);
+      
+              const select =
+                document.getElementById(
+                  "filterMapelRekap"
+                );
+      
+              if (!select) {
+                return;
+              }
+      
+              select.innerHTML =
+                '<option value="">Semua Mapel</option>';
+      
+              for (
+                let i = 0;
+                i < data.length;
+                i++
+              ) {
+      
+                select.innerHTML +=
+                  '<option value="' +
+                  data[i] +
+                  '">' +
+                  data[i] +
+                  '</option>';
+      
+              }
+      
+              if (
+                selectedValue &&
+                Array.from(
+                  select.options
+                ).some(
+                  function (option) {
+      
+                    return (
+                      option.value ===
+                      selectedValue
+                    );
+      
+                  }
+                )
+              ) {
+      
+                select.value =
+                  selectedValue;
+      
+              }
+      
+              select.disabled =
+                false;
+      
             }
-
-            select.innerHTML =
-              '<option value="">Semua Mapel</option>';
-
-            for (
-              let i = 0;
-              i < data.length;
-              i++
-            ) {
-
-              select.innerHTML +=
-
-                '<option value="' +
-
-                data[i] +
-
-                '">' +
-
-                data[i] +
-
-                '</option>';
-
+          )
+      
+          .withFailureHandler(
+            function (error) {
+      
+              if (
+                requestId !==
+                rekapFilterRequestId
+              ) {
+                return;
+              }
+      
+              console.error(error);
+      
+              const select =
+                document.getElementById(
+                  "filterMapelRekap"
+                );
+      
+              if (select) {
+      
+                select.disabled =
+                  false;
+      
+              }
+      
             }
-
-            if (
-              selectedValue
-              &&
-              Array.from(select.options)
-                .some(function (option) {
-                  return option.value === selectedValue;
-                })
-            ) {
-
-              select.value =
-                selectedValue;
-
-            }
-
-          })
-
-          .withFailureHandler(function (error) {
-
-            console.error(error);
-
-          })
-
+          )
+      
           .getMapelRekap(
-
             localStorage.getItem(
               "wongmit_session"
             ),
-
             guru,
             kelas
-
           );
-
+      
       }
 
       function loadKelasDropdown(
@@ -13063,94 +13110,132 @@
 
       }
 
+      /* =========================
+         P7-B.3 — REKAP REQUEST STATE
+      ========================= */
+      
+      let rekapFilterRequestId = 0;
+
       function loadRekap() {
 
         const hariIni =
           new Date();
-
+      
         const awalBulan =
           new Date(
             hariIni.getFullYear(),
             hariIni.getMonth(),
             1
           );
-
+      
         document.getElementById(
           "tanggalAwalRekap"
         ).value =
           awalBulan
             .toISOString()
             .split("T")[0];
-
+      
         document.getElementById(
           "tanggalAkhirRekap"
         ).value =
           hariIni
             .toISOString()
             .split("T")[0];
-
+      
         document.getElementById(
           "filterGuruRekap"
         ).onchange = function () {
-
+      
           updateFilterGuruRekap();
-
+      
         };
-
+      
         document.getElementById(
           "filterKelasRekap"
         ).onchange = function () {
-
-          loadMapelRekap(
+      
+          const requestId =
+            ++rekapFilterRequestId;
+      
+          const guru =
             document.getElementById(
               "filterGuruRekap"
-            ).value,
+            ).value;
+      
+          const kelas =
             document.getElementById(
               "filterKelasRekap"
-            ).value,
+            ).value;
+      
+          const mapelSelect =
             document.getElementById(
               "filterMapelRekap"
-            ).value
+            );
+      
+          if (mapelSelect) {
+      
+            mapelSelect.innerHTML =
+              '<option value="">Memuat mapel...</option>';
+      
+            mapelSelect.disabled =
+              true;
+      
+          }
+      
+          loadMapelRekap(
+            guru,
+            kelas,
+            "",
+            requestId
           );
-
+      
         };
-
+      
         document.getElementById(
           "btnExportRekap"
         ).onclick = function () {
-
+      
           exportRekapExcel();
-
+      
         };
-
+      
         document.querySelectorAll(
           "#rekapTableWrapper thead th[data-rekap-sort]"
         ).forEach(function (header) {
-
+      
           header.onclick = function () {
-
-            sortRekapTable(header.dataset.rekapSort);
-
+      
+            sortRekapTable(
+              header.dataset.rekapSort
+            );
+      
           };
-
-          header.onkeydown = function (event) {
-
-            if (event.key === "Enter" || event.key === " ") {
-
-              event.preventDefault();
-              sortRekapTable(header.dataset.rekapSort);
-
-            }
-
-          };
-
+      
+          header.onkeydown =
+            function (event) {
+      
+              if (
+                event.key === "Enter" ||
+                event.key === " "
+              ) {
+      
+                event.preventDefault();
+      
+                sortRekapTable(
+                  header.dataset.rekapSort
+                );
+      
+              }
+      
+            };
+      
         });
-
+      
         loadGuruDropdown(
           "filterGuruRekap",
           "Semua Guru"
         );
-
+      
       }
 
       function updateFilterRekap() {
@@ -13162,177 +13247,221 @@
       function loadKelasGuruRekap(
         idGuru,
         selectedValue = "",
-        selectedMapel = ""
+        selectedMapel = "",
+        requestId = rekapFilterRequestId
       ) {
-
+      
         google.script.run
-
-          .withSuccessHandler(function (result) {
-
-            const data =
-              JSON.parse(result);
-
-            const select =
-              document.getElementById(
-                "filterKelasRekap"
-              );
-
-            select.innerHTML =
-
-              '<option value="">' +
-
-              'Semua Kelas' +
-
-              '</option>';
-
-            const daftarKelas =
-              [];
-
-            for (
-              let i = 1;
-              i < data.length;
-              i++
-            ) {
-
-              const idGuruData =
-
-                String(
-                  data[i][1]
-                ).trim();
-
-              const kelas =
-
-                String(
-                  data[i][3]
-                ).trim();
-
-              const status =
-
-                String(
-                  data[i][6]
-                ).trim();
-
+      
+          .withSuccessHandler(
+            function (result) {
+      
               if (
-                status
-                &&
-                status !== "Aktif"
+                requestId !==
+                rekapFilterRequestId
               ) {
-                continue;
+                return;
               }
-
-              if (
-
-                idGuruData !==
-
-                String(idGuru).trim()
-
+      
+              const data =
+                JSON.parse(result);
+      
+              const select =
+                document.getElementById(
+                  "filterKelasRekap"
+                );
+      
+              if (!select) {
+                return;
+              }
+      
+              select.innerHTML =
+                '<option value="">Semua Kelas</option>';
+      
+              const daftarKelas =
+                [];
+      
+              for (
+                let i = 1;
+                i < data.length;
+                i++
               ) {
-
-                continue;
-
-              }
-
-              if (
-                daftarKelas.includes(
+      
+                const idGuruData =
+                  String(
+                    data[i][1]
+                  ).trim();
+      
+                const kelas =
+                  String(
+                    data[i][3]
+                  ).trim();
+      
+                const status =
+                  String(
+                    data[i][6]
+                  ).trim();
+      
+                if (
+                  status &&
+                  status !== "Aktif"
+                ) {
+                  continue;
+                }
+      
+                if (
+                  idGuruData !==
+                  String(
+                    idGuru
+                  ).trim()
+                ) {
+                  continue;
+                }
+      
+                if (
+                  daftarKelas.includes(
+                    kelas
+                  )
+                ) {
+                  continue;
+                }
+      
+                daftarKelas.push(
                   kelas
+                );
+      
+                select.innerHTML +=
+                  '<option value="' +
+                  kelas +
+                  '">' +
+                  kelas +
+                  '</option>';
+      
+              }
+      
+              if (
+                selectedValue &&
+                Array.from(
+                  select.options
+                ).some(
+                  function (option) {
+      
+                    return (
+                      option.value ===
+                      selectedValue
+                    );
+      
+                  }
                 )
               ) {
-                continue;
+      
+                select.value =
+                  selectedValue;
+      
               }
-
-              daftarKelas.push(
-                kelas
+      
+              loadMapelRekap(
+                idGuru,
+                select.value,
+                selectedMapel,
+                requestId
               );
-
-              select.innerHTML +=
-
-                '<option value="' +
-
-                kelas +
-
-                '">' +
-
-                kelas +
-
-                '</option>';
-
+      
             }
-
-            if (
-              selectedValue
-              &&
-              Array.from(select.options)
-                .some(function (option) {
-                  return option.value === selectedValue;
-                })
-            ) {
-
-              select.value =
-                selectedValue;
-
+          )
+      
+          .withFailureHandler(
+            function (error) {
+      
+              if (
+                requestId !==
+                rekapFilterRequestId
+              ) {
+                return;
+              }
+      
+              console.error(error);
+      
             }
-
-            loadMapelRekap(
-              idGuru,
-              select.value,
-              selectedMapel
-            );
-
-          })
-
-          .withFailureHandler(function (error) {
-
-            console.error(error);
-
-          })
-
+          )
+      
           .getGuruMengajar(
-
             localStorage.getItem(
               "wongmit_session"
             )
-
           );
-
+      
       }
 
       function updateFilterGuruRekap() {
-        const idGuru =
 
+        const requestId =
+          ++rekapFilterRequestId;
+      
+        const idGuru =
           document.getElementById(
             "filterGuruRekap"
           ).value;
-
-        const selectedKelas =
+      
+        const kelasSelect =
           document.getElementById(
             "filterKelasRekap"
-          ).value;
-
-        const selectedMapel =
+          );
+      
+        const mapelSelect =
           document.getElementById(
             "filterMapelRekap"
-          ).value;
-
-        if (!idGuru) {
-
-          loadSemuaKelasRekap.selectedValue =
-            selectedKelas;
-
-          loadSemuaKelasRekap.selectedMapel =
-            selectedMapel;
-
-          loadSemuaKelasRekap();
-
-          return;
-
+          );
+      
+        const selectedKelas =
+          kelasSelect
+            ? kelasSelect.value
+            : "";
+      
+        const selectedMapel =
+          mapelSelect
+            ? mapelSelect.value
+            : "";
+      
+        if (kelasSelect) {
+      
+          kelasSelect.disabled =
+            true;
+      
+          kelasSelect.innerHTML =
+            '<option value="">Memuat kelas...</option>';
+      
         }
-
+      
+        if (mapelSelect) {
+      
+          mapelSelect.disabled =
+            true;
+      
+          mapelSelect.innerHTML =
+            '<option value="">Memuat mapel...</option>';
+      
+        }
+      
+        if (!idGuru) {
+      
+          loadSemuaKelasRekap(
+            requestId,
+            selectedKelas,
+            selectedMapel
+          );
+      
+          return;
+      
+        }
+      
         loadKelasGuruRekap(
           idGuru,
           selectedKelas,
-          selectedMapel
+          selectedMapel,
+          requestId
         );
-
+      
       }
 
       /* =========================
@@ -13631,6 +13760,9 @@
 
       function tampilkanRekap() {
 
+        const requestId =
+          ++rekapFilterRequestId;
+
         const tanggalAwal =
 
           document.getElementById(
@@ -13684,6 +13816,13 @@
 
           .withSuccessHandler(function (result) {
 
+            if (
+              requestId !==
+              rekapFilterRequestId
+            ) {
+              return;
+            }
+
             successRekapLoading();
 
             setRekapLoading(false);
@@ -13721,6 +13860,13 @@
 
           .withFailureHandler(function (error) {
 
+            if (
+              requestId !==
+              rekapFilterRequestId
+            ) {
+              return;
+            }
+            
             stopRekapLoading();
 
             setRekapLoading(false);
