@@ -11440,6 +11440,11 @@
                   "filterKelasRekap"
                 );
       
+              const mapelSelect =
+                document.getElementById(
+                  "filterMapelRekap"
+                );
+      
               if (!select) {
                 return;
               }
@@ -11483,6 +11488,14 @@
       
               }
       
+              /*
+               * Kelas hanya disabled
+               * selama request berlangsung.
+               * Setelah data kelas selesai,
+               * wajib kembali aktif.
+               */
+              select.disabled = false;
+      
               loadMapelRekap(
                 document.getElementById(
                   "filterGuruRekap"
@@ -11503,6 +11516,17 @@
                 rekapFilterRequestId
               ) {
                 return;
+              }
+      
+              const select =
+                document.getElementById(
+                  "filterKelasRekap"
+                );
+      
+              if (select) {
+      
+                select.disabled = false;
+      
               }
       
               console.error(error);
@@ -13713,6 +13737,14 @@
       
               }
       
+              /*
+               * Kelas hanya disabled
+               * selama request berlangsung.
+               * Setelah data kelas selesai,
+               * wajib kembali aktif.
+               */
+              select.disabled = false;
+      
               loadMapelRekap(
                 idGuru,
                 select.value,
@@ -13731,6 +13763,17 @@
                 rekapFilterRequestId
               ) {
                 return;
+              }
+      
+              const select =
+                document.getElementById(
+                  "filterKelasRekap"
+                );
+      
+              if (select) {
+      
+                select.disabled = false;
+      
               }
       
               console.error(error);
@@ -13798,6 +13841,13 @@
       
         if (!idGuru) {
       
+          /*
+           * Semua Guru:
+           * semua kelas tetap tersedia
+           * dan dropdown Kelas akan
+           * diaktifkan kembali setelah
+           * data selesai dimuat.
+           */
           loadSemuaKelasRekap(
             requestId,
             selectedKelas,
@@ -13805,9 +13855,15 @@
           );
       
           return;
-      
         }
       
+        /*
+         * Guru tertentu:
+         * kelas dibatasi berdasarkan
+         * relasi Guru Mengajar,
+         * tetapi dropdown tetap aktif
+         * setelah request selesai.
+         */
         loadKelasGuruRekap(
           idGuru,
           selectedKelas,
