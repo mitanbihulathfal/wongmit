@@ -7051,12 +7051,7 @@
 
           .withFailureHandler(function (error) {
 
-            if (
-              requestId !==
-              absensiStudentRequestId
-            ) {
-              return;
-            }
+            loadExistingAttendance(requestId);
 
             console.error(error);
 
@@ -7070,10 +7065,17 @@
 
       }
 
-      function loadExistingAttendance() {
+      function loadExistingAttendance(studentRequestId) {
 
         const requestId =
           ++attendanceCalendarRequestId;
+
+        if (
+          studentRequestId == null
+        ) {
+          studentRequestId =
+            absensiStudentRequestId;
+        }
 
         const kelas =
           document.getElementById(
