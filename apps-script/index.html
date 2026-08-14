@@ -7201,7 +7201,9 @@
                 judulPeringatan,
                 pesan,
                 function () {
-                  loadExistingAttendanceCore();
+                  loadExistingAttendanceCore(
+                    studentRequestId
+                  );
                 }
               );
 
@@ -7209,7 +7211,9 @@
 
             }
 
-            loadExistingAttendanceCore();
+            loadExistingAttendanceCore(
+              studentRequestId
+            );
 
           })
           .withFailureHandler(function (error) {
