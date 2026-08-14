@@ -6135,267 +6135,620 @@
       function showTambahSiswa() {
 
         modeForm = "tambah";
-
-        document.getElementById('idSiswa').value = '';
-        document.getElementById('nisn').value = '';
-        document.getElementById('namaSiswa').value = '';
-        document.getElementById('tempatLahir').value = '';
-        document.getElementById('tanggalLahir').value = '';
-        document.getElementById('kelas').value = '';
-
-        const modal = new bootstrap.Modal(
-          document.getElementById('modalSiswa')
-        );
-
+      
+        const modalTitle =
+          document.querySelector(
+            "#modalSiswa .modal-title"
+          );
+      
+        if (modalTitle) {
+      
+          modalTitle.textContent =
+            "Tambah Siswa";
+      
+        }
+      
+        document.getElementById(
+          "idSiswa"
+        ).value = "";
+      
+        document.getElementById(
+          "nisn"
+        ).value = "";
+      
+        document.getElementById(
+          "namaSiswa"
+        ).value = "";
+      
+        document.getElementById(
+          "jk"
+        ).value = "L";
+      
+        document.getElementById(
+          "tempatLahir"
+        ).value = "";
+      
+        document.getElementById(
+          "tanggalLahir"
+        ).value = "";
+      
+        document.getElementById(
+          "kelas"
+        ).value = "";
+      
+        document.getElementById(
+          "status"
+        ).value = "Aktif";
+      
+        const modal =
+          new bootstrap.Modal(
+            document.getElementById(
+              "modalSiswa"
+            )
+          );
+      
         modal.show();
-
+      
       }
-
+      
+      
       function editSiswa(id) {
-
+      
         google.script.run
+      
           .withSuccessHandler(function (data) {
-
+      
             if (!data) {
+      
               showToast(
                 "Data siswa tidak ditemukan",
                 "warning"
               );
+      
               return;
+      
             }
-
-            data = JSON.parse(data);
-
+      
+            try {
+      
+              data =
+                typeof data === "string"
+                  ? JSON.parse(data)
+                  : data;
+      
+            } catch (error) {
+      
+              console.error(
+                "Gagal membaca data siswa:",
+                error
+              );
+      
+              showToast(
+                "Format data siswa tidak valid",
+                "error"
+              );
+      
+              return;
+      
+            }
+      
             modeForm = "edit";
-
-            document.getElementById('idSiswa').value = data.id;
-            document.getElementById('nisn').value = data.nisn;
-            document.getElementById('namaSiswa').value = data.nama;
-            document.getElementById('jk').value = data.jk;
-            document.getElementById('tempatLahir').value = data.tempatLahir;
-            document.getElementById('tanggalLahir').value = data.tanggalLahir;
-            document.getElementById('kelas').value = data.kelas;
-            document.getElementById('status').value = data.status;
-
-            const modal = new bootstrap.Modal(
-              document.getElementById('modalSiswa')
-            );
-
-            modal.show();
-
+      
+            /* =========================
+               JUDUL MODAL
+            ========================= */
+      
+            const modalTitle =
+              document.querySelector(
+                "#modalSiswa .modal-title"
+              );
+      
+            if (modalTitle) {
+      
+              modalTitle.textContent =
+                "Edit Siswa";
+      
+            }
+      
+            /* =========================
+               DATA SISWA
+            ========================= */
+      
+            document.getElementById(
+              "idSiswa"
+            ).value =
+              data.id ?? "";
+      
+            document.getElementById(
+              "nisn"
+            ).value =
+              data.nisn ?? "";
+      
+            document.getElementById(
+              "namaSiswa"
+            ).value =
+              data.nama ?? "";
+      
+            document.getElementById(
+              "jk"
+            ).value =
+              data.jk ?? "L";
+      
+            document.getElementById(
+              "tempatLahir"
+            ).value =
+              data.tempatLahir ?? "";
+      
+            /* =========================
+               TANGGAL LAHIR
+               INPUT TYPE DATE HARUS
+               YYYY-MM-DD
+            ========================= */
+      
+            let tanggalLahir = "";
+      
+            if (data.tanggalLahir) {
+      
+              const nilai =
+                String(
+                  data.tanggalLahir
+                ).trim();
+      
+              /*
+               * Jika sudah YYYY-MM-DD,
+               * gunakan langsung.
+               */
+              if (
+                /^\d{4}-\d{2}-\d{2}$/.test(
+                  nilai
+                )
+              ) {
+      
+                tanggalLahir = nilai;
+      
+              }
+      
+              /*
+               * Jika berbentuk ISO Date:
+               * 2020-01-15T00:00:00.000Z
+               */
+              else {
+      
+                const match =
+                  nilai.match(
+                    /^(\d{4}-\d{2}-\d{2})/
+                  );
+      
+                if (match) {
+      
+                  tanggalLahir =
+                    match[1];
+      
+                }
+      
+                /*
+                 * Fallback untuk format
+                 * tanggal lain yang masih
+                 * dapat dibaca browser.
+                 */
+                else {
+      
+                  const parsedDate =
+                    new Date(nilai);
+      
+                  if (
+                    !isNaN(
+                      parsedDate.getTime()
+                    )
+                  ) {
+      
+                    const tahun =
+                      parsedDate
+                        .getFullYear()
+                        .toString()
+                        .padStart(4, "0");
+      
+                    const bulan =
+                      String(
+                        parsedDate.getMonth() + 1
+                      ).padStart(2, "0");
+      
+                    const hari =
+                      String(
+                        parsedDate.getDate()
+                      ).padStart(2, "0");
+      
+                    tanggalLahir =
+                      tahun +
+                      "-" +
+                      bulan +
+                      "-" +
+                      hari;
+      
+                  }
+      
+                }
+      
+              }
+      
+            }
+      
+            document.getElementById(
+              "tanggalLahir"
+            ).value =
+              tanggalLahir;
+      
+            document.getElementById(
+              "kelas"
+            ).value =
+              data.kelas ?? "";
+      
+            document.getElementById(
+              "status"
+            ).value =
+              data.status ?? "Aktif";
+      
+            /* =========================
+               TAMPILKAN MODAL
+            ========================= */
+      
+            bootstrap.Modal
+              .getOrCreateInstance(
+                document.getElementById(
+                  "modalSiswa"
+                )
+              )
+              .show();
+      
           })
+      
           .withFailureHandler(function (error) {
-
-            console.error(error);
-
+      
+            console.error(
+              "Gagal mengambil data siswa:",
+              error
+            );
+      
             showToast(
               "Gagal mengambil data siswa",
               "error"
             );
-
+      
           })
+      
           .getStudentById(id);
-
+      
       }
-
+      
+      
       function simpanSiswa() {
-
+      
         if (
           !lockButton(
             "simpanSiswa"
           )
         ) {
+      
           return;
+      
         }
-
+      
         const btn =
-
           document.getElementById(
             "btnSimpanSiswa"
           );
-
+      
         startButtonLoading(
           btn
         );
-
+      
         const data = {
-
+      
           id:
             document.getElementById(
-              'idSiswa'
-            ).value,
-
+              "idSiswa"
+            ).value.trim(),
+      
           nisn:
             document.getElementById(
-              'nisn'
-            ).value,
-
+              "nisn"
+            ).value.trim(),
+      
           nama:
             document.getElementById(
-              'namaSiswa'
-            ).value,
-
+              "namaSiswa"
+            ).value.trim(),
+      
           jk:
             document.getElementById(
-              'jk'
+              "jk"
             ).value,
-
+      
           tempatLahir:
             document.getElementById(
-              'tempatLahir'
-            ).value,
-
+              "tempatLahir"
+            ).value.trim(),
+      
           tanggalLahir:
             document.getElementById(
-              'tanggalLahir'
+              "tanggalLahir"
             ).value,
-
+      
           kelas:
             document.getElementById(
-              'kelas'
-            ).value,
-
+              "kelas"
+            ).value.trim(),
+      
           status:
             document.getElementById(
-              'status'
+              "status"
             ).value
-
+      
         };
-
-        if (modeForm === "edit") {
-
+      
+        /* =========================
+           VALIDASI DASAR
+        ========================= */
+      
+        if (!data.id) {
+      
+          unlockButton(
+            "simpanSiswa"
+          );
+      
+          stopButtonLoading(
+            btn
+          );
+      
+          showToast(
+            "ID siswa wajib diisi",
+            "warning"
+          );
+      
+          return;
+      
+        }
+      
+        if (!data.nisn) {
+      
+          unlockButton(
+            "simpanSiswa"
+          );
+      
+          stopButtonLoading(
+            btn
+          );
+      
+          showToast(
+            "NISN wajib diisi",
+            "warning"
+          );
+      
+          return;
+      
+        }
+      
+        if (!data.nama) {
+      
+          unlockButton(
+            "simpanSiswa"
+          );
+      
+          stopButtonLoading(
+            btn
+          );
+      
+          showToast(
+            "Nama siswa wajib diisi",
+            "warning"
+          );
+      
+          return;
+      
+        }
+      
+        /* =========================
+           MODE EDIT
+        ========================= */
+      
+        if (
+          modeForm === "edit"
+        ) {
+      
           google.script.run
-            .withSuccessHandler(function () {
-
+      
+            .withSuccessHandler(function (result) {
+      
+              if (result === false) {
+      
+                unlockButton(
+                  "simpanSiswa"
+                );
+      
+                stopButtonLoading(
+                  btn
+                );
+      
+                showToast(
+                  "Data siswa tidak ditemukan",
+                  "warning"
+                );
+      
+                return;
+      
+              }
+      
               unlockButton(
                 "simpanSiswa"
               );
-
+      
               successButtonLoading(
                 btn
               );
-
+      
               showToast(
                 "Data siswa berhasil diperbarui"
               );
-
+      
               const modalElement =
                 document.getElementById(
-                  'modalSiswa'
+                  "modalSiswa"
                 );
-
+      
               const modal =
                 bootstrap.Modal.getInstance(
                   modalElement
                 );
-
+      
               if (modal) {
+      
                 modal.hide();
+      
               }
-
-              modeForm = "tambah";
-
+      
+              modeForm =
+                "tambah";
+      
+              const modalTitle =
+                document.querySelector(
+                  "#modalSiswa .modal-title"
+                );
+      
+              if (modalTitle) {
+      
+                modalTitle.textContent =
+                  "Tambah Siswa";
+      
+              }
+      
               loadStudents();
-
+      
               setTimeout(function () {
-
+      
                 stopButtonLoading(
                   btn
                 );
-
+      
               }, 1000);
-
+      
             })
+      
             .withFailureHandler(function (error) {
-
+      
               unlockButton(
                 "simpanSiswa"
               );
-
+      
               stopButtonLoading(
                 btn
               );
-
-              console.error(error);
-
+      
+              console.error(
+                "Gagal memperbarui data siswa:",
+                error
+              );
+      
               showToast(
-                "Gagal memperbarui data siswa",
+                error &&
+                error.message
+                  ? error.message
+                  : "Gagal memperbarui data siswa",
                 "error"
               );
-
+      
             })
+      
             .updateStudent(
-              localStorage.getItem("wongmit_session"),
+              localStorage.getItem(
+                "wongmit_session"
+              ),
               data
             );
-
-        } else {
-
-          google.script.run
-            .withSuccessHandler(function () {
-
-              unlockButton(
-                "simpanSiswa"
+      
+          return;
+      
+        }
+      
+        /* =========================
+           MODE TAMBAH
+        ========================= */
+      
+        google.script.run
+      
+          .withSuccessHandler(function () {
+      
+            unlockButton(
+              "simpanSiswa"
+            );
+      
+            successButtonLoading(
+              btn
+            );
+      
+            showToast(
+              "Data siswa berhasil disimpan"
+            );
+      
+            const modalElement =
+              document.getElementById(
+                "modalSiswa"
               );
-
-              successButtonLoading(
-                btn
+      
+            const modal =
+              bootstrap.Modal.getInstance(
+                modalElement
               );
-
-              showToast(
-                "Data siswa berhasil disimpan"
-              );
-
-              const modalElement =
-                document.getElementById(
-                  'modalSiswa'
-                );
-
-              const modal =
-                bootstrap.Modal.getInstance(
-                  modalElement
-                );
-
-              if (modal) {
-                modal.hide();
-              }
-
-              loadStudents();
-
-              setTimeout(function () {
-
-                stopButtonLoading(
-                  btn
-                );
-
-              }, 1000);
-
-            })
-            .withFailureHandler(function (error) {
-
-              unlockButton(
-                "simpanSiswa"
-              );
-
+      
+            if (modal) {
+      
+              modal.hide();
+      
+            }
+      
+            loadStudents();
+      
+            setTimeout(function () {
+      
               stopButtonLoading(
                 btn
               );
-
-              console.error(error);
-
-              showToast(
-                "Gagal menyimpan data siswa",
-                "error"
-              );
-
-            })
-            .addStudent(
-              localStorage.getItem("wongmit_session"),
-              data
+      
+            }, 1000);
+      
+          })
+      
+          .withFailureHandler(function (error) {
+      
+            unlockButton(
+              "simpanSiswa"
             );
-
-        }
-
+      
+            stopButtonLoading(
+              btn
+            );
+      
+            console.error(
+              "Gagal menyimpan data siswa:",
+              error
+            );
+      
+            showToast(
+              error &&
+              error.message
+                ? error.message
+                : "Gagal menyimpan data siswa",
+              "error"
+            );
+      
+          })
+      
+          .addStudent(
+            localStorage.getItem(
+              "wongmit_session"
+            ),
+            data
+          );
+      
       }
 
       function hapusSiswa(id) {
