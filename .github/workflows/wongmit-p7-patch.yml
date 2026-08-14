@@ -1,0 +1,1035 @@
+name: WONG MIT P7 Patch
+
+on:
+  push:
+    paths:
+      - '.github/workflows/wongmit-p7-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply P7 async-state and Edit Siswa fixes
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          import subprocess
+
+          INDEX = Path('apps-script/index.html')
+          CODE = Path('apps-script/Code.js')
+          SISWA = Path('apps-script/page_siswa.html')
+
+          index = INDEX.read_text(encoding='utf-8')
+          code = CODE.read_text(encoding='utf-8')
+          siswa = SISWA.read_text(encoding='utf-8')
+
+          def body_span(src, name):
+              m = re.search(r'function\s+' + re.escape(name) + r'\s*\(', src)
+              if not m:
+                  raise RuntimeError(f'Function not found: {name}')
+              brace = src.find('{', m.end())
+              if brace < 0:
+                  raise RuntimeError(f'Opening brace not found: {name}')
+              depth = 0
+              quote = None
+              esc = False
+              for i in range(brace, len(src)):
+                  c = src[i]
+                  if quote:
+                      if esc:
+                          esc = False
+                      elif c == '\\':
+                          esc = True
+                      elif c == quote:
+                          quote = None
+                      continue
+                  if c in "'\"`":
+                      quote = c
+                      continue
+                  if c == '{': depth += 1
+                  elif c == '}':
+                      depth -= 1
+                      if depth == 0:
+                          return m.start(), i + 1
+              raise RuntimeError(f'Unclosed function: {name}')
+
+          def replace_function(src, name, replacement):
+              a, b = body_span(src, name)
+              return src[:a] + replacement.rstrip() + '\n' + src[b:]
+
+          # ------------------------------------------------------------
+          # P7-A/B — Absensi async request-state + modern loading state.
+          # ------------------------------------------------------------
+          helper = r'''/* =========================
+   P7 — ABSENSI ASYNC REQUEST STATE
+========================= */
+
+function ensureAbsensiDataLoadingUI() {
+
+  if (!document.getElementById("absensiDataLoadingStyle")) {
+
+    const style = document.createElement("style");
+
+    style.id = "absensiDataLoadingStyle";
+
+    style.textContent = `
+      .absensi-data-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        min-height: 92px;
+        margin: 14px 0;
+        padding: 18px 20px;
+        border: 1px solid #e6edf7;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #f8fbff, #ffffff);
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .absensi-data-loading .spinner-ring {
+        width: 24px;
+        height: 24px;
+        border: 3px solid #dbe7f7;
+        border-top-color: #0b2d6b;
+        border-radius: 50%;
+        animation: absensiSpin .75s linear infinite;
+        flex: 0 0 auto;
+      }
+      @keyframes absensiSpin {
+        to { transform: rotate(360deg); }
+      }
+    `;
+
+    document.head.appendChild(style);
+
+  }
+
+}
+
+function setAbsensiDataLoading(active, message) {
+
+  ensureAbsensiDataLoadingUI();
+
+  const tableBody =
+    document.getElementById("tableAbsensi");
+
+  const mobileContainer =
+    document.getElementById("mobileAbsensiContainer");
+
+  let loader =
+    document.getElementById("absensiDataLoading");
+
+  if (!loader && tableBody) {
+
+    const tableCard =
+      tableBody.closest(".card");
+
+    loader = document.createElement("div");
+    loader.id = "absensiDataLoading";
+    loader.className = "absensi-data-loading";
+    loader.setAttribute("aria-live", "polite");
+    loader.setAttribute("aria-busy", "true");
+
+    if (tableCard && tableCard.parentNode) {
+      tableCard.parentNode.insertBefore(
+        loader,
+        tableCard
+      );
+    }
+
+  }
+
+  if (active) {
+
+    if (tableBody) {
+      tableBody.innerHTML = "";
+    }
+
+    if (mobileContainer) {
+      mobileContainer.innerHTML = "";
+      mobileContainer.classList.add("d-none");
+    }
+
+    if (loader) {
+      loader.innerHTML =
+        '<span class="spinner-ring"></span>' +
+        '<span>' +
+        (message || "Memuat data kelas...") +
+        '</span>';
+      loader.style.display = "flex";
+    }
+
+  } else if (loader) {
+
+    loader.style.display = "none";
+    loader.setAttribute("aria-busy", "false");
+
+  }
+
+}
+
+function nextRekapFilterRequestId() {
+
+  nextRekapFilterRequestId.value =
+    (nextRekapFilterRequestId.value || 0) + 1;
+
+  return nextRekapFilterRequestId.value;
+
+}
+
+'''
+
+          if 'function ensureAbsensiDataLoadingUI()' not in index:
+              marker = 'function loadStudentsByClass() {'
+              pos = index.find(marker)
+              if pos < 0:
+                  raise RuntimeError('P7 insertion marker not found')
+              index = index[:pos] + helper + index[pos:]
+
+          # Replace Absensi student loader completely to guarantee stale responses
+          # cannot render after the user has selected another class.
+          new_load_students = r'''function loadStudentsByClass() {
+
+  const requestId =
+    ++loadStudentsByClass.requestId;
+
+  const kelas =
+    document.getElementById(
+      'filterKelasAbsensi'
+    ).value;
+
+  if (!kelas) {
+
+    setAbsensiDataLoading(false);
+
+    document
+      .getElementById('tableAbsensi')
+      .innerHTML = `
+        <tr>
+          <td colspan="3" class="text-center">
+            Pilih kelas terlebih dahulu
+          </td>
+        </tr>
+      `;
+
+    document
+      .getElementById("mobileAbsensiContainer")
+      .innerHTML = "";
+
+    return;
+
+  }
+
+  setAbsensiDataLoading(
+    true,
+    "Memuat data siswa " + kelas + "..."
+  );
+
+  google.script.run
+    .withSuccessHandler(function (data) {
+
+      if (
+        requestId !==
+        loadStudentsByClass.requestId
+      ) {
+        return;
+      }
+
+      const kelasSekarang =
+        document.getElementById(
+          'filterKelasAbsensi'
+        ).value;
+
+      if (
+        kelasSekarang !== kelas
+      ) {
+        return;
+      }
+
+      data = JSON.parse(data);
+
+      const isMobile =
+        isMobileLayout();
+
+      let html = "";
+      let mobileHtml = "";
+
+      data.forEach(function (siswa, index) {
+
+        html += `
+          <tr>
+            <td class="no-cell">${index + 1}</td>
+            <td class="nama-cell">
+              <div class="nama-siswa">${siswa.nama}</div>
+            </td>
+            <td class="status-cell">
+              <div class="status-mobile">
+                <div class="btn-group w-100" role="group">
+                  <button type="button" class="btn btn-outline-secondary"
+                    id="H_${siswa.nisn}"
+                    onclick="setStatusAbsen('${siswa.nisn}','Hadir')">H</button>
+                  <button type="button" class="btn btn-outline-secondary"
+                    id="S_${siswa.nisn}"
+                    onclick="setStatusAbsen('${siswa.nisn}','Sakit')">S</button>
+                  <button type="button" class="btn btn-outline-secondary"
+                    id="I_${siswa.nisn}"
+                    onclick="setStatusAbsen('${siswa.nisn}','Izin')">I</button>
+                  <button type="button" class="btn btn-outline-secondary"
+                    id="A_${siswa.nisn}"
+                    onclick="setStatusAbsen('${siswa.nisn}','Alpa')">A</button>
+                </div>
+              </div>
+              <input type="hidden" id="status_${siswa.nisn}" value="">
+            </td>
+          </tr>
+        `;
+
+        mobileHtml += `
+          <div class="absensi-card">
+            <div class="absensi-card-header">
+              <div class="absensi-no">${index + 1}</div>
+              <div class="absensi-nama">
+                <div class="nama-siswa">${siswa.nama}</div>
+              </div>
+            </div>
+            <div class="btn-group w-100" role="group">
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                id="H_${siswa.nisn}"
+                onclick="setStatusAbsen('${siswa.nisn}','Hadir')">H</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                id="S_${siswa.nisn}"
+                onclick="setStatusAbsen('${siswa.nisn}','Sakit')">S</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                id="I_${siswa.nisn}"
+                onclick="setStatusAbsen('${siswa.nisn}','Izin')">I</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                id="A_${siswa.nisn}"
+                onclick="setStatusAbsen('${siswa.nisn}','Alpa')">A</button>
+            </div>
+            <input type="hidden" id="status_${siswa.nisn}" value="">
+          </div>
+        `;
+
+      });
+
+      if (isMobile) {
+
+        document
+          .getElementById("tableAbsensi")
+          .innerHTML = "";
+
+        document
+          .getElementById("mobileAbsensiContainer")
+          .innerHTML = mobileHtml;
+
+        const desktopOnly =
+          document.querySelector(".desktop-only");
+
+        if (desktopOnly) {
+          desktopOnly.style.display = "none";
+        }
+
+        document
+          .getElementById("mobileAbsensiContainer")
+          .classList.remove("d-none");
+
+      } else {
+
+        document
+          .getElementById("tableAbsensi")
+          .innerHTML = html;
+
+        document
+          .getElementById("mobileAbsensiContainer")
+          .innerHTML = "";
+
+        const desktopOnly =
+          document.querySelector(".desktop-only");
+
+        if (desktopOnly) {
+          desktopOnly.style.display = "";
+        }
+
+        document
+          .getElementById("mobileAbsensiContainer")
+          .classList.add("d-none");
+
+      }
+
+      loadExistingAttendance(requestId);
+
+    })
+    .withFailureHandler(function (error) {
+
+      if (
+        requestId !==
+        loadStudentsByClass.requestId
+      ) {
+        return;
+      }
+
+      setAbsensiDataLoading(false);
+      console.error(error);
+      showToast(
+        "Gagal memuat data siswa.",
+        "error"
+      );
+
+    })
+    .getStudentsByClass(kelas);
+
+}
+
+loadStudentsByClass.requestId = 0;
+
+'''
+          index = replace_function(index, 'loadStudentsByClass', new_load_students)
+
+          # Calendar request now carries the student-load generation.
+          old_sig = 'function loadExistingAttendance() {'
+          new_sig = 'function loadExistingAttendance(studentRequestId) {'
+          if old_sig not in index:
+              raise RuntimeError('loadExistingAttendance signature not found')
+          index = index.replace(old_sig, new_sig, 1)
+
+          needle = '''        const requestId =\n          ++attendanceCalendarRequestId;'''
+          repl = '''        const requestId =\n          ++attendanceCalendarRequestId;\n\n        if (studentRequestId == null) {\n          studentRequestId =\n            loadStudentsByClass.requestId;\n        }'''
+          if needle not in index:
+              raise RuntimeError('attendance request-id anchor not found')
+          index = index.replace(needle, repl, 1)
+
+          # Existing calendar callback must ignore stale class responses.
+          guard = '''            if (\n              requestId !==\n              attendanceCalendarRequestId\n            ) {\n              return;\n            }'''
+          guard2 = '''            if (\n              requestId !==\n              attendanceCalendarRequestId\n            ) {\n              return;\n            }\n\n            if (\n              studentRequestId !==\n              loadStudentsByClass.requestId\n            ) {\n              return;\n            }'''
+          if guard not in index:
+              raise RuntimeError('calendar success guard not found')
+          index = index.replace(guard, guard2, 1)
+
+          # Both confirmation and normal flow preserve the generation token.
+          index = index.replace(
+              'loadExistingAttendanceCore();',
+              'loadExistingAttendanceCore(studentRequestId);',
+              1
+          )
+
+          # Replace the first standalone normal call if the confirmation branch
+          # replacement above consumed only one occurrence.
+          index = index.replace(
+              '            loadExistingAttendanceCore();',
+              '            loadExistingAttendanceCore(studentRequestId);',
+              1
+          )
+
+          # Core request gets its own generation and validates current class/date.
+          index = index.replace(
+              'function loadExistingAttendanceCore() {',
+              'function loadExistingAttendanceCore(studentRequestId) {',
+              1
+          )
+
+          core_anchor = '''        const kelas =\n          document.getElementById(\n            "filterKelasAbsensi"\n          ).value;\n\n        const tanggal ='''
+          core_repl = '''        const requestId =\n          ++loadExistingAttendanceCore.requestId;\n\n        const kelas =\n          document.getElementById(\n            "filterKelasAbsensi"\n          ).value;\n\n        const tanggal ='''
+          # Only replace the first occurrence after the core function marker.
+          core_start = index.find('function loadExistingAttendanceCore(studentRequestId) {')
+          tail = index[core_start:]
+          if core_anchor not in tail:
+              raise RuntimeError('core anchor not found')
+          tail = tail.replace(core_anchor, core_repl, 1)
+          index = index[:core_start] + tail
+
+          core_guard = '''            result =\n              JSON.parse(result);'''
+          core_guard_repl = '''            if (\n              requestId !==\n              loadExistingAttendanceCore.requestId\n            ) {\n              return;\n            }\n\n            if (\n              studentRequestId !==\n              loadStudentsByClass.requestId\n            ) {\n              return;\n            }\n\n            if (\n              document.getElementById("filterKelasAbsensi").value !== kelas ||\n              document.getElementById("tanggalAbsensi").value !== tanggal\n            ) {\n              return;\n            }\n\n            result =\n              JSON.parse(result);'''
+          core_start = index.find('function loadExistingAttendanceCore(studentRequestId) {')
+          tail = index[core_start:]
+          if core_guard not in tail:
+              raise RuntimeError('core success anchor not found')
+          tail = tail.replace(core_guard, core_guard_repl, 1)
+          index = index[:core_start] + tail
+
+          # Hide the loading state only after the matching attendance result is rendered.
+          core_start = index.find('function loadExistingAttendanceCore(studentRequestId) {')
+          tail = index[core_start:]
+          marker = '''            if (!result.info.ditemukan) {'''
+          replacement = '''            if (!result.info.ditemukan) {'''
+          if marker not in tail:
+              raise RuntimeError('attendance result marker not found')
+          # Insert hide before the early return path.
+          tail = tail.replace(
+              '              modeEditAbsensi = false;\n\n              setSimpanAbsensiText(',
+              '              modeEditAbsensi = false;\n\n              setAbsensiDataLoading(false);\n\n              setSimpanAbsensiText(',
+              1
+          )
+          # Insert hide after existing status application.
+          tail = tail.replace(
+              '            modeEditAbsensi = false;\n\n          })',
+              '            modeEditAbsensi = false;\n\n            setAbsensiDataLoading(false);\n\n          })',
+              1
+          )
+          # Failure path hides loader.
+          tail = tail.replace(
+              '          .withFailureHandler(function (error) {\n            console.error(error);',
+              '          .withFailureHandler(function (error) {\n            setAbsensiDataLoading(false);\n            console.error(error);',
+              1
+          )
+          index = index[:core_start] + tail
+
+          # Static property for the core request generation.
+          if 'loadExistingAttendanceCore.requestId = 0;' not in index:
+              marker = 'function initAbsensiTanggal() {'
+              pos = index.find(marker)
+              if pos < 0:
+                  raise RuntimeError('core property insertion marker not found')
+              index = index[:pos] + 'loadExistingAttendanceCore.requestId = 0;\n\n' + index[pos:]
+
+          # ------------------------------------------------------------
+          # P7-A/B — Rekap dependent dropdowns: clear immediately and
+          # ignore out-of-order google.script.run responses.
+          # ------------------------------------------------------------
+          def rekap_function(src, name, replacement):
+              return replace_function(src, name, replacement)
+
+          new_load_kelas_guru = r'''function loadKelasGuruRekap(
+  idGuru,
+  selectedValue = "",
+  selectedMapel = ""
+) {
+
+  const requestId =
+    nextRekapFilterRequestId();
+
+  const select =
+    document.getElementById(
+      "filterKelasRekap"
+    );
+
+  const mapelSelect =
+    document.getElementById(
+      "filterMapelRekap"
+    );
+
+  if (select) {
+    select.disabled = true;
+    select.innerHTML =
+      '<option value="">Memuat kelas...</option>';
+  }
+
+  if (mapelSelect) {
+    mapelSelect.disabled = true;
+    mapelSelect.innerHTML =
+      '<option value="">Menunggu kelas...</option>';
+  }
+
+  google.script.run
+    .withSuccessHandler(function (result) {
+
+      if (
+        requestId !==
+        nextRekapFilterRequestId.value
+      ) {
+        return;
+      }
+
+      const currentGuru =
+        document.getElementById(
+          "filterGuruRekap"
+        ).value;
+
+      if (
+        String(currentGuru).trim() !==
+        String(idGuru).trim()
+      ) {
+        return;
+      }
+
+      const data =
+        JSON.parse(result);
+
+      if (!select) {
+        return;
+      }
+
+      select.innerHTML =
+        '<option value="">Semua Kelas</option>';
+
+      const daftarKelas = [];
+
+      for (
+        let i = 1;
+        i < data.length;
+        i++
+      ) {
+
+        const idGuruData =
+          String(data[i][1]).trim();
+
+        const kelas =
+          String(data[i][3]).trim();
+
+        const status =
+          String(data[i][6]).trim();
+
+        if (
+          status &&
+          status !== "Aktif"
+        ) {
+          continue;
+        }
+
+        if (
+          idGuruData !==
+          String(idGuru).trim()
+        ) {
+          continue;
+        }
+
+        if (
+          daftarKelas.includes(kelas)
+        ) {
+          continue;
+        }
+
+        daftarKelas.push(kelas);
+
+        select.innerHTML +=
+          '<option value="' +
+          kelas +
+          '">' +
+          kelas +
+          '</option>';
+      }
+
+      if (
+        selectedValue &&
+        Array.from(select.options).some(function (option) {
+          return option.value === selectedValue;
+        })
+      ) {
+        select.value = selectedValue;
+      }
+
+      select.disabled = false;
+
+      loadMapelRekap(
+        idGuru,
+        select.value,
+        selectedMapel
+      );
+
+    })
+    .withFailureHandler(function (error) {
+
+      if (
+        requestId !==
+        nextRekapFilterRequestId.value
+      ) {
+        return;
+      }
+
+      if (select) {
+        select.disabled = false;
+        select.innerHTML =
+          '<option value="">Gagal memuat kelas</option>';
+      }
+
+      if (mapelSelect) {
+        mapelSelect.disabled = true;
+        mapelSelect.innerHTML =
+          '<option value="">Menunggu kelas...</option>';
+      }
+
+      console.error(error);
+
+    })
+    .getGuruMengajar(
+      localStorage.getItem("wongmit_session")
+    );
+
+}
+'''
+          index = rekap_function(index, 'loadKelasGuruRekap', new_load_kelas_guru)
+
+          new_load_semua = r'''function loadSemuaKelasRekap() {
+
+  const requestId =
+    nextRekapFilterRequestId();
+
+  const select =
+    document.getElementById(
+      "filterKelasRekap"
+    );
+
+  const mapelSelect =
+    document.getElementById(
+      "filterMapelRekap"
+    );
+
+  const selectedKelas =
+    loadSemuaKelasRekap.selectedValue || "";
+
+  const selectedMapel =
+    loadSemuaKelasRekap.selectedMapel || "";
+
+  if (select) {
+    select.disabled = true;
+    select.innerHTML =
+      '<option value="">Memuat kelas...</option>';
+  }
+
+  if (mapelSelect) {
+    mapelSelect.disabled = true;
+    mapelSelect.innerHTML =
+      '<option value="">Menunggu kelas...</option>';
+  }
+
+  google.script.run
+    .withSuccessHandler(function (result) {
+
+      if (
+        requestId !==
+        nextRekapFilterRequestId.value
+      ) {
+        return;
+      }
+
+      const data =
+        JSON.parse(result);
+
+      if (!select) {
+        return;
+      }
+
+      select.innerHTML =
+        '<option value="">Semua Kelas</option>';
+
+      for (
+        let i = 1;
+        i < data.length;
+        i++
+      ) {
+        select.innerHTML +=
+          '<option value="' +
+          data[i][1] +
+          '">' +
+          data[i][1] +
+          '</option>';
+      }
+
+      if (
+        selectedKelas &&
+        Array.from(select.options).some(function (option) {
+          return option.value === selectedKelas;
+        })
+      ) {
+        select.value = selectedKelas;
+      }
+
+      select.disabled = false;
+
+      loadMapelRekap(
+        document.getElementById(
+          "filterGuruRekap"
+        ).value,
+        select.value,
+        selectedMapel
+      );
+
+    })
+    .withFailureHandler(function (error) {
+
+      if (
+        requestId !==
+        nextRekapFilterRequestId.value
+      ) {
+        return;
+      }
+
+      if (select) {
+        select.disabled = false;
+        select.innerHTML =
+          '<option value="">Gagal memuat kelas</option>';
+      }
+
+      if (mapelSelect) {
+        mapelSelect.disabled = true;
+        mapelSelect.innerHTML =
+          '<option value="">Menunggu kelas...</option>';
+      }
+
+      console.error(error);
+
+    })
+    .getAllClassesRekap(
+      localStorage.getItem("wongmit_session")
+    );
+
+}
+'''
+          index = rekap_function(index, 'loadSemuaKelasRekap', new_load_semua)
+
+          new_load_mapel = r'''function loadMapelRekap(
+  guru = "",
+  kelas = "",
+  selectedValue = ""
+) {
+
+  const requestId =
+    nextRekapFilterRequestId();
+
+  const select =
+    document.getElementById(
+      "filterMapelRekap"
+    );
+
+  if (select) {
+    select.disabled = true;
+    select.innerHTML =
+      '<option value="">Memuat mapel...</option>';
+  }
+
+  google.script.run
+    .withSuccessHandler(function (result) {
+
+      if (
+        requestId !==
+        nextRekapFilterRequestId.value
+      ) {
+        return;
+      }
+
+      const currentGuru =
+        document.getElementById(
+          "filterGuruRekap"
+        ).value;
+
+      const currentKelas =
+        document.getElementById(
+          "filterKelasRekap"
+        ).value;
+
+      if (
+        String(currentGuru).trim() !== String(guru).trim() ||
+        String(currentKelas).trim() !== String(kelas).trim()
+      ) {
+        return;
+      }
+
+      const data =
+        JSON.parse(result);
+
+      if (!select) {
+        return;
+      }
+
+      select.innerHTML =
+        '<option value="">Semua Mapel</option>';
+
+      for (
+        let i = 0;
+        i < data.length;
+        i++
+      ) {
+        select.innerHTML +=
+          '<option value="' +
+          data[i] +
+          '">' +
+          data[i] +
+          '</option>';
+      }
+
+      if (
+        selectedValue &&
+        Array.from(select.options).some(function (option) {
+          return option.value === selectedValue;
+        })
+      ) {
+        select.value = selectedValue;
+      }
+
+      select.disabled = false;
+
+    })
+    .withFailureHandler(function (error) {
+
+      if (
+        requestId !==
+        nextRekapFilterRequestId.value
+      ) {
+        return;
+      }
+
+      if (select) {
+        select.disabled = false;
+        select.innerHTML =
+          '<option value="">Gagal memuat mapel</option>';
+      }
+
+      console.error(error);
+
+    })
+    .getMapelRekap(
+      localStorage.getItem("wongmit_session"),
+      guru,
+      kelas
+    );
+
+}
+'''
+          index = rekap_function(index, 'loadMapelRekap', new_load_mapel)
+
+          # ------------------------------------------------------------
+          # BUG-01 — Edit Siswa title + stable date contract.
+          # ------------------------------------------------------------
+          new_get_student = r'''function getStudentById(id) {
+
+  const data =
+    getMasterSheetData("Siswa");
+
+  for (
+    let i = 1;
+    i < data.length;
+    i++
+  ) {
+
+    if (
+      String(data[i][0]).trim() ===
+      String(id).trim()
+    ) {
+
+      let tanggalLahir = "";
+
+      if (
+        data[i][5] instanceof Date
+      ) {
+
+        tanggalLahir =
+          Utilities.formatDate(
+            data[i][5],
+            Session.getScriptTimeZone(),
+            "yyyy-MM-dd"
+          );
+
+      } else {
+
+        tanggalLahir =
+          String(
+            data[i][5] || ""
+          ).trim();
+
+      }
+
+      return JSON.stringify({
+
+        rowIndex: i + 1,
+        id: data[i][0],
+        nisn: data[i][1],
+        nama: data[i][2],
+        jk: data[i][3],
+        tempatLahir: data[i][4],
+        tanggalLahir: tanggalLahir,
+        kelas: data[i][6],
+        status: data[i][7]
+
+      });
+
+    }
+
+  }
+
+  return "";
+
+}
+'''
+          code = replace_function(code, 'getStudentById', new_get_student)
+
+          # Give the modal a stable title hook.
+          title_pattern = re.compile(
+              r'<h5 class="modal-title">\s*Tambah Siswa\s*</h5>'
+          )
+          siswa2, n = title_pattern.subn(
+              '<h5 class="modal-title" id="judulModalSiswa">\n          Tambah Siswa\n        </h5>',
+              siswa,
+              count=1
+          )
+          if n != 1:
+              raise RuntimeError('Edit Siswa modal title not found')
+          siswa = siswa2
+
+          # Show Tambah explicitly resets the title.
+          index = index.replace(
+              '''      function showTambahSiswa() {\n\n        modeForm = "tambah";''',
+              '''      function showTambahSiswa() {\n\n        modeForm = "tambah";\n\n        const judulModal =\n          document.getElementById("judulModalSiswa");\n\n        if (judulModal) {\n          judulModal.textContent = "Tambah Siswa";\n        }''',
+              1
+          )
+
+          # Edit title and date are set after the server response.
+          edit_marker = '''            modeForm = "edit";\n\n            document.getElementById('idSiswa').value = data.id;'''
+          edit_repl = '''            modeForm = "edit";\n\n            const judulModal =\n              document.getElementById("judulModalSiswa");\n\n            if (judulModal) {\n              judulModal.textContent = "Edit Siswa";\n            }\n\n            document.getElementById('idSiswa').value = data.id;'''
+          if edit_marker not in index:
+              raise RuntimeError('Edit Siswa title anchor not found')
+          index = index.replace(edit_marker, edit_repl, 1)
+
+          # Ensure a title reset even if Bootstrap closes the modal externally.
+          # The edit path itself remains authoritative, so no global modal event is added.
+
+          # ------------------------------------------------------------
+          # Safety checks: protected P1/P2 must remain unchanged relative
+          # to the repository baseline.
+          # ------------------------------------------------------------
+          baseline_code = subprocess.check_output(
+              ['git', 'show', 'HEAD:apps-script/Code.js'],
+              text=True,
+              encoding='utf-8'
+          )
+          for protected in ('saveAttendance', 'reviseAttendance'):
+              a1, b1 = body_span(baseline_code, protected)
+              a2, b2 = body_span(code, protected)
+              if baseline_code[a1:b1] != code[a2:b2]:
+                  raise RuntimeError(
+                      f'Protected P1/P2 function changed: {protected}'
+                  )
+
+          # Ensure the new async helpers exist exactly once.
+          for marker in (
+              'function ensureAbsensiDataLoadingUI()',
+              'function setAbsensiDataLoading(',
+              'function nextRekapFilterRequestId()',
+              'function loadStudentsByClass()',
+              'function loadExistingAttendance(studentRequestId)',
+              'function loadExistingAttendanceCore(studentRequestId)',
+              'function loadKelasGuruRekap(',
+              'function loadSemuaKelasRekap()',
+              'function loadMapelRekap(',
+          ):
+              if index.count(marker) != 1:
+                  raise RuntimeError(
+                      f'Unexpected function count for: {marker}'
+                  )
+
+          INDEX.write_text(index, encoding='utf-8', newline='\n')
+          CODE.write_text(code, encoding='utf-8', newline='\n')
+          SISWA.write_text(siswa, encoding='utf-8', newline='\n')
+
+          subprocess.run(['git', 'diff', '--check'], check=True)
+
+      - name: Commit patch and remove workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/wongmit-p7-patch.yml
+          git add apps-script/index.html apps-script/Code.js apps-script/page_siswa.html
+          git diff --cached --check
+          git commit -m "fix: prevent stale async data in attendance and rekap"
+          git push origin HEAD:main
