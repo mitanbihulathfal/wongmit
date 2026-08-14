@@ -7236,8 +7236,24 @@
 
       }
 
-      function loadExistingAttendanceCore() {
-
+      function loadExistingAttendanceCore(
+        studentRequestId
+      ) {
+      
+        if (
+          studentRequestId == null
+        ) {
+          studentRequestId =
+            absensiStudentRequestId;
+        }
+      
+        if (
+          studentRequestId !==
+          absensiStudentRequestId
+        ) {
+          return;
+        }
+      
         const kelas =
           document.getElementById(
             "filterKelasAbsensi"
