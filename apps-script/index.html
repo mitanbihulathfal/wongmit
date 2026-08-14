@@ -6780,6 +6780,70 @@
       
       let absensiStudentRequestId = 0;
 
+      function showAbsensiLoadingState() {
+
+        const loadingHtml = `
+          <tr>
+            <td
+              colspan="3"
+              class="text-center py-4">
+      
+              <div class="d-flex justify-content-center align-items-center gap-2">
+      
+                <div
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true">
+                </div>
+      
+                <span>Memuat data siswa...</span>
+      
+              </div>
+      
+            </td>
+          </tr>
+        `;
+      
+        const table =
+          document.getElementById(
+            "tableAbsensi"
+          );
+      
+        const mobile =
+          document.getElementById(
+            "mobileAbsensiContainer"
+          );
+      
+        if (table) {
+          table.innerHTML =
+            loadingHtml;
+        }
+      
+        if (mobile) {
+          mobile.innerHTML = `
+            <div class="text-center py-4">
+      
+              <div class="d-flex justify-content-center align-items-center gap-2">
+      
+                <div
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true">
+                </div>
+      
+                <span>Memuat data siswa...</span>
+      
+              </div>
+      
+            </div>
+          `;
+      
+          mobile.classList.remove(
+            "d-none"
+          );
+        }
+      }
+
       function loadStudentsByClass() {
 
         const requestId =
@@ -6821,6 +6885,8 @@
           return;
 
         }
+
+        showAbsensiLoadingState();
 
         google.script.run
           .withSuccessHandler(function (data) {
