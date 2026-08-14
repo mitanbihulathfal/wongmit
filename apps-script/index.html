@@ -7040,6 +7040,24 @@
             loadExistingAttendance();
 
           })
+
+          .withFailureHandler(function (error) {
+
+            if (
+              requestId !==
+              absensiStudentRequestId
+            ) {
+              return;
+            }
+
+            console.error(error);
+
+            showToast(
+              "Gagal memuat data siswa.",
+              "error"
+            );
+
+          })
           .getStudentsByClass(kelas);
 
       }
