@@ -6823,7 +6823,14 @@
 
         google.script.run
           .withSuccessHandler(function (data) {
-
+        
+            if (
+              requestId !==
+              absensiStudentRequestId
+            ) {
+              return;
+            }
+        
             data = JSON.parse(data);
 
             const isMobile =
