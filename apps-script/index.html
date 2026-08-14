@@ -3998,6 +3998,101 @@
 
       }
 
+      /* =========================================================
+        P4 — FRONTEND MASTER DATA BUNDLE
+        ========================================================= */
+
+      let masterDataBundle = null;
+      let masterDataBundleLoading = false;
+      let masterDataBundleQueue = [];
+
+
+      /**
+       * Mengambil seluruh Master Data dalam satu request.
+       */
+      function loadMasterDataBundle(callback) {
+
+        if (masterDataBundle) {
+
+          if (typeof callback === "function") {
+            callback(masterDataBundle);
+          }
+
+          return;
+        }
+
+        if (masterDataBundleLoading) {
+
+          if (typeof callback === "function") {
+            masterDataBundleQueue.push(callback);
+          }
+
+          return;
+        }
+
+        masterDataBundleLoading = true;
+
+        if (typeof callback === "function") {
+          masterDataBundleQueue.push(callback);
+        }
+
+        google.script.run
+          .withSuccessHandler(function (bundle) {
+
+            masterDataBundle =
+              bundle || {};
+
+            masterDataBundleLoading =
+              false;
+
+            const queue =
+              masterDataBundleQueue.slice();
+
+            masterDataBundleQueue = [];
+
+            queue.forEach(function (fn) {
+              try {
+                fn(masterDataBundle);
+              } catch (error) {
+                console.error(error);
+              }
+            });
+
+          })
+          .withFailureHandler(function (error) {
+
+            masterDataBundleLoading =
+              false;
+
+            masterDataBundleQueue = [];
+
+            console.error(
+              "Gagal memuat Master Data Bundle:",
+              error
+            );
+
+            showToast(
+              "Gagal memuat Master Data",
+              "error"
+            );
+
+          })
+          .getMasterDataBundle();
+      }
+
+
+      /**
+       * Dipanggil setelah Master Data berubah.
+       *
+       * Karena perubahan terjadi di server,
+       * frontend harus membuang bundle lamanya.
+       */
+      function invalidateFrontendMasterData() {
+
+        masterDataBundle = null;
+
+      }
+
       function loadStudents() {
 
         google.script.run
@@ -11611,51 +11706,22 @@
 
       function loadMasterImportGuruMengajar(callback) {
 
-        const session =
+        loadMasterDataBundle(function (bundle) {
 
-          localStorage.getItem(
+          masterGuruImport =
+            bundle.Guru || [];
 
-            "wongmit_session"
+          masterKelasImport =
+            bundle.Kelas || [];
 
-          );
+          masterMapelImport =
+            bundle.Mapel || [];
 
-        google.script.run
+          if (typeof callback === "function") {
+            callback();
+          }
 
-          .withSuccessHandler(function (guru) {
-
-            masterGuruImport =
-
-              JSON.parse(guru);
-
-            google.script.run
-
-              .withSuccessHandler(function (kelas) {
-
-                masterKelasImport =
-
-                  JSON.parse(kelas);
-
-                google.script.run
-
-                  .withSuccessHandler(function (mapel) {
-
-                    masterMapelImport =
-
-                      JSON.parse(mapel);
-
-                    callback();
-
-                  })
-
-                  .getMapelOptions();
-
-              })
-
-              .getKelasOptions();
-
-          })
-
-          .getGuruOptions();
+        });
 
       }
 

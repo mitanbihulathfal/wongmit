@@ -1,5 +1,169 @@
 const SS = SpreadsheetApp.getActiveSpreadsheet();
 
+/* =========================================================
+   P4–P6 MASTER DATA LAYER
+   Master Data Bundle + Cache + Invalidation
+   ========================================================= */
+
+const MASTER_SHEETS = [
+  "Siswa",
+  "Guru",
+  "Kelas",
+  "Mapel",
+  "GuruMengajar",
+  "Pengaturan"
+];
+
+const MASTER_CACHE_PREFIX = "WONGMIT_MASTER_V1_";
+const MASTER_CACHE_TTL = 21600; // maksimum 6 jam
+
+/**
+ * Membaca satu Master Sheet.
+ *
+ * Untuk sementara fungsi ini adalah single source
+ * bagi seluruh pembacaan Master Data.
+ *
+ * P5 akan menambahkan Cache hit/fallback.
+ * P6 akan memastikan cache dihapus setelah perubahan data.
+ */
+function getMasterSheetData(sheetName) {
+
+  if (!MASTER_SHEETS.includes(sheetName)) {
+    throw new Error(
+      "Sheet bukan bagian dari Master Data: " + sheetName
+    );
+  }
+
+  const cache =
+    CacheService.getScriptCache();
+
+  const cacheKey =
+    MASTER_CACHE_PREFIX +
+    sheetName;
+
+  const cached =
+    cache.get(cacheKey);
+
+  if (cached) {
+
+    try {
+      return JSON.parse(cached);
+    } catch (error) {
+      // Cache rusak → abaikan dan baca ulang Sheet.
+      cache.remove(cacheKey);
+    }
+
+  }
+
+  const sheet =
+    SS.getSheetByName(sheetName);
+
+  if (!sheet) {
+    throw new Error(
+      "Sheet Master Data tidak ditemukan: " + sheetName
+    );
+  }
+
+  const data =
+    sheet
+      .getDataRange()
+      .getValues();
+
+  /*
+   * CacheService memiliki batas ukuran value.
+   * Jika data terlalu besar, jangan paksa masuk cache.
+   * Sistem tetap bekerja dengan fallback ke Sheet.
+   */
+  try {
+
+    const serialized =
+      JSON.stringify(data);
+
+    if (
+      serialized.length <= 95000
+    ) {
+
+      cache.put(
+        cacheKey,
+        serialized,
+        MASTER_CACHE_TTL
+      );
+
+    }
+
+  } catch (error) {
+
+    console.warn(
+      "Master cache gagal disimpan: " +
+      sheetName
+    );
+
+  }
+
+  return data;
+}
+
+
+/**
+ * Master Data Bundle.
+ *
+ * Satu pemanggilan backend dapat mengambil
+ * seluruh master yang dibutuhkan frontend.
+ */
+function getMasterDataBundle() {
+
+  const bundle = {};
+
+  MASTER_SHEETS.forEach(function (sheetName) {
+
+    bundle[sheetName] =
+      getMasterSheetData(sheetName);
+
+  });
+
+  return bundle;
+}
+
+/* =========================================================
+   P6 — MASTER CACHE INVALIDATION
+   ========================================================= */
+
+function invalidateMasterCache(sheetNames) {
+
+  const cache =
+    CacheService.getScriptCache();
+
+  if (!Array.isArray(sheetNames)) {
+    sheetNames = [sheetNames];
+  }
+
+  sheetNames.forEach(function (sheetName) {
+
+    if (!MASTER_SHEETS.includes(sheetName)) {
+      return;
+    }
+
+    cache.remove(
+      MASTER_CACHE_PREFIX +
+      sheetName
+    );
+
+  });
+
+}
+
+
+/**
+ * Invalidate seluruh Master Data Cache.
+ */
+function invalidateAllMasterCache() {
+
+  invalidateMasterCache(
+    MASTER_SHEETS
+  );
+
+}
+
 function doGet() {
 
   const output =
@@ -693,10 +857,7 @@ function getAcademicSettings(sessionId) {
     );
 
   const data =
-
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("Pengaturan");
 
   const hasil = {};
 
@@ -803,6 +964,8 @@ function saveAcademicSettings(
     "hari_libur",
     data.hariLibur
   );
+
+  invalidateMasterCache("Pengaturan");
 
   return true;
 
@@ -1075,12 +1238,10 @@ function getPage(pageName) {
 
 function getStudents() {
 
-  const sheet = SS.getSheetByName("Siswa");
-
-  const data = sheet.getDataRange().getValues();
+  const data =
+    getMasterSheetData("Siswa");
 
   return JSON.stringify(data);
-
 }
 
 function addStudent(sessionId, data) {
@@ -1108,15 +1269,16 @@ function addStudent(sessionId, data) {
     data.status
   ]);
 
+  invalidateMasterCache("Siswa");
+  
   return true;
 
 }
 
 function getStudentById(id) {
 
-  const sheet = SS.getSheetByName("Siswa");
-
-  const data = sheet.getDataRange().getValues();
+  const data =
+    getMasterSheetData("Siswa");
 
   for (let i = 1; i < data.length; i++) {
 
@@ -1173,6 +1335,8 @@ function updateStudent(sessionId, data) {
         data.status
       ]]);
 
+      invalidateMasterCache("Siswa");
+      
       return true;
 
     }
@@ -1205,6 +1369,8 @@ function deleteStudent(sessionId, id) {
 
       sheet.deleteRow(i + 1);
 
+      invalidateMasterCache("Siswa");
+      
       return true;
 
     }
@@ -1221,14 +1387,7 @@ function deleteStudent(sessionId, id) {
 
 function getMasterSiswa() {
 
-  const sheet =
-    SS.getSheetByName(
-      "Siswa"
-    );
-
-  return sheet
-    .getDataRange()
-    .getValues();
+  return getMasterSheetData("Siswa");
 
 }
 
@@ -1261,11 +1420,8 @@ function getTeachers(sessionId) {
 
   }
 
-  const sheet =
-    SS.getSheetByName("Guru");
-
   const data =
-    sheet.getDataRange().getValues();
+    getMasterSheetData("Guru");
 
   return JSON.stringify(data);
 
@@ -1297,9 +1453,7 @@ function getGuruDropdownRekap(sessionId) {
     );
 
   const data =
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("Guru");
 
   const hasil = [];
 
@@ -1354,17 +1508,8 @@ function getAllClassesRekap(sessionId) {
 
   }
 
-  const sheet =
-
-    SS.getSheetByName(
-      "Kelas"
-    );
-
   const data =
-
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("Kelas");
 
   const hasil = [];
 
@@ -1374,25 +1519,14 @@ function getAllClassesRekap(sessionId) {
   ]);
 
   for (
-
     let i = 1;
-
     i < data.length;
-
     i++
-
   ) {
 
     if (
-
-      String(
-        data[i][3]
-      ).trim()
-
-      !==
-
+      String(data[i][3]).trim() !==
       "Aktif"
-
     ) {
 
       continue;
@@ -1400,11 +1534,8 @@ function getAllClassesRekap(sessionId) {
     }
 
     hasil.push([
-
       data[i][0],
-
       data[i][1]
-
     ]);
 
   }
@@ -1439,17 +1570,16 @@ function addTeacher(sessionId, data) {
     data.status
   ]);
 
+  invalidateMasterCache("Guru");
+
   return true;
 
 }
 
 function getTeacherById(id) {
 
-  const sheet =
-    SS.getSheetByName("Guru");
-
   const data =
-    sheet.getDataRange().getValues();
+    getMasterSheetData("Guru");
 
   for (let i = 1; i < data.length; i++) {
 
@@ -1502,6 +1632,8 @@ function updateTeacher(
   sheet.getRange(rowIndex, 5).setValue(data.role);
   sheet.getRange(rowIndex, 6).setValue(data.status);
 
+  invalidateMasterCache("Guru");
+
   return true;
 
 }
@@ -1536,6 +1668,8 @@ function deleteTeacher(
 
       sheet.deleteRow(i + 1);
 
+      invalidateMasterCache("Guru");
+
       return true;
 
     }
@@ -1565,10 +1699,10 @@ function getClasses(sessionId) {
     SS.getSheetByName("Guru");
 
   const kelasData =
-    kelasSheet.getDataRange().getValues();
+    getMasterSheetData("Kelas");
 
   const guruData =
-    guruSheet.getDataRange().getValues();
+    getMasterSheetData("Guru");
 
   const hasil = [];
 
@@ -1620,7 +1754,7 @@ function getWaliKelasOptions() {
     SS.getSheetByName("Guru");
 
   const data =
-    sheet.getDataRange().getValues();
+    getMasterSheetData("Guru");
 
   const hasil = [];
 
@@ -1673,17 +1807,16 @@ function addClass(
 
   ]);
 
+  invalidateMasterCache("Kelas");
+
   return true;
 
 }
 
 function getClassById(id) {
 
-  const sheet =
-    SS.getSheetByName("Kelas");
-
   const data =
-    sheet.getDataRange().getValues();
+    getMasterSheetData("Kelas");
 
   for (let i = 1; i < data.length; i++) {
 
@@ -1742,6 +1875,8 @@ function updateClass(
   sheet.getRange(rowIndex, 4)
     .setValue(data.status);
 
+  invalidateMasterCache("Kelas");
+
   return true;
 
 }
@@ -1776,6 +1911,8 @@ function deleteClass(
 
       sheet.deleteRow(i + 1);
 
+      invalidateMasterCache("Kelas");
+
       return true;
 
     }
@@ -1788,11 +1925,8 @@ function deleteClass(
 
 function getGuruOptions() {
 
-  const sheet =
-    SS.getSheetByName("Guru");
-
   const data =
-    sheet.getDataRange().getValues();
+    getMasterSheetData("Guru");
 
   const hasil = [];
 
@@ -1835,7 +1969,7 @@ function getKelasOptions() {
     SS.getSheetByName("Kelas");
 
   const data =
-    sheet.getDataRange().getValues();
+    getMasterSheetData("Kelas");
 
   const hasil = [];
 
@@ -2438,9 +2572,7 @@ function getMapel(sessionId) {
     );
 
   const data =
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("Mapel");
 
   return JSON.stringify(
     data
@@ -2548,6 +2680,8 @@ function addMapel(
 
   ]);
 
+  invalidateMasterCache("Mapel");
+
   return true;
 
 }
@@ -2595,6 +2729,8 @@ function updateMapel(
       data.status
 
     ]]);
+
+  invalidateMasterCache("Mapel");
 
   return true;
 
@@ -2655,6 +2791,8 @@ function deleteMapel(
       sheet.deleteRow(
         i + 1
       );
+
+      invalidateMasterCache("Mapel");
 
       return true;
 
@@ -2774,15 +2912,8 @@ function getMapelById(
   idMapel
 ) {
 
-  const sheet =
-    SS.getSheetByName(
-      "Mapel"
-    );
-
   const data =
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("Mapel");
 
   for (
     let i = 1;
@@ -2791,17 +2922,13 @@ function getMapelById(
   ) {
 
     if (
-
       String(
         data[i][0]
       ).trim()
-
       ===
-
       String(
         idMapel
       ).trim()
-
     ) {
 
       return {
@@ -3222,6 +3349,10 @@ function importMapel(
 
     hasil.berhasil++;
 
+  }
+
+  if (hasil.berhasil > 0) {
+    invalidateMasterCache("Mapel");
   }
 
   return hasil;
@@ -3950,6 +4081,10 @@ function importSiswa(
 
   }
 
+  if (hasil.berhasil > 0) {
+    invalidateMasterCache("Siswa");
+  }
+
   return hasil;
 
 }
@@ -3964,19 +4099,8 @@ function getGuruIdByNama(
 
 ) {
 
-  const sheet =
-
-    SS.getSheetByName(
-
-      "Guru"
-
-    );
-
   const data =
-
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("Guru");
 
   for (
 
@@ -4015,14 +4139,6 @@ function getGuruIdByNama(
   return null;
 
 }
-
-/* =========================
-   LOOKUP KELAS (UTILITY)
-========================= */
-
-/* =========================
-   LOOKUP MAPEL (UTILITY)
-========================= */
 
 /* =========================
    IMPORT GURU MENGAJAR (UTILITY)
@@ -4189,6 +4305,10 @@ function importGuruMengajar(
 
   }
 
+  if (hasil.berhasil > 0) {
+    invalidateMasterCache("GuruMengajar");
+  }
+
   return hasil;
 
 }
@@ -4229,16 +4349,12 @@ function getGuruMengajar(sessionId) {
     );
 
   const dataMengajar =
-    sheetGuruMengajar
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("GuruMengajar");
 
   const dataGuru =
-    sheetGuru
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("Guru");
 
-  const hasil = [];
+    const hasil = [];
 
   hasil.push([
 
@@ -4378,9 +4494,7 @@ function getFilteredGuruMengajar(
     );
 
   const data =
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("GuruMengajar");
 
   const hasil = [];
 
@@ -4540,17 +4654,8 @@ function getRelasiMengajar(
 
 ) {
 
-  const sheet =
-
-    SS.getSheetByName(
-      "GuruMengajar"
-    );
-
   const data =
-
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("GuruMengajar");
 
   const hariIni =
     getWeekDays()[
@@ -4658,17 +4763,8 @@ function getRelasiMengajarByHari(
 
 ) {
 
-  const sheet =
-
-    SS.getSheetByName(
-      "GuruMengajar"
-    );
-
   const data =
-
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("GuruMengajar");
 
   for (
 
@@ -4805,6 +4901,8 @@ function addGuruMengajar(
 
   ]);
 
+  invalidateMasterCache("GuruMengajar");
+
   return true;
 
 }
@@ -4884,6 +4982,8 @@ function updateGuruMengajar(
     data.status
   );
 
+  invalidateMasterCache("GuruMengajar");
+
   return true;
 
 }
@@ -4944,6 +5044,8 @@ function deleteGuruMengajar(
         i + 1
       );
 
+      invalidateMasterCache("GuruMengajar");
+
       return true;
 
     }
@@ -4958,15 +5060,8 @@ function getGuruMengajarById(
   idRelasi
 ) {
 
-  const sheet =
-    SS.getSheetByName(
-      "GuruMengajar"
-    );
-
   const data =
-    sheet
-      .getDataRange()
-      .getValues();
+    getMasterSheetData("GuruMengajar");
 
   for (
     let i = 1;
