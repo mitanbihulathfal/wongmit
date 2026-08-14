@@ -7045,16 +7045,20 @@
               return;
             }
 
-            loadExistingAttendance();
+            loadExistingAttendance(requestId);
 
           })
 
           .withFailureHandler(function (error) {
 
-            loadExistingAttendance(requestId);
+            if (
+              requestId !==
+              absensiStudentRequestId
+            ) {
+              return;
+            }
 
             console.error(error);
-
             showToast(
               "Gagal memuat data siswa.",
               "error"
