@@ -6786,12 +6786,13 @@
           ++absensiStudentRequestId;
 
         const kelas =
-
           document.getElementById(
             'filterKelasAbsensi'
           ).value;
-
+        
         if (!kelas) {
+        
+          ++absensiStudentRequestId;
 
           document
             .getElementById(
