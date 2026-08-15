@@ -166,34 +166,14 @@ function invalidateAllMasterCache() {
 
 function doGet() {
 
-  const output =
-
-    HtmlService
-
-      .createTemplateFromFile(
-        "index"
-      )
-
-      .evaluate()
-
-      .setTitle(
-        "WONG MIT"
-      )
-
-      .addMetaTag(
-        "viewport",
-        "width=device-width, initial-scale=1"
-      )
-
-      .setXFrameOptionsMode(
-
-        HtmlService
-          .XFrameOptionsMode
-          .ALLOWALL
-
-      );
-
-  return output;
+  return HtmlService
+    .createTemplateFromFile("index")
+    .evaluate()
+    .setTitle("WONG MIT")
+    .addMetaTag(
+      "viewport",
+      "width=device-width, initial-scale=1"
+    );
 
 }
 
