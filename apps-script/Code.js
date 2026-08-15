@@ -841,7 +841,12 @@ function getAcademicSettings(sessionId) {
   const allowed =
     checkRole(
       sessionId,
-      ["Admin"]
+      [
+         "Admin",
+         "KepalaSekolah",
+         "WaliKelas",
+         "GuruMapel"
+       ]
     );
 
   if (!allowed) {
