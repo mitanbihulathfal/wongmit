@@ -172,6 +172,15 @@
 
     }
 
+    /* =========================
+       P7-D.3 — LOGIN LAYOUT ISOLATION
+    ========================= */
+    
+    body.login-active .content {
+      margin-left: 0 !important;
+      width: 100% !important;
+    }
+
     .topbar {
 
       background: #fff;
@@ -9023,28 +9032,123 @@
           document.getElementById(
             "loginPassword"
           );
-
+      
         const icon =
           document.getElementById(
             "loginPasswordIcon"
           );
-
-        if (input.type === "password") {
-
-          input.type = "text";
-
-          icon.className =
-            "fa-solid fa-eye-slash";
-
-        } else {
-
-          input.type = "password";
-
-          icon.className =
-            "fa-solid fa-eye";
-
+      
+        if (!input || !icon) {
+          return;
         }
-
+      
+        const showPassword =
+          input.type === "password";
+      
+        /*
+         * Simpan posisi cursor apabila
+         * browser masih mempertahankan
+         * selection pada input.
+         */
+      
+        const wasFocused =
+          document.activeElement === input;
+      
+        let selectionStart = null;
+        let selectionEnd = null;
+      
+        try {
+      
+          selectionStart =
+            input.selectionStart;
+      
+          selectionEnd =
+            input.selectionEnd;
+      
+        } catch (error) {
+      
+          selectionStart = null;
+          selectionEnd = null;
+      
+        }
+      
+        /*
+         * =========================
+         * P7-D.3 — MOBILE TOUCH FIX
+         * =========================
+         *
+         * Lepaskan focus sementara,
+         * ubah tipe input, paksa browser
+         * melakukan layout/repaint, lalu
+         * kembalikan focus secara aman.
+         */
+      
+        if (wasFocused) {
+      
+          input.blur();
+      
+        }
+      
+        input.type =
+          showPassword
+            ? "text"
+            : "password";
+      
+        icon.className =
+          showPassword
+            ? "fa-solid fa-eye-slash"
+            : "fa-solid fa-eye";
+      
+        /*
+         * Force layout/reflow.
+         */
+      
+        void input.offsetHeight;
+      
+        if (wasFocused) {
+      
+          requestAnimationFrame(
+            function () {
+      
+              try {
+      
+                input.focus({
+                  preventScroll: true
+                });
+      
+              } catch (error) {
+      
+                input.focus();
+      
+              }
+      
+              if (
+                selectionStart !== null &&
+                selectionEnd !== null
+              ) {
+      
+                try {
+      
+                  input.setSelectionRange(
+                    selectionStart,
+                    selectionEnd
+                  );
+      
+                } catch (error) {
+      
+                  // Browser tertentu
+                  // tidak mengizinkan
+                  // selection pada state ini.
+      
+                }
+      
+              }
+      
+            }
+          );
+      
+        }
+      
       }
 
       function saveLoginUsername(username) {
@@ -9421,58 +9525,99 @@
 
       function showMainApp() {
 
-        document
-          .getElementById(
+        const body =
+          document.body;
+      
+        const sidebar =
+          document.getElementById(
             "sidebar"
-          )
-          .style.display =
-          "block";
-
+          );
+      
         const mobileBtn =
           document.getElementById(
             "mobileToggle"
           );
-
-        if (mobileBtn) {
-
-          mobileBtn.style.display =
-
-            isMobileLayout()
-
-              ? "flex"
-
-              : "none";
-
+      
+        /*
+         * =========================
+         * P7-D.3 — EXIT LOGIN MODE
+         * =========================
+         */
+      
+        if (body) {
+      
+          body.classList.remove(
+            "login-active"
+          );
+      
         }
-
+      
+        if (sidebar) {
+      
+          sidebar.style.display =
+            "block";
+      
+          sidebar.classList.remove(
+            "show"
+          );
+      
+        }
+      
+        if (mobileBtn) {
+      
+          mobileBtn.style.display =
+            isMobileLayout()
+              ? "flex"
+              : "none";
+      
+        }
+      
+        /*
+         * Kembalikan layout normal
+         * setelah sidebar aktif kembali.
+         */
+      
+        const contentArea =
+          document.getElementById(
+            "contentArea"
+          );
+      
+        if (contentArea) {
+      
+          contentArea.style.removeProperty(
+            "margin-left"
+          );
+      
+          contentArea.style.removeProperty(
+            "width"
+          );
+      
+        }
+      
         updateResponsiveLayout();
-
+      
         applyRoleMenu();
-
+      
         // =========================
         // HEADER DATE & TIME
         // =========================
-
+      
         updateHeaderDateTime();
-
+      
         if (headerDateTimeInterval) {
-
+      
           clearInterval(
             headerDateTimeInterval
           );
-
+      
         }
-
+      
         headerDateTimeInterval =
-
           setInterval(
-
             updateHeaderDateTime,
-
             1000
-
           );
-
+      
       }
 
       window.addEventListener(
@@ -9521,29 +9666,76 @@
 
       function showLoginPage() {
 
-        document
-          .getElementById(
+        const body =
+          document.body;
+      
+        const sidebar =
+          document.getElementById(
             "sidebar"
-          )
-          .style.display =
-          "none";
-
-        document
-          .getElementById(
+          );
+      
+        const contentArea =
+          document.getElementById(
             "contentArea"
-          )
-          .style.marginLeft =
-          "0";
-
+          );
+      
         const mobileBtn =
           document.getElementById(
             "mobileToggle"
           );
-
+      
+        /*
+         * =========================
+         * P7-D.3 — LOGIN LAYOUT
+         * =========================
+         *
+         * Login harus benar-benar
+         * keluar dari layout sidebar.
+         */
+      
+        if (body) {
+      
+          body.classList.add(
+            "login-active"
+          );
+      
+        }
+      
+        if (sidebar) {
+      
+          sidebar.style.display =
+            "none";
+      
+          sidebar.classList.remove(
+            "show"
+          );
+      
+        }
+      
+        if (contentArea) {
+      
+          contentArea.style.setProperty(
+            "margin-left",
+            "0",
+            "important"
+          );
+      
+          contentArea.style.setProperty(
+            "width",
+            "100%",
+            "important"
+          );
+      
+        }
+      
         if (mobileBtn) {
+      
           mobileBtn.style.display =
             "none";
+      
         }
+      
+      }
 
       }
 
