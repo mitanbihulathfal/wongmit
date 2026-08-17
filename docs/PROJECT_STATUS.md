@@ -180,6 +180,11 @@ Kondisi:
 
 - Digunakan sebagai pusat konfigurasi aplikasi.
 - `getAppInfo` tetap dipertahankan untuk kebutuhan Pengaturan Sistem (roadmap).
+- Refactoring modularisasi Pengaturan selesai.
+- Backend Pengaturan dipisahkan ke `Pengaturan.js`.
+- Frontend Pengaturan Akademik dipisahkan ke `js_pengaturan.html`.
+- Endpoint dan perilaku runtime tetap kompatibel.
+- Deploy Uji dan Production LOLOS.
 
 ---
 

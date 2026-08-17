@@ -31,6 +31,38 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-17
+
+### Sprint Pengaturan — Refactoring & Modularisasi
+
+Judul
+
+Refactoring Modul Pengaturan
+
+Perubahan
+
+- Memindahkan `getAcademicSettings()` dan `saveAcademicSettings()` dari `Code.js` ke `Pengaturan.js`.
+- Memindahkan 7 fungsi frontend Pengaturan Akademik dari `index.html` ke `js_pengaturan.html`.
+- Mempertahankan endpoint `google.script.run` tanpa perubahan.
+- Mempertahankan caller `loadPage()` → `loadAcademicSettings()`.
+- Menambahkan partial loader `<?!= getPage("js_pengaturan") ?>`.
+- Tidak mengubah `page_pengaturan.html`.
+- Tidak mengubah struktur database atau Sheet `Pengaturan`.
+
+Status
+
+SELESAI
+
+Commit
+
+Refactoring Pengaturan
+
+Catatan
+
+- Deploy Uji LOLOS.
+- Deploy Production LOLOS.
+- Tidak ditemukan regresi pada modul Pengaturan.
+
 ## 2026-08-11
 
 ### Sprint Dashboard — Absensi Shortcut & Attendance Monitoring UX

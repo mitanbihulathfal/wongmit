@@ -707,3 +707,63 @@ Next:
 Catatan:
 
 Optimasi berikutnya tetap melalui audit bottleneck terlebih dahulu. Cache, perubahan struktur Sheet, index/summary table, dan optimasi berisiko tinggi tidak diterapkan tanpa bukti kebutuhan dan impact analysis.
+
+---
+
+# Sprint Pengaturan — Refactoring & Modularisasi
+
+Status
+
+DONE
+
+Target
+
+Melakukan modularisasi modul Pengaturan secara aman tanpa mengubah perilaku aplikasi, endpoint, database, maupun koneksi frontend-backend.
+
+Fokus
+
+- Memisahkan `getAcademicSettings()` dan `saveAcademicSettings()` dari `Code.js` ke `Pengaturan.js`.
+- Memisahkan logic frontend Pengaturan Akademik dari `index.html` ke `js_pengaturan.html`.
+- Mempertahankan endpoint `google.script.run` yang sudah digunakan frontend.
+- Mempertahankan caller `loadPage()` → `loadAcademicSettings()`.
+- Mempertahankan `page_pengaturan.html` tanpa perubahan.
+- Mempertahankan database Spreadsheet dan struktur Sheet `Pengaturan`.
+- Menggunakan partial loader Apps Script `<?!= getPage("js_pengaturan") ?>`.
+
+Hasil
+
+✅ `getAcademicSettings()` dipindahkan ke `Pengaturan.js`
+
+✅ `saveAcademicSettings()` dipindahkan ke `Pengaturan.js`
+
+✅ 7 fungsi frontend Pengaturan Akademik dipindahkan ke `js_pengaturan.html`
+
+✅ 7 fungsi lama dihapus dari `index.html`
+
+✅ `loadPage()` dan caller `loadAcademicSettings()` tetap dipertahankan
+
+✅ `page_pengaturan.html` tidak diubah
+
+✅ Endpoint backend tetap sama
+
+✅ Struktur database tidak berubah
+
+✅ `js_pengaturan.html` dimuat menggunakan partial loader Apps Script
+
+✅ Deploy Uji LOLOS
+
+✅ Deploy Production LOLOS
+
+✅ Tidak ditemukan regresi pada modul Pengaturan
+
+Catatan
+
+Refactoring dilakukan secara incremental dengan prinsip Move, Don't Rewrite. Tidak dilakukan refactor tambahan terhadap logic Pengaturan di luar ruang lingkup sprint.
+
+File terkait
+
+- `apps-script/Code.js`
+- `apps-script/Pengaturan.js`
+- `apps-script/index.html`
+- `apps-script/js_pengaturan.html`
+- `apps-script/page_pengaturan.html`
