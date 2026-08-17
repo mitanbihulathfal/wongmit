@@ -507,18 +507,23 @@ ACTIVE
 
 Target
 
-Penyempurnaan halaman Pengaturan aplikasi agar lebih intuitif dan lengkap.
+Penyempurnaan dan penyelesaian halaman Pengaturan aplikasi secara bertahap tanpa mengganggu aplikasi production.
 
 Fokus
 
-- Penyempurnaan UI Pengaturan Akademik
-- Penyempurnaan UI Pengaturan Sekolah
-- Penyempurnaan UI Pengaturan Sistem
-- Penyempurnaan UI Pengaturan Tahun Ajaran
+- Penyempurnaan dan modularisasi Pengaturan Akademik
+- Penyempurnaan dan implementasi Pengaturan Sekolah
+- Penyempurnaan dan implementasi Pengaturan Sistem
+- Penyempurnaan dan implementasi Pengaturan Tahun Ajaran
 
-Hasil
+Progress
 
-- (akan diisi progress sprint berjalan)
+- Pengaturan Akademik — selesai
+- Pengaturan Sekolah — belum difungsikan
+- Pengaturan Sistem — belum difungsikan
+- Pengaturan Tahun Ajaran — belum difungsikan
+
+Status keseluruhan sprint tetap ACTIVE sampai seluruh bagian Pengaturan selesai dan telah melalui testing serta deploy production.
 
 ---
 
@@ -710,7 +715,7 @@ Optimasi berikutnya tetap melalui audit bottleneck terlebih dahulu. Cache, perub
 
 ---
 
-# Sprint Pengaturan — Refactoring & Modularisasi
+# Sprint Pengaturan Akademik — Refactoring & Modularisasi
 
 Status
 
@@ -718,7 +723,7 @@ DONE
 
 Target
 
-Melakukan modularisasi modul Pengaturan secara aman tanpa mengubah perilaku aplikasi, endpoint, database, maupun koneksi frontend-backend.
+Melakukan refactoring dan modularisasi Pengaturan Akademik secara aman tanpa mengubah perilaku aplikasi, endpoint, database, maupun koneksi frontend-backend.
 
 Fokus
 
@@ -754,11 +759,11 @@ Hasil
 
 ✅ Deploy Production LOLOS
 
-✅ Tidak ditemukan regresi pada modul Pengaturan
+✅ Tidak ditemukan regresi pada Pengaturan Akademik
 
 Catatan
 
-Refactoring dilakukan secara incremental dengan prinsip Move, Don't Rewrite. Tidak dilakukan refactor tambahan terhadap logic Pengaturan di luar ruang lingkup sprint.
+Refactoring dilakukan secara incremental dengan prinsip Move, Don't Rewrite. Tidak dilakukan refactor tambahan terhadap logic Pengaturan di luar ruang lingkup Pengaturan Akademik.
 
 File terkait
 

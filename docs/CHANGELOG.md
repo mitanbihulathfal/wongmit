@@ -33,11 +33,11 @@ Catatan
 
 ## 2026-08-17
 
-### Sprint Pengaturan — Refactoring & Modularisasi
+### Sprint Pengaturan Akademik — Refactoring & Modularisasi
 
 Judul
 
-Refactoring Modul Pengaturan
+Refactoring Pengaturan Akademik
 
 Perubahan
 
@@ -55,13 +55,15 @@ SELESAI
 
 Commit
 
-Refactoring Pengaturan
+Refactoring 'Pengaturan'
 
 Catatan
 
+- Perubahan hanya mencakup Pengaturan Akademik.
+- Pengaturan Sekolah, Pengaturan Sistem, dan Pengaturan Tahun Ajaran masih berada dalam Sprint Pengaturan yang berstatus ACTIVE.
 - Deploy Uji LOLOS.
 - Deploy Production LOLOS.
-- Tidak ditemukan regresi pada modul Pengaturan.
+- Tidak ditemukan regresi pada Pengaturan Akademik.
 
 ## 2026-08-11
 

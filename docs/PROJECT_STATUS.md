@@ -174,17 +174,20 @@ Belum ditentukan. Akan mengikuti roadmap dan keputusan pengguna.
 ## Pengaturan
 
 Status:
-SELESAI
+ACTIVE
 
 Kondisi:
 
 - Digunakan sebagai pusat konfigurasi aplikasi.
-- `getAppInfo` tetap dipertahankan untuk kebutuhan Pengaturan Sistem (roadmap).
-- Refactoring modularisasi Pengaturan selesai.
-- Backend Pengaturan dipisahkan ke `Pengaturan.js`.
+- Pengaturan Akademik telah selesai dimodularisasi dan telah lolos Deploy Uji serta Deploy Production.
+- Backend Pengaturan Akademik dipisahkan ke `Pengaturan.js`.
 - Frontend Pengaturan Akademik dipisahkan ke `js_pengaturan.html`.
-- Endpoint dan perilaku runtime tetap kompatibel.
-- Deploy Uji dan Production LOLOS.
+- Endpoint dan perilaku runtime Pengaturan Akademik tetap kompatibel.
+- `getAppInfo` tetap dipertahankan untuk kebutuhan Pengaturan Sistem pada tahap berikutnya.
+- Pengaturan Sekolah masih dalam tahap penyempurnaan dan belum difungsikan.
+- Pengaturan Sistem masih dalam tahap penyempurnaan dan belum difungsikan.
+- Pengaturan Tahun Ajaran masih dalam tahap penyempurnaan dan belum difungsikan.
+- Sprint Pengaturan secara keseluruhan tetap ACTIVE sampai seluruh bagian Pengaturan selesai dan telah melalui testing serta deploy production.
 
 ---
 
