@@ -1,0 +1,584 @@
+<script>
+
+/* =========================
+    DASHBOARD FRONTEND
+========================= */
+
+function loadDashboard() {
+
+google.script.run
+    .withSuccessHandler(function (data) {
+
+    const totalSiswa = document.getElementById('totalSiswa');
+    const totalGuru = document.getElementById('totalGuru');
+    const totalKelas = document.getElementById('totalKelas');
+
+    if (totalSiswa) totalSiswa.innerText = data.totalSiswa;
+    if (totalGuru) totalGuru.innerText = data.totalGuru;
+    if (totalKelas) totalKelas.innerText = data.totalKelas;
+
+    const semester =
+        document.getElementById(
+        "dashboardSemester"
+        );
+
+    const tahun =
+        document.getElementById(
+        "dashboardTahunAjaran"
+        );
+
+    if (semester) {
+
+        semester.innerText =
+        data.semester;
+
+    }
+
+    if (tahun) {
+
+        tahun.innerText =
+        data.tahunAjaran;
+
+    }
+
+    const hadir = document.getElementById('hadir');
+    const jmlHadir = document.getElementById('jmlHadir');
+    const jmlIzin = document.getElementById('jmlIzin');
+    const jmlSakit = document.getElementById('jmlSakit');
+    const jmlAlpa = document.getElementById('jmlAlpa');
+
+    if (hadir) {
+
+        hadir.innerText =
+        data.hadir + "/" + data.totalDiabsen;
+
+    }
+
+    if (jmlHadir) jmlHadir.innerText = data.hadir;
+    if (jmlIzin) jmlIzin.innerText = data.izin;
+    if (jmlSakit) jmlSakit.innerText = data.sakit;
+    if (jmlAlpa) jmlAlpa.innerText = data.alpa;
+
+    })
+    .getDashboardData();
+
+const idGuru =
+
+    localStorage.getItem(
+    'wongmit_idguru'
+    );
+
+if (idGuru) {
+
+    google.script.run
+    .withSuccessHandler(function (profile) {
+
+        if (!profile) {
+        return;
+        }
+
+        const jam = new Date().getHours();
+
+        let sapaan = "Selamat Datang";
+
+        if (jam >= 4 && jam < 11) {
+
+        sapaan = "Selamat Pagi";
+
+        } else if (jam >= 11 && jam < 15) {
+
+        sapaan = "Selamat Siang";
+
+        } else if (jam >= 15 && jam < 18) {
+
+        sapaan = "Selamat Sore";
+
+        } else {
+
+        sapaan = "Selamat Malam";
+
+        }
+
+        const sapaanDashboard =
+        document.getElementById(
+            "sapaanDashboard"
+        );
+
+        if (sapaanDashboard) {
+
+        sapaanDashboard.innerText =
+            sapaan;
+
+        }
+
+        const namaGuruLogin =
+        document.getElementById(
+            'namaGuruLogin'
+        );
+
+        const roleGuruLogin =
+        document.getElementById(
+            'roleGuruLogin'
+        );
+
+        const kelasMengajar =
+        document.getElementById(
+            'kelasMengajar'
+        );
+
+        const waliKelasLogin =
+        document.getElementById(
+            'waliKelasLogin'
+        );
+
+        if (namaGuruLogin) {
+
+        namaGuruLogin.innerText =
+            profile.nama;
+
+        }
+
+        if (roleGuruLogin) {
+
+        const roleMap = {
+
+            "Admin": "badge-admin",
+
+            "KepalaSekolah": "badge-kepsek",
+
+            "WaliKelas": "badge-wali",
+
+            "GuruMapel": "badge-mapel"
+
+        };
+
+        let html = "";
+
+        profile.role
+            .split(",")
+            .forEach(function (role) {
+
+            const teks = role
+                .replace(
+                "KepalaSekolah",
+                "Kepala Sekolah"
+                )
+                .replace(
+                "WaliKelas",
+                "Wali Kelas"
+                )
+                .replace(
+                "GuruMapel",
+                "Guru Mapel"
+                );
+
+            html += `
+            <span class="dashboard-badge ${roleMap[role] || 'badge-mapel'}">
+            ${teks}
+            </span>
+        `;
+
+            });
+
+        roleGuruLogin.innerHTML = html;
+
+        }
+
+        if (kelasMengajar) {
+
+        if (profile.mengajar.length) {
+
+            kelasMengajar.innerHTML =
+            profile.mengajar
+                .map(function (kelas) {
+
+                return `
+                <span class="dashboard-badge badge-kelas">
+                ${kelas}
+                </span>
+            `;
+
+                })
+                .join("");
+
+        } else {
+
+            kelasMengajar.innerHTML = "-";
+
+        }
+
+        }
+
+        if (waliKelasLogin) {
+
+        if (profile.waliKelas.length) {
+
+            waliKelasLogin.innerHTML =
+            profile.waliKelas
+                .map(function (kelas) {
+
+                return `
+                <span class="dashboard-badge badge-walikelas">
+                ${kelas}
+                </span>
+            `;
+
+                })
+                .join("");
+
+        } else {
+
+            waliKelasLogin.innerHTML = "-";
+
+        }
+
+        }
+
+    })
+    .getGuruProfile(
+        idGuru
+    );
+
+}
+
+}
+
+function showDashboardAttendance(card) {
+
+if (!card) {
+    return;
+}
+
+if (
+    card.dataset.loading === "true"
+) {
+    return;
+}
+
+card.dataset.loading = "true";
+
+card.classList.add(
+    "card-clicking"
+);
+
+const body =
+    document.getElementById(
+    "dashboardAttendanceBody"
+    );
+
+const modalElement =
+    document.getElementById(
+    "modalDashboard"
+    );
+
+const modal =
+    bootstrap.Modal.getOrCreateInstance(
+    modalElement
+    );
+
+/* =========================
+    TANGGAL HARI INI
+========================= */
+
+const tanggalSekarang =
+    new Date();
+
+const namaHari = [
+    "Minggu",
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu"
+][
+    tanggalSekarang.getDay()
+];
+
+const tanggal =
+    String(
+    tanggalSekarang.getDate()
+    ).padStart(
+    2,
+    "0"
+    );
+
+const namaBulan = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember"
+][
+    tanggalSekarang.getMonth()
+];
+
+const tahun =
+    tanggalSekarang.getFullYear();
+
+const dateElement =
+    document.getElementById(
+    "dashboardAttendanceDate"
+    );
+
+if (dateElement) {
+
+    dateElement.textContent =
+    namaHari +
+    ", " +
+    tanggal +
+    " " +
+    namaBulan +
+    " " +
+    tahun;
+
+}
+
+/* =========================
+    LAZY-LOAD LOADING
+========================= */
+
+body.innerHTML = `
+
+    <div class="dashboard-attendance-loading">
+
+    <div class="dashboard-tadpole"></div>
+
+    <div class="dashboard-attendance-loading-text">
+
+        Memuat data kehadiran...
+
+    </div>
+
+    </div>
+
+`;
+
+/*
+    Modal dibuka segera.
+    Data detail baru diminta setelah
+    pengguna benar-benar membuka Card.
+*/
+
+modal.show();
+
+/* =========================
+    LAZY-LOAD DATA DETAIL
+========================= */
+
+google.script.run
+
+    .withSuccessHandler(
+    function (data) {
+
+        if (
+        !Array.isArray(data)
+        ) {
+
+        throw new Error(
+            "Format data absensi Dashboard tidak valid."
+        );
+
+        }
+
+        let html = "";
+
+        if (
+        data.length === 0
+        ) {
+
+        html = `
+
+            <div class="text-center text-muted py-4">
+
+            Tidak ada data kelas.
+
+            </div>
+
+        `;
+
+        }
+
+        else {
+
+        data.forEach(
+            function (item) {
+
+            /* =========================
+                BELUM DIABSEN
+            ========================= */
+
+            if (
+                item.status
+            ) {
+
+                html += `
+
+                <div class="dashboard-summary-card">
+
+                    <div class="d-flex align-items-center">
+
+                    <strong class="flex-shrink-0">
+                        Kelas ${item.kelas}
+                    </strong>
+
+                    <small
+                        class="dashboard-attendance-guru"
+                        title="${item.guruMengajar || "-"}">
+
+                        ${item.guruMengajar || "-"}
+
+                    </small>
+
+                    <span class="badge bg-danger flex-shrink-0">
+
+                        Belum Diabsen
+
+                    </span>
+
+                    </div>
+
+                    <small class="text-muted d-block mt-2">
+
+                    Menunggu guru melakukan absensi.
+
+                    </small>
+
+                </div>
+
+                `;
+
+                return;
+
+            }
+
+            /* =========================
+                SUDAH DIABSEN
+            ========================= */
+
+            html += `
+
+                <div class="dashboard-summary-card">
+
+                <div class="d-flex align-items-center">
+
+                    <strong class="flex-shrink-0">
+                    Kelas ${item.kelas}
+                    </strong>
+
+                    <small
+                    class="dashboard-attendance-guru"
+                    title="${item.guruMengajar || "-"}">
+
+                    ${item.guruMengajar || "-"}
+
+                    </small>
+
+                    <span class="badge bg-light text-dark flex-shrink-0">
+
+                    ${item.total} siswa
+
+                    </span>
+
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mt-2">
+
+                    <span class="badge bg-success">
+
+                    ${item.hadir} hadir
+
+                    </span>
+
+                    <span class="badge bg-warning text-dark">
+
+                    ${item.sakit} sakit
+
+                    </span>
+
+                    <span class="badge bg-info text-dark">
+
+                    ${item.izin} izin
+
+                    </span>
+
+                    <span class="badge bg-danger">
+
+                    ${item.alpa} alpa
+
+                    </span>
+
+                </div>
+
+                </div>
+
+            `;
+
+            }
+        );
+
+        }
+
+        body.innerHTML =
+        html;
+
+        card.dataset.loading =
+        "false";
+
+        card.classList.remove(
+        "card-clicking"
+        );
+
+    }
+    )
+
+    .withFailureHandler(
+    function (error) {
+
+        console.error(
+        "showDashboardAttendance:",
+        error
+        );
+
+        body.innerHTML = `
+
+        <div class="dashboard-attendance-loading">
+
+            <div class="dashboard-attendance-loading-text">
+
+            Gagal memuat data kehadiran.
+
+            </div>
+
+            <small class="text-muted">
+
+            Silakan coba lagi.
+
+            </small>
+
+        </div>
+
+        `;
+
+        card.dataset.loading =
+        "false";
+
+        card.classList.remove(
+        "card-clicking"
+        );
+
+    }
+    )
+
+    .getDashboardAttendanceSummary();
+
+}
+
+</script>
