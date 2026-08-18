@@ -1,0 +1,448 @@
+<script>
+
+function loadTeachers() {
+
+google.script.run
+    .withSuccessHandler(function (data) {
+
+    data = JSON.parse(data);
+
+    let html = '';
+
+    if (data.length <= 1) {
+
+        html = `
+    <tr>
+    <td colspan="6" class="text-center">
+        Tidak ada data guru
+    </td>
+    </tr>
+`;
+
+    } else {
+
+        data.slice(1).forEach(function (row) {
+
+        html += `
+    <tr>
+
+    <td>${row[0]}</td>
+    <td>${row[1]}</td>
+    <td>${row[2]}</td>
+    <td>${row[4]}</td>
+    <td>${row[5]}</td>
+
+    <td>
+
+        <button
+        class="btn btn-warning btn-sm"
+        onclick="editGuru('${row[0]}')">
+
+        <i class="fa-solid fa-pen"></i>
+
+        </button>
+
+        <button
+        class="btn btn-danger btn-sm"
+        onclick="hapusGuru('${row[0]}')">
+
+        <i class="fa-solid fa-trash"></i>
+
+        </button>
+
+    </td>
+
+    </tr>
+    `;
+
+        });
+
+    }
+
+    document
+        .getElementById('tableGuru')
+        .innerHTML = html;
+
+    })
+    .getTeachers(
+
+    localStorage.getItem(
+        "wongmit_session"
+    )
+
+    );
+
+}
+
+    function filterGuru() {
+
+const keyword =
+    document
+    .getElementById('searchGuru')
+    .value
+    .toLowerCase();
+
+const rows =
+    document
+    .querySelectorAll('#tableGuru tr');
+
+rows.forEach(function (row) {
+
+    const text =
+    row.innerText.toLowerCase();
+
+    if (text.includes(keyword)) {
+
+    row.style.display = '';
+
+    } else {
+
+    row.style.display = 'none';
+
+    }
+
+});
+
+}
+
+    function showTambahGuru() {
+
+modeForm = "tambah";
+editGuruRow = null;
+
+document.getElementById('idGuru').value = '';
+
+document.getElementById('namaGuru').value = '';
+document.getElementById('usernameGuru').value = '';
+document.getElementById('passwordGuru').value = '';
+
+document.getElementById('statusGuru').value = 'Aktif';
+
+document.getElementById('roleAdmin').checked = false;
+document.getElementById('roleKepsek').checked = false;
+document.getElementById('roleWali').checked = false;
+document.getElementById('roleMapel').checked = false;
+
+const modal =
+    new bootstrap.Modal(
+    document.getElementById('modalGuru')
+    );
+
+modal.show();
+
+}
+
+function simpanGuru() {
+
+if (
+    !lockButton(
+    "simpanGuru"
+    )
+) {
+    return;
+}
+
+const btn =
+
+    document.getElementById(
+    "btnSimpanGuru"
+    );
+
+startButtonLoading(
+    btn
+);
+
+const roles = [];
+
+if (document.getElementById('roleAdmin').checked) {
+    roles.push('Admin');
+}
+
+if (document.getElementById('roleKepsek').checked) {
+    roles.push('KepalaSekolah');
+}
+
+if (document.getElementById('roleWali').checked) {
+    roles.push('WaliKelas');
+}
+
+if (document.getElementById('roleMapel').checked) {
+    roles.push('GuruMapel');
+}
+
+const data = {
+
+    id:
+
+    modeForm === "edit"
+        ? document.getElementById('idGuru').value
+        : Date.now(),
+
+    namaGuru:
+    document.getElementById('namaGuru').value,
+
+    username:
+    document.getElementById('usernameGuru').value,
+
+    password:
+    document.getElementById('passwordGuru').value,
+
+    role:
+    roles.join(','),
+
+    status:
+    document.getElementById('statusGuru').value
+
+};
+
+if (modeForm === "edit") {
+
+    google.script.run
+    .withSuccessHandler(function () {
+
+        unlockButton(
+        "simpanGuru"
+        );
+
+        successButtonLoading(
+        btn
+        );
+
+        showToast(
+        'Data guru berhasil diperbarui'
+        );
+
+        setTimeout(function () {
+
+        stopButtonLoading(
+            btn
+        );
+
+        }, 1000);
+
+        const modal =
+        bootstrap.Modal.getInstance(
+            document.getElementById('modalGuru')
+        );
+
+        if (modal) {
+        modal.hide();
+        }
+
+        modeForm = "tambah";
+        editGuruRow = null;
+
+        loadTeachers();
+
+    })
+    .withFailureHandler(function (error) {
+
+        unlockButton(
+        "simpanGuru"
+        );
+
+        stopButtonLoading(
+        btn
+        );
+
+        console.error(error);
+
+        showToast(
+        "Gagal memperbarui data guru",
+        "error"
+        );
+
+    })
+    .updateTeacher(
+
+        localStorage.getItem(
+        "wongmit_session"
+        ),
+
+        editGuruRow,
+
+        data
+
+    );
+
+} else {
+
+    google.script.run
+    .withSuccessHandler(function () {
+
+        unlockButton(
+        "simpanGuru"
+        );
+
+        successButtonLoading(
+        btn
+        );
+
+        showToast(
+        'Data guru berhasil disimpan'
+        );
+
+        setTimeout(function () {
+
+        stopButtonLoading(
+            btn
+        );
+
+        }, 1000);
+
+        const modal =
+        bootstrap.Modal.getInstance(
+            document.getElementById('modalGuru')
+        );
+
+        if (modal) {
+        modal.hide();
+        }
+
+        loadTeachers();
+
+    })
+    .withFailureHandler(function (error) {
+
+        unlockButton(
+        "simpanGuru"
+        );
+
+        stopButtonLoading(
+        btn
+        );
+
+        console.error(error);
+
+        showToast(
+        "Gagal menyimpan data guru",
+        "error"
+        );
+
+    })
+    .addTeacher(
+
+        localStorage.getItem(
+        "wongmit_session"
+        ),
+
+        data
+
+    );
+
+}
+
+}
+
+    function editGuru(id) {
+
+google.script.run
+    .withSuccessHandler(function (guru) {
+
+    if (!guru) {
+
+        showToast(
+        "Data guru tidak ditemukan",
+        "warning"
+        );
+        return;
+
+    }
+
+    document.getElementById('idGuru').value =
+        guru.id;
+
+    document.getElementById('namaGuru').value =
+        guru.namaGuru;
+
+    document.getElementById('usernameGuru').value =
+        guru.username;
+
+    document.getElementById('passwordGuru').value =
+        guru.password;
+
+    document.getElementById('statusGuru').value =
+        guru.status;
+
+    document.getElementById('roleAdmin').checked = false;
+    document.getElementById('roleKepsek').checked = false;
+    document.getElementById('roleWali').checked = false;
+    document.getElementById('roleMapel').checked = false;
+
+    const roles =
+        guru.role.split(',');
+
+    if (roles.includes('Admin')) {
+        document.getElementById('roleAdmin').checked = true;
+    }
+
+    if (roles.includes('KepalaSekolah')) {
+        document.getElementById('roleKepsek').checked = true;
+    }
+
+    if (roles.includes('WaliKelas')) {
+        document.getElementById('roleWali').checked = true;
+    }
+
+    if (roles.includes('GuruMapel')) {
+        document.getElementById('roleMapel').checked = true;
+    }
+
+    modeForm = "edit";
+    editGuruRow = guru.rowIndex;
+
+    const modal =
+        new bootstrap.Modal(
+        document.getElementById('modalGuru')
+        );
+
+    modal.show();
+
+    })
+    .getTeacherById(id);
+
+}
+
+function hapusGuru(id) {
+
+showConfirmModal(
+    "Hapus Guru",
+    "Yakin ingin menghapus guru ini?",
+    function () {
+
+    google.script.run
+        .withSuccessHandler(function () {
+
+        showToast(
+            "Data guru berhasil dihapus"
+        );
+
+        loadTeachers();
+
+        })
+        .withFailureHandler(function (error) {
+
+        console.error(error);
+
+        showToast(
+            "Gagal menghapus data guru",
+            "error"
+        );
+
+        })
+        .deleteTeacher(
+
+        localStorage.getItem(
+            "wongmit_session"
+        ),
+
+        id
+
+        );
+
+    }
+);
+
+}
+
+</script>
