@@ -31,6 +31,42 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-18
+
+### Sprint Dashboard — Refactoring & Modularisasi
+
+Judul
+
+Refactoring Dashboard
+
+Perubahan
+
+- Memindahkan `getDashboardData()` dan `getDashboardAttendanceSummary()` dari `Code.js` ke `Dashboard.js`.
+- Memindahkan `loadDashboard()` dan `showDashboardAttendance()` dari `index.html` ke `js_dashboard.html`.
+- Mempertahankan endpoint `google.script.run` dengan nama dan signature yang sama.
+- Mempertahankan `getGuruProfile()` sebagai dependency/profile service di `Code.js`.
+- Menambahkan partial loader `<?!= getPage("js_dashboard") ?>`.
+- Tidak mengubah `page_dashboard.html`.
+- Tidak mengubah struktur database.
+- Tidak mengubah business logic Dashboard.
+
+Status
+
+SELESAI
+
+Commit
+
+Refactoring Dashboard
+
+Catatan
+
+- Perubahan hanya mencakup refactoring/modularisasi Dashboard.
+- Penyempurnaan fitur Dashboard di luar refactoring tetap menjadi sprint terpisah.
+- Deploy Uji LOLOS.
+- Testing Dashboard LOLOS.
+- Deploy Production LOLOS.
+- Tidak ditemukan regresi pada Dashboard.
+
 ## 2026-08-17
 
 ### Sprint Pengaturan Akademik — Refactoring & Modularisasi

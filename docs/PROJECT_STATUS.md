@@ -30,6 +30,12 @@ Kondisi:
 - Dashboard Attendance modal memiliki feedback loading (animasi tadpole), mencegah klik berulang, menampilkan hari/tanggal saat ini, dan info guru mengajar per kelas.
 - Layout monitoring kehadiran lebih compact dengan truncation nama guru panjang.
 - `getRelasiMengajar` tetap dipertahankan untuk kebutuhan Dashboard.
+- Refactoring modularisasi Dashboard telah selesai.
+- Backend Dashboard dipisahkan ke `Dashboard.js`.
+- Frontend Dashboard dipisahkan ke `js_dashboard.html`.
+- Endpoint dan perilaku runtime Dashboard tetap kompatibel.
+- Deploy Uji dan Deploy Production setelah refactoring telah LOLOS.
+- Penyempurnaan fitur Dashboard di luar refactoring masih berlanjut pada sprint terpisah.
 
 ---
 

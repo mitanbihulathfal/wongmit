@@ -772,3 +772,69 @@ File terkait
 - `apps-script/index.html`
 - `apps-script/js_pengaturan.html`
 - `apps-script/page_pengaturan.html`
+
+---
+
+# Sprint Dashboard — Refactoring & Modularisasi
+
+Status
+
+DONE
+
+Target
+
+Melakukan refactoring dan modularisasi kode Dashboard secara aman tanpa mengubah perilaku, endpoint, database, maupun koneksi frontend-backend.
+
+Fokus
+
+- Memisahkan `getDashboardData()` dan `getDashboardAttendanceSummary()` dari `Code.js` ke `Dashboard.js`.
+- Memisahkan `loadDashboard()` dan `showDashboardAttendance()` dari `index.html` ke `js_dashboard.html`.
+- Mempertahankan endpoint `google.script.run` dengan nama dan signature yang sama.
+- Mempertahankan `page_dashboard.html` sebagai UI Dashboard.
+- Mempertahankan `getGuruProfile()` di `Code.js` sebagai dependency/profile service.
+- Mempertahankan shared infrastructure seperti `getMasterSheetData()`, `getWeekDays()`, dan utilitas global.
+- Menggunakan partial loader `<?!= getPage("js_dashboard") ?>`.
+
+Hasil
+
+✅ `getDashboardData()` dipindahkan ke `Dashboard.js`
+
+✅ `getDashboardAttendanceSummary()` dipindahkan ke `Dashboard.js`
+
+✅ `loadDashboard()` dipindahkan ke `js_dashboard.html`
+
+✅ `showDashboardAttendance()` dipindahkan ke `js_dashboard.html`
+
+✅ 2 fungsi backend lama dihapus dari `Code.js`
+
+✅ 2 fungsi frontend lama dihapus dari `index.html`
+
+✅ `getGuruProfile()` tetap dipertahankan di `Code.js`
+
+✅ `page_dashboard.html` tidak diubah
+
+✅ Endpoint dan signature tetap sama
+
+✅ Shared dependency tetap dipertahankan
+
+✅ `js_dashboard.html` dimuat menggunakan partial loader Apps Script
+
+✅ Deploy Uji LOLOS
+
+✅ Deploy Production LOLOS
+
+✅ Testing Dashboard LOLOS
+
+Catatan
+
+Refactoring ini hanya mencakup modularisasi kode Dashboard. Penyempurnaan fitur Dashboard berikutnya, termasuk fitur yang belum tersedia seperti informasi jadwal mengajar dan pengembangan Dashboard lainnya, tetap menjadi pekerjaan sprint terpisah dan tidak dinyatakan selesai oleh sprint refactoring ini.
+
+Refactoring dilakukan dengan prinsip Move, Don't Rewrite. Tidak dilakukan perubahan business logic atau penambahan fitur dalam sprint ini.
+
+File terkait
+
+- `apps-script/Code.js`
+- `apps-script/Dashboard.js`
+- `apps-script/index.html`
+- `apps-script/js_dashboard.html`
+- `apps-script/page_dashboard.html`
