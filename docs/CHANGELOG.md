@@ -33,6 +33,52 @@ Catatan
 
 ## 2026-08-19
 
+### Sprint Kelas — Refactoring & Modularisasi
+
+Judul
+
+Refactoring Data Kelas
+
+Perubahan
+
+- Memindahkan `getClasses()`, `addClass()`, `getClassById()`, `updateClass()`, dan `deleteClass()` dari `Code.js` ke `Kelas.js`.
+- Memindahkan fungsi frontend Data Kelas dari `index.html` ke `js_kelas.html`.
+- Menambahkan partial loader `<?!= getPage("js_kelas") ?>`.
+- Mempertahankan endpoint dan signature Google Apps Script.
+- Mempertahankan authorization dan cache invalidation.
+- Mempertahankan dependency Kelas terhadap modul Guru, Guru Mengajar, Siswa, Absensi, dan Rekap.
+- Mempertahankan struktur Sheet `Kelas` tanpa perubahan.
+- Tidak mengubah `page_kelas.html`.
+- Tidak mengubah business logic.
+
+Status
+
+SELESAI
+
+Commit
+
+Extract Kelas backend module
+Extract Kelas frontend module
+Add Kelas frontend loader
+
+Validasi
+
+- Deploy Uji LOLOS.
+- Daftar Kelas LOLOS.
+- Pencarian/filter LOLOS.
+- Tambah Kelas LOLOS.
+- Edit Kelas LOLOS.
+- Hapus Kelas LOLOS.
+- Navigasi LOLOS.
+- Pengujian lintas modul LOLOS.
+- Deploy Production LOLOS.
+
+Catatan
+
+Refactoring Data Kelas selesai tanpa perubahan perilaku yang terdeteksi. Pengembangan atau penyempurnaan fitur Data Kelas di masa berikutnya tetap diperlakukan sebagai sprint terpisah.
+
+## 2026-08-19
+
 ### Sprint Guru — Refactoring & Modularisasi
 
 Judul

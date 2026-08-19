@@ -88,6 +88,15 @@ Kondisi:
 
 - CRUD berjalan.
 - Digunakan oleh modul lain.
+- Refactoring modularisasi Data Kelas telah selesai.
+- Backend CRUD Kelas berada di `Kelas.js`.
+- Frontend logic Kelas berada di `js_kelas.html`.
+- `page_kelas.html` tetap sebagai UI/view.
+- Struktur Sheet `Kelas` tetap:
+  `ID Kelas | Nama Kelas | ID Wali Kelas | Status`.
+- Endpoint, authorization, cache invalidation, dan dependency lintas modul tetap dipertahankan.
+- Deploy Uji dan Production setelah refactoring telah LOLOS.
+- Pengembangan fitur Data Kelas berikutnya tetap diperlakukan sebagai sprint terpisah.
 
 ---
 
