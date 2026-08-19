@@ -1,0 +1,433 @@
+<script>
+
+function loadClasses() {
+
+google.script.run
+    .withSuccessHandler(function (data) {
+
+    data = JSON.parse(data);
+
+    let html = '';
+
+    if (data.length <= 1) {
+
+        html = `
+    <tr>
+    <td colspan="5" class="text-center">
+        Tidak ada data kelas
+    </td>
+    </tr>
+`;
+
+    } else {
+
+        data.slice(1).forEach(function (row) {
+
+        html += `
+    <tr>
+
+    <td>${row[0]}</td>
+    <td>${row[1]}</td>
+    <td>${row[2]}</td>
+    <td>${row[3]}</td>
+
+    <td>
+
+        <button
+        class="btn btn-warning btn-sm"
+        onclick="editKelas('${row[0]}')">
+
+        <i class="fa-solid fa-pen"></i>
+
+        </button>
+
+        <button
+        class="btn btn-danger btn-sm"
+        onclick="hapusKelas('${row[0]}')">
+
+        <i class="fa-solid fa-trash"></i>
+
+        </button>
+
+    </td>
+
+    </tr>
+    `;
+
+        });
+
+    }
+
+    document
+        .getElementById('tableKelas')
+        .innerHTML = html;
+
+    })
+    .getClasses(
+
+    localStorage.getItem(
+        "wongmit_session"
+    )
+
+    );
+
+}
+
+function loadWaliKelas() {
+
+google.script.run
+    .withSuccessHandler(function (data) {
+
+    data = JSON.parse(data);
+
+    let html =
+        '<option value="">Pilih Wali Kelas</option>';
+
+    data.forEach(function (guru) {
+
+        html += `
+    <option value="${guru.id}">
+    ${guru.nama}
+    </option>
+`;
+
+    });
+
+    const select =
+        document.getElementById('waliKelas');
+
+    if (select) {
+        select.innerHTML = html;
+    }
+
+    })
+    .getWaliKelasOptions();
+
+}
+
+function showTambahKelas() {
+
+    modeForm = "tambah";
+    editKelasRow = null;
+
+    document.getElementById('idKelas').value = '';
+    document.getElementById('namaKelas').value = '';
+
+    document.getElementById('waliKelas').value = '';
+
+    document.getElementById('statusKelas').value =
+        'Aktif';
+
+    const modal =
+        new bootstrap.Modal(
+        document.getElementById('modalKelas')
+        );
+
+    modal.show();
+
+}
+
+function simpanKelas() {
+
+    if (
+        !lockButton(
+        "simpanKelas"
+        )
+    ) {
+        return;
+    }
+
+    const btn =
+
+        document.getElementById(
+        "btnSimpanKelas"
+        );
+
+    startButtonLoading(
+        btn
+    );
+
+    const data = {
+
+        id:
+        document.getElementById(
+            'idKelas'
+        ).value,
+
+        namaKelas:
+        document.getElementById(
+            'namaKelas'
+        ).value,
+
+        waliKelas:
+        document.getElementById(
+            'waliKelas'
+        ).value,
+
+        status:
+        document.getElementById(
+            'statusKelas'
+        ).value
+
+    };
+
+    if (modeForm === "edit") {
+
+        google.script.run
+        .withSuccessHandler(function () {
+
+            unlockButton(
+            "simpanKelas"
+            );
+
+            successButtonLoading(
+            btn
+            );
+
+            showToast(
+            "Data kelas berhasil diperbarui"
+            );
+
+            const modal =
+            bootstrap.Modal.getInstance(
+                document.getElementById(
+                'modalKelas'
+                )
+            );
+
+            if (modal) {
+            modal.hide();
+            }
+
+            modeForm = "tambah";
+            editKelasRow = null;
+
+            loadClasses();
+
+            setTimeout(function () {
+
+            stopButtonLoading(
+                btn
+            );
+
+            }, 1000);
+
+        })
+        .withFailureHandler(function (error) {
+
+            unlockButton(
+            "simpanKelas"
+            );
+
+            stopButtonLoading(
+            btn
+            );
+
+            console.error(error);
+
+            showToast(
+            "Gagal memperbarui data kelas",
+            "error"
+            );
+
+        })
+        .updateClass(
+
+            localStorage.getItem(
+            "wongmit_session"
+            ),
+
+            editKelasRow,
+
+            data
+
+        );
+
+    } else {
+
+        google.script.run
+        .withSuccessHandler(function () {
+
+            unlockButton(
+            "simpanKelas"
+            );
+
+            successButtonLoading(
+            btn
+            );
+
+            showToast(
+            "Data kelas berhasil disimpan"
+            );
+
+            const modal =
+            bootstrap.Modal.getInstance(
+                document.getElementById(
+                'modalKelas'
+                )
+            );
+
+            if (modal) {
+            modal.hide();
+            }
+
+            loadClasses();
+
+            setTimeout(function () {
+
+            stopButtonLoading(
+                btn
+            );
+
+            }, 1000);
+
+        })
+        .withFailureHandler(function (error) {
+
+            unlockButton(
+            "simpanKelas"
+            );
+
+            stopButtonLoading(
+            btn
+            );
+
+            console.error(error);
+
+            showToast(
+            "Gagal menyimpan data kelas",
+            "error"
+            );
+
+        })
+        .addClass(
+
+            localStorage.getItem(
+            "wongmit_session"
+            ),
+
+            data
+
+        );
+
+    }
+
+}
+
+function editKelas(id) {
+
+    google.script.run
+        .withSuccessHandler(function (kelas) {
+
+        if (!kelas) {
+
+            showToast(
+            "Data kelas tidak ditemukan",
+            "warning"
+            );
+
+            return;
+
+        }
+
+        modeForm = "edit";
+        editKelasRow = kelas.rowIndex;
+
+        document.getElementById('idKelas').value =
+            kelas.id;
+
+        document.getElementById('namaKelas').value =
+            kelas.namaKelas;
+
+        document.getElementById('waliKelas').value =
+            kelas.waliKelas;
+
+        document.getElementById('statusKelas').value =
+            kelas.status;
+
+        const modal =
+            new bootstrap.Modal(
+            document.getElementById('modalKelas')
+            );
+
+        modal.show();
+
+        })
+        .getClassById(id);
+
+}
+
+function hapusKelas(id) {
+
+    showConfirmModal(
+        "Hapus Kelas",
+        "Yakin ingin menghapus kelas ini?",
+        function () {
+
+        google.script.run
+            .withSuccessHandler(function () {
+
+            showToast(
+                "Data kelas berhasil dihapus"
+            );
+
+            loadClasses();
+
+            })
+            .withFailureHandler(function (error) {
+
+            console.error(error);
+
+            showToast(
+                "Gagal menghapus data kelas",
+                "error"
+            );
+
+            })
+            .deleteClass(
+
+            localStorage.getItem(
+                "wongmit_session"
+            ),
+
+            id
+
+            );
+
+        }
+    );
+
+}
+
+function filterKelas() {
+
+    const keyword =
+        document
+        .getElementById('searchKelas')
+        .value
+        .toLowerCase();
+
+    const rows =
+        document
+        .querySelectorAll('#tableKelas tr');
+
+    rows.forEach(function (row) {
+
+        const text =
+        row.innerText.toLowerCase();
+
+        if (text.includes(keyword)) {
+
+        row.style.display = '';
+
+        } else {
+
+        row.style.display = 'none';
+
+        }
+
+    });
+
+}
+
+</script>
