@@ -31,6 +31,50 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-19
+
+### Sprint Guru — Refactoring & Modularisasi
+
+Judul
+
+Refactoring Data Guru
+
+Perubahan
+
+- Memindahkan `getTeachers()`, `addTeacher()`, `getTeacherById()`, `updateTeacher()`, dan `deleteTeacher()` dari `Code.js` ke `Guru.js`.
+- Memindahkan `loadTeachers()`, `filterGuru()`, `showTambahGuru()`, `simpanGuru()`, `editGuru()`, dan `hapusGuru()` dari `index.html` ke `js_guru.html`.
+- Menambahkan partial loader `<?!= getPage("js_guru") ?>`.
+- Mempertahankan endpoint dan signature Google Apps Script.
+- Mempertahankan authorization dan cache invalidation.
+- Mempertahankan fungsi Guru yang digunakan lintas modul di `Code.js`.
+- Tidak mengubah `page_guru.html`.
+- Tidak mengubah struktur database atau business logic.
+
+Status
+
+SELESAI
+
+Commit
+
+Extract Guru backend module
+Extract Guru frontend module
+Add Guru frontend loader
+
+Validasi
+
+- Deploy Uji LOLOS.
+- Daftar Guru LOLOS.
+- Pencarian/filter LOLOS.
+- Tambah Guru LOLOS.
+- Edit Guru LOLOS.
+- Hapus Guru LOLOS.
+- Navigasi LOLOS.
+- Deploy Production LOLOS.
+
+Catatan
+
+Refactoring Data Guru selesai tanpa perubahan perilaku yang terdeteksi. Pengembangan atau penyempurnaan fitur Data Guru di masa berikutnya tetap diperlakukan sebagai sprint terpisah.
+
 ## 2026-08-18
 
 ### Sprint Dashboard — Refactoring & Modularisasi

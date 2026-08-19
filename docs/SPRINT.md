@@ -838,3 +838,77 @@ File terkait
 - `apps-script/index.html`
 - `apps-script/js_dashboard.html`
 - `apps-script/page_dashboard.html`
+
+---
+
+# Sprint Guru — Refactoring & Modularisasi
+
+Status
+
+DONE
+
+Target
+
+Melakukan refactoring dan modularisasi modul Data Guru secara aman tanpa mengubah perilaku aplikasi, endpoint, authorization, struktur database, maupun hubungan Data Guru dengan modul lain.
+
+Fokus
+
+- Memisahkan fungsi CRUD Data Guru dari `Code.js` ke `Guru.js`.
+- Memisahkan client-side logic Data Guru dari `index.html` ke `js_guru.html`.
+- Mempertahankan nama, parameter, dan perilaku seluruh endpoint Guru.
+- Mempertahankan `page_guru.html` sebagai UI/view Data Guru.
+- Mempertahankan fungsi shared dan fungsi Guru lintas-modul di `Code.js`.
+- Menggunakan partial loader `<?!= getPage("js_guru") ?>`.
+- Menerapkan prinsip Move, Don't Rewrite.
+
+Hasil
+
+✅ `getTeachers()` dipindahkan ke `Guru.js`
+
+✅ `addTeacher()` dipindahkan ke `Guru.js`
+
+✅ `getTeacherById()` dipindahkan ke `Guru.js`
+
+✅ `updateTeacher()` dipindahkan ke `Guru.js`
+
+✅ `deleteTeacher()` dipindahkan ke `Guru.js`
+
+✅ `loadTeachers()` dipindahkan ke `js_guru.html`
+
+✅ `filterGuru()` dipindahkan ke `js_guru.html`
+
+✅ `showTambahGuru()` dipindahkan ke `js_guru.html`
+
+✅ `simpanGuru()` dipindahkan ke `js_guru.html`
+
+✅ `editGuru()` dipindahkan ke `js_guru.html`
+
+✅ `hapusGuru()` dipindahkan ke `js_guru.html`
+
+✅ Fungsi shared/lintas-modul tidak ikut dipindahkan
+
+✅ `page_guru.html` tidak diubah
+
+✅ Endpoint dan signature tetap sama
+
+✅ Authorization dan cache invalidation tetap sama
+
+✅ Deploy Uji LOLOS
+
+✅ Testing Data Guru LOLOS
+
+✅ Deploy Production LOLOS
+
+Catatan
+
+Refactoring ini hanya mencakup modularisasi kode Data Guru. Penyempurnaan fitur Data Guru atau pengembangan modul lain yang menggunakan data Guru tetap merupakan pekerjaan sprint terpisah.
+
+Tidak dilakukan perubahan business logic, struktur database, atau kontrak endpoint dalam sprint ini.
+
+File terkait
+
+- `apps-script/Code.js`
+- `apps-script/Guru.js`
+- `apps-script/index.html`
+- `apps-script/js_guru.html`
+- `apps-script/page_guru.html`

@@ -69,6 +69,13 @@ Kondisi:
 - CRUD berjalan.
 - Responsive.
 - Mengikuti desain global aplikasi.
+- Refactoring modularisasi Data Guru telah selesai.
+- Backend CRUD Guru berada di `Guru.js`.
+- Frontend logic Guru berada di `js_guru.html`.
+- `page_guru.html` tetap sebagai UI/view.
+- Endpoint, authorization, dan dependency lintas modul tetap dipertahankan.
+- Deploy Uji dan Production setelah refactoring telah LOLOS.
+- Pengembangan fitur Data Guru berikutnya tetap diperlakukan sebagai sprint terpisah.
 
 ---
 
