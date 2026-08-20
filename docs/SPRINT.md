@@ -912,3 +912,63 @@ File terkait
 - `apps-script/index.html`
 - `apps-script/js_guru.html`
 - `apps-script/page_guru.html`
+
+---
+
+# Sprint Kelas — Refactoring & Modularisasi
+
+Status
+
+DONE
+
+Target
+
+Melakukan refactoring dan modularisasi modul Data Kelas tanpa mengubah behavior, endpoint, struktur database, authorization, maupun dependency lintas modul.
+
+Fokus
+
+- Memisahkan fungsi CRUD Data Kelas dari `Code.js` ke `Kelas.js`.
+- Memisahkan client-side logic Data Kelas dari `index.html` ke `js_kelas.html`.
+- Mempertahankan nama, parameter, dan perilaku seluruh endpoint Kelas.
+- Mempertahankan `page_kelas.html` sebagai UI/view.
+- Mempertahankan fungsi shared dan fungsi Kelas lintas modul di `Code.js`.
+- Mempertahankan struktur Sheet `Kelas`:
+  `ID Kelas | Nama Kelas | ID Wali Kelas | Status`.
+- Menggunakan partial loader `<?!= getPage("js_kelas") ?>`.
+- Menerapkan prinsip Move, Don't Rewrite.
+
+Hasil
+
+✅ `getClasses()` dipindahkan ke `Kelas.js`
+
+✅ `addClass()` dipindahkan ke `Kelas.js`
+
+✅ `getClassById()` dipindahkan ke `Kelas.js`
+
+✅ `updateClass()` dipindahkan ke `Kelas.js`
+
+✅ `deleteClass()` dipindahkan ke `Kelas.js`
+
+✅ Fungsi frontend Kelas dipindahkan ke `js_kelas.html`
+
+✅ `page_kelas.html` tidak diubah
+
+✅ Endpoint dan signature tetap sama
+
+✅ Authorization tetap sama
+
+✅ Cache invalidation tetap dipertahankan
+
+✅ Dependency lintas modul tetap dipertahankan
+
+✅ Deploy Uji LOLOS
+
+✅ Testing Kelas LOLOS
+
+✅ Testing lintas modul LOLOS
+
+✅ Deploy Production LOLOS
+
+Catatan
+
+Refactoring ini hanya mencakup modularisasi Data Kelas. Penyempurnaan fitur Data Kelas berikutnya tetap merupakan sprint terpisah.
