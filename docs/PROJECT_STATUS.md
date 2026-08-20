@@ -54,6 +54,13 @@ Kondisi:
 - Halaman Data Siswa dapat diakses oleh seluruh role (Admin, Kepala Sekolah, Wali Kelas, Guru Mapel).
 - Tambah Manual, Import Massal, Edit, dan Hapus hanya untuk Admin dan Kepala Sekolah.
 - Download Data Siswa Excel dan PDF tersedia untuk seluruh role (dengan filter kelas).
+- Refactoring modularisasi Data Siswa (CRUD) telah selesai.
+- Backend CRUD Siswa dipisahkan ke `Siswa.js`.
+- Frontend logic CRUD Siswa dipisahkan ke `js_siswa.html`.
+- Fungsi export Siswa sengaja belum dimodularisasi dan tetap berada pada struktur lama untuk sementara.
+- Endpoint, database, authorization, dan perilaku runtime CRUD Siswa tetap kompatibel.
+- Deploy Uji dan Deploy Production setelah refactoring telah LOLOS.
+- Refactoring export lintas modul ditunda sampai struktur modul Rekap, Absensi, dan modul terkait lainnya telah diaudit.
 
 Masih dapat menerima penyempurnaan apabila diperlukan.
 

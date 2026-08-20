@@ -972,3 +972,42 @@ Hasil
 Catatan
 
 Refactoring ini hanya mencakup modularisasi Data Kelas. Penyempurnaan fitur Data Kelas berikutnya tetap merupakan sprint terpisah.
+
+---
+
+# Sprint Refactoring Modularisasi Data Siswa — CRUD
+
+Status
+
+DONE
+
+Target
+
+Memisahkan logic CRUD Data Siswa dari file utama tanpa mengubah behavior aplikasi.
+
+Fokus
+
+- Ekstraksi backend CRUD Siswa dari `Code.js` ke `Siswa.js`.
+- Ekstraksi frontend CRUD Siswa dari `index.html` ke `js_siswa.html`.
+- Mempertahankan endpoint, authorization, database, caller, dan behavior runtime.
+- Menambahkan partial loader `<?!= getPage("js_siswa") ?>`.
+- Tidak memindahkan fungsi export Siswa pada sprint ini.
+- Menunda refactoring export lintas modul sampai struktur Rekap, Absensi, dan modul terkait telah diaudit.
+
+Hasil
+
+✅ Backend CRUD Siswa dipisahkan ke `Siswa.js`
+
+✅ Frontend CRUD Siswa dipisahkan ke `js_siswa.html`
+
+✅ `index.html` menggunakan loader `js_siswa`
+
+✅ Fungsi export Siswa tetap dipertahankan pada struktur sebelumnya
+
+✅ Endpoint dan behavior CRUD tetap kompatibel
+
+✅ Deploy Uji LOLOS
+
+✅ Testing Data Siswa LOLOS
+
+✅ Deploy Production LOLOS

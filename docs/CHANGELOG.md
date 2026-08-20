@@ -31,6 +31,17 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-20
+
+## Refactoring Modularisasi Data Siswa — CRUD
+
+- Backend CRUD Siswa dipindahkan dari `Code.js` ke `Siswa.js`.
+- Frontend CRUD Siswa dipindahkan dari `index.html` ke `js_siswa.html`.
+- Loader `<?!= getPage("js_siswa") ?>` ditambahkan ke `index.html`.
+- Tidak ada perubahan terhadap endpoint, database, authorization, atau behavior runtime.
+- Fungsi export Siswa belum dipindahkan dan ditunda untuk refactoring lintas modul.
+- Deploy Uji dan Production LOLOS.
+
 ## 2026-08-19
 
 ### Sprint Kelas — Refactoring & Modularisasi
