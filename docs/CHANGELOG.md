@@ -31,6 +31,54 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-22
+
+### Refactoring Modularisasi Guru Mengajar + Bugfix Import Massal
+
+**Judul**
+
+Refactoring Guru Mengajar dan Perbaikan Preview Import Massal
+
+**Perubahan**
+
+* Backend Guru Mengajar dipindahkan dari `Code.js` ke `GuruMengajar.js`.
+* Frontend Guru Mengajar dipindahkan dari `index.html` ke `js_gurumengajar.html`.
+* Loader `<?!= getPage("js_gurumengajar") ?>` ditambahkan ke `index.html`.
+* Fungsi `loadMasterImportGuruMengajar()` dan `renderPreviewGuruMengajar()` turut dimodularisasi.
+* `page_gurumengajar.html` tidak diubah.
+* Endpoint, authorization, dependency shared, dan behavior runtime tetap dipertahankan.
+* Ditemukan bug pada validasi preview Import Massal Guru Mengajar yang menyebabkan data Guru, Kelas, Hari, dan Mapel valid ditandai sebagai error.
+* Validasi preview diperbaiki agar pencocokan Guru, Kelas, dan Mapel menggunakan kolom nama yang sesuai pada master data.
+* Validasi hari dan status tetap dipertahankan.
+* Import backend `importGuruMengajar()` tidak diubah secara tidak perlu.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+Extract Guru Mengajar module and add loader
+
+Extract Guru Mengajar `loadMasterImportGuruMengajar()` and `renderPreviewGuruMengajar()`
+
+fix bug frontend preview import massal GuruMengajar
+
+**Validasi**
+
+* Deploy Uji LOLOS.
+* CRUD Guru Mengajar LOLOS.
+* Import Massal Guru Mengajar LOLOS.
+* Preview Import Massal LOLOS.
+* Validasi Guru/Kelas/Hari/Mapel LOLOS.
+* Upload data hasil import LOLOS.
+* Dependency lintas modul LOLOS.
+* Deploy Production LOLOS.
+
+**Catatan**
+
+Refactoring dan bugfix selesai tanpa perubahan struktur database atau endpoint runtime. Fungsi export lintas modul tetap ditunda sesuai keputusan arsitektur sebelumnya.
+
 ## 2026-08-20
 
 ## Refactoring Modularisasi Data Siswa — CRUD

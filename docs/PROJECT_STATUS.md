@@ -126,10 +126,21 @@ SELESAI
 
 Kondisi:
 
-- Modul telah digunakan untuk menentukan jadwal guru mengajar.
-- Panel Daftar Mata Pelajaran dan Guru Mengajar dapat collapse/expand (default CLOSED).
-- Search client-side tersedia untuk tabel Mata Pelajaran (`filterMapel()`) dan Guru Mengajar (`filterGuruMengajar()`).
-- UX Polish selesai: satu card utuh per panel, padding konsisten, responsive desktop/mobile.
+* Modul telah digunakan untuk menentukan jadwal guru mengajar.
+* Panel Daftar Mata Pelajaran dan Guru Mengajar dapat collapse/expand (default CLOSED).
+* Search client-side tersedia untuk tabel Mata Pelajaran (`filterMapel()`) dan Guru Mengajar (`filterGuruMengajar()`).
+* UX Polish selesai: satu card utuh per panel, padding konsisten, responsive desktop/mobile.
+* Refactoring modularisasi Guru Mengajar telah selesai.
+* Backend Guru Mengajar dipisahkan ke `GuruMengajar.js`.
+* Frontend logic Guru Mengajar dipisahkan ke `js_gurumengajar.html`.
+* Loader `<?!= getPage("js_gurumengajar") ?>` ditambahkan ke `index.html`.
+* `page_gurumengajar.html` tetap dipertahankan sebagai UI/view.
+* Endpoint `google.script.run`, authorization, dependency shared, dan struktur database tetap dipertahankan.
+* Dependency lintas modul seperti Absensi dan Rekap tetap berjalan setelah extraction.
+* Fitur Import Massal Guru Mengajar tetap berjalan setelah modularisasi.
+* Bug validasi preview Import Massal Guru Mengajar telah diperbaiki dengan menyesuaikan pencocokan data terhadap master Guru, Kelas, dan Mapel.
+* Deploy Uji dan Deploy Production setelah modularisasi serta bugfix telah LOLOS.
+* Pengembangan fitur Guru Mengajar berikutnya tetap diperlakukan sebagai sprint terpisah.
 
 Masih memungkinkan dilakukan optimasi di masa depan.
 

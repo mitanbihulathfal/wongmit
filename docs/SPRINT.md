@@ -1011,3 +1011,75 @@ Hasil
 ✅ Testing Data Siswa LOLOS
 
 ✅ Deploy Production LOLOS
+
+# Sprint Guru Mengajar — Refactoring & Modularisasi
+
+Status
+
+DONE
+
+Target
+
+Memisahkan backend dan frontend Guru Mengajar dari file utama tanpa mengubah behavior runtime.
+
+Fokus
+
+* Backend `Code.js` → `GuruMengajar.js`
+* Frontend `index.html` → `js_gurumengajar.html`
+* Penambahan loader `<?!= getPage("js_gurumengajar") ?>`
+* Mempertahankan `page_gurumengajar.html`
+* Mempertahankan endpoint dan dependency shared
+* Memastikan dependency lintas modul Absensi dan Rekap tetap berjalan
+
+Hasil
+
+✅ Backend Guru Mengajar berhasil dimodularisasi
+
+✅ Frontend Guru Mengajar berhasil dimodularisasi
+
+✅ `loadMasterImportGuruMengajar()` dan `renderPreviewGuruMengajar()` berhasil dipindahkan
+
+✅ Loader `js_gurumengajar` berhasil ditambahkan
+
+✅ Endpoint dan behavior runtime tetap kompatibel
+
+✅ Deploy Uji LOLOS
+
+✅ Testing Guru Mengajar LOLOS
+
+✅ Deploy Production LOLOS
+
+# Sprint Guru Mengajar — Bugfix Preview Import Massal
+
+Status
+
+DONE
+
+Target
+
+Memperbaiki validasi preview Import Massal Guru Mengajar yang menandai data master yang valid sebagai error.
+
+Fokus
+
+* Audit `renderPreviewGuruMengajar()`
+* Verifikasi master Guru, Kelas, dan Mapel
+* Verifikasi validasi Hari dan Status
+* Menyamakan pencocokan preview dengan struktur master data
+
+Hasil
+
+✅ Validasi Guru diperbaiki
+
+✅ Validasi Kelas diperbaiki
+
+✅ Validasi Mapel diperbaiki
+
+✅ Validasi Hari tetap berjalan
+
+✅ Preview data valid tidak lagi ditandai merah secara keliru
+
+✅ Tombol Upload aktif ketika seluruh data valid
+
+✅ Import Massal berhasil diuji
+
+✅ Deploy Production LOLOS
