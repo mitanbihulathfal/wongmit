@@ -814,6 +814,87 @@
 
     }
 
+    function renderStudentsTable(data) {
+
+        const table = document.getElementById("tableSiswa");
+
+        if (!table) return;
+
+        const roleSiswaTable =
+            localStorage.getItem("wongmit_role") || "";
+
+        const bolehEditHapus =
+
+            roleSiswaTable.includes("Admin") ||
+            roleSiswaTable.includes("KepalaSekolah");
+
+        let html = "";
+
+        if (data.length === 0) {
+
+            html = `
+          <tr>
+            <td colspan="9" class="text-center">
+              Tidak ada data siswa
+            </td>
+          </tr>
+        `;
+
+        } else {
+
+            data.forEach(function (row) {
+
+                html += `
+          <tr>
+
+            <td>${row[0] ?? ""}</td>
+            <td>${row[1] ?? ""}</td>
+            <td>${row[2] ?? ""}</td>
+            <td>${row[4] ?? ""}</td>
+            <td>${formatTanggal(row[5])}</td>
+            <td>${row[3] ?? ""}</td>
+            <td>${row[6] ?? ""}</td>
+            <td>${row[7] ?? ""}</td>
+
+            <td>
+
+              ${bolehEditHapus ? `
+              <div class="d-flex justify-content-center gap-1">
+
+                <button
+                  class="btn btn-warning btn-sm"
+                  onclick="editSiswa('${row[0]}')">
+
+                  <i class="fa-solid fa-pen"></i>
+
+                </button>
+
+                <button
+                  class="btn btn-danger btn-sm"
+                  onclick="hapusSiswa('${row[0]}')">
+
+                  <i class="fa-solid fa-trash"></i>
+
+                </button>
+
+              </div>
+              ` : ""}
+
+            </td>
+
+          </tr>
+          `;
+
+            });
+
+        }
+
+        table.innerHTML = html;
+
+        updateSortIcons();
+
+    }
+
     function sortTable(column) {
 
         if (currentSortColumn === column) {
@@ -846,210 +927,210 @@
 
     }
 
-      /* === TEMPLATE SISWA === */
+    /* === TEMPLATE SISWA === */
 
-      function downloadTemplateSiswa() {
+    function downloadTemplateSiswa() {
 
         google.script.run
 
-          .withSuccessHandler(function (result) {
+            .withSuccessHandler(function (result) {
 
-            window.open(
+                window.open(
 
-              result.exportUrl,
+                    result.exportUrl,
 
-              "_blank"
+                    "_blank"
 
-            );
+                );
 
-            google.script.run
-              .cleanupExportSpreadsheet(
-                result.spreadsheetId
-              );
+                google.script.run
+                    .cleanupExportSpreadsheet(
+                        result.spreadsheetId
+                    );
 
-          })
+            })
 
-          .withFailureHandler(function (error) {
+            .withFailureHandler(function (error) {
 
-            console.error(error);
+                console.error(error);
 
-            showToast(
+                showToast(
 
-              "Gagal membuat template",
+                    "Gagal membuat template",
 
-              "error"
+                    "error"
 
-            );
+                );
 
-          })
+            })
 
-          .downloadTemplateSiswa();
+            .downloadTemplateSiswa();
 
-      }
+    }
 
-      /* === IMPORT MASSAL SISWA === */
+    /* === IMPORT MASSAL SISWA === */
 
-      function showImportSiswa() {
+    function showImportSiswa() {
 
         fileImportSiswa =
 
-          null;
+            null;
 
         document.getElementById(
 
-          "fileImportSiswa"
+            "fileImportSiswa"
 
         ).value = "";
 
         resetImportModal({
 
-          fileName:
+            fileName:
 
-            "namaFileSiswa",
+                "namaFileSiswa",
 
-          preview:
+            preview:
 
-            "previewImportSiswa"
+                "previewImportSiswa"
 
         });
 
         bootstrap.Modal
 
-          .getOrCreateInstance(
+            .getOrCreateInstance(
 
-            document.getElementById(
+                document.getElementById(
 
-              "modalImportSiswa"
+                    "modalImportSiswa"
+
+                )
 
             )
 
-          )
-
-          .show();
+            .show();
 
         initImportDragDrop({
 
-          dropArea:
+            dropArea:
 
-            "dropAreaSiswa",
+                "dropAreaSiswa",
 
-          fileInput:
+            fileInput:
 
-            "fileImportSiswa",
+                "fileImportSiswa",
 
-          fileLabel:
+            fileLabel:
 
-            "namaFileSiswa",
+                "namaFileSiswa",
 
-          preview:
+            preview:
 
-            previewImportSiswa,
+                previewImportSiswa,
 
-          setFile: function (file) {
+            setFile: function (file) {
 
-            fileImportSiswa = file;
+                fileImportSiswa = file;
 
-          }
+            }
 
         });
 
-      }
+    }
 
-      /* === PREVIEW IMPORT SISWA === */
+    /* === PREVIEW IMPORT SISWA === */
 
-      function previewImportSiswa() {
+    function previewImportSiswa() {
 
         if (
 
-          !fileImportSiswa
+            !fileImportSiswa
 
         ) {
 
-          return;
+            return;
 
         }
 
         readExcelFile(
 
-          fileImportSiswa,
+            fileImportSiswa,
 
-          function (workbook, data) {
+            function (workbook, data) {
 
-            renderPreviewSiswa(
+                renderPreviewSiswa(
 
-              data
+                    data
 
-            );
+                );
 
-          }
+            }
 
         );
 
-      }
+    }
 
-      /* === RENDER PREVIEW SISWA === */
+    /* === RENDER PREVIEW SISWA === */
 
-      function renderPreviewSiswa(data) {
+    function renderPreviewSiswa(data) {
 
         const header =
 
-          data[0] || [];
+            data[0] || [];
 
         const validHeader =
 
-          header.length >= 8 &&
+            header.length >= 8 &&
 
-          header[0] === "ID" &&
+            header[0] === "ID" &&
 
-          header[1] === "NISN" &&
+            header[1] === "NISN" &&
 
-          header[2] === "Nama Siswa" &&
+            header[2] === "Nama Siswa" &&
 
-          header[3] === "JK" &&
+            header[3] === "JK" &&
 
-          header[4] === "Tempat Lahir" &&
+            header[4] === "Tempat Lahir" &&
 
-          header[5] === "Tanggal Lahir" &&
+            header[5] === "Tanggal Lahir" &&
 
-          header[6] === "Kelas" &&
+            header[6] === "Kelas" &&
 
-          header[7] === "Status";
+            header[7] === "Status";
 
         if (
 
-          !validHeader
+            !validHeader
 
         ) {
 
-          document.getElementById(
+            document.getElementById(
 
-            "previewImportSiswa"
+                "previewImportSiswa"
 
-          ).innerHTML =
+            ).innerHTML =
 
-            '<div class="alert alert-danger mb-0">' +
+                '<div class="alert alert-danger mb-0">' +
 
-            '<i class="fa-solid fa-circle-xmark me-2"></i>' +
+                '<i class="fa-solid fa-circle-xmark me-2"></i>' +
 
-            '<strong>Template tidak sesuai.</strong><br>' +
+                '<strong>Template tidak sesuai.</strong><br>' +
 
-            'Gunakan Template Siswa yang disediakan.' +
+                'Gunakan Template Siswa yang disediakan.' +
 
-            '</div>';
+                '</div>';
 
-          document.getElementById(
+            document.getElementById(
 
-            "btnUploadSiswa"
+                "btnUploadSiswa"
 
-          ).disabled = true;
+            ).disabled = true;
 
-          return;
+            return;
 
         }
 
         const totalData =
 
-          data.length - 1;
+            data.length - 1;
 
         let totalValid = 0;
 
@@ -1059,85 +1140,85 @@
 
         for (
 
-          let i = 1;
+            let i = 1;
 
-          i < data.length;
+            i < data.length;
 
-          i++
+            i++
 
         ) {
 
-          let barisError = false;
+            let barisError = false;
 
-          for (
+            for (
 
-            let j = 0;
+                let j = 0;
 
-            j < data[i].length;
+                j < data[i].length;
 
-            j++
-
-          ) {
-
-            const value =
-
-              String(
-
-                data[i][j] || ""
-
-              ).trim();
-
-            if (
-
-              value === ""
+                j++
 
             ) {
 
-              barisError = true;
+                const value =
+
+                    String(
+
+                        data[i][j] || ""
+
+                    ).trim();
+
+                if (
+
+                    value === ""
+
+                ) {
+
+                    barisError = true;
+
+                }
+
+                if (
+
+                    j === 3 &&
+
+                    !["L", "P"].includes(value)
+
+                ) {
+
+                    barisError = true;
+
+                }
+
+                if (
+
+                    j === 7 &&
+
+                    !["Aktif", "Lulus", "Mutasi"].includes(value)
+
+                ) {
+
+                    barisError = true;
+
+                }
 
             }
 
             if (
 
-              j === 3 &&
-
-              !["L", "P"].includes(value)
+                barisError
 
             ) {
 
-              barisError = true;
+                totalError++;
 
             }
 
-            if (
+            else {
 
-              j === 7 &&
-
-              !["Aktif", "Lulus", "Mutasi"].includes(value)
-
-            ) {
-
-              barisError = true;
+                totalValid++;
 
             }
-
-          }
-
-          if (
-
-            barisError
-
-          ) {
-
-            totalError++;
-
-          }
-
-          else {
-
-            totalValid++;
-
-          }
 
         }
 
@@ -1145,366 +1226,419 @@
 
         let html =
 
-          '<div class="table-responsive">' +
+            '<div class="table-responsive">' +
 
-          '<table class="table table-bordered table-sm">' +
+            '<table class="table table-bordered table-sm">' +
 
-          '<tbody>';
+            '<tbody>';
 
         const maxPreview =
 
-          Math.min(
+            Math.min(
 
-            data.length,
+                data.length,
 
-            11
+                11
 
-          );
+            );
 
         for (
 
-          let i = 0;
+            let i = 0;
 
-          i < maxPreview;
+            i < maxPreview;
 
-          i++
+            i++
 
         ) {
 
-          html += "<tr>";
+            html += "<tr>";
 
-          for (
+            for (
 
-            let j = 0;
+                let j = 0;
 
-            j < data[i].length;
+                j < data[i].length;
 
-            j++
-
-          ) {
-
-            let value =
-
-              data[i][j] || "";
-
-            let style = "";
-
-            if (
-
-              i > 0
+                j++
 
             ) {
 
-              if (
+                let value =
 
-                String(value).trim() === ""
+                    data[i][j] || "";
 
-              ) {
+                let style = "";
 
-                style =
+                if (
 
-                  ' class="table-danger"';
+                    i > 0
 
-              }
+                ) {
 
-              if (
+                    if (
 
-                j === 3 &&
+                        String(value).trim() === ""
 
-                !["L", "P"].includes(
+                    ) {
 
-                  String(value).trim()
+                        style =
 
-                )
+                            ' class="table-danger"';
 
-              ) {
+                    }
 
-                style =
+                    if (
 
-                  ' class="table-danger"';
+                        j === 3 &&
 
-              }
+                        !["L", "P"].includes(
 
-              if (
+                            String(value).trim()
 
-                j === 7 &&
+                        )
 
-                !["Aktif", "Lulus", "Mutasi"].includes(
+                    ) {
 
-                  String(value).trim()
+                        style =
 
-                )
+                            ' class="table-danger"';
 
-              ) {
+                    }
 
-                style =
+                    if (
 
-                  ' class="table-danger"';
+                        j === 7 &&
 
-              }
+                        !["Aktif", "Lulus", "Mutasi"].includes(
 
-              if (
+                            String(value).trim()
 
-                j === 5 &&
+                        )
 
-                typeof value === "number"
+                    ) {
 
-              ) {
+                        style =
 
-                value =
+                            ' class="table-danger"';
 
-                  XLSX.SSF.format(
+                    }
 
-                    "yyyy-mm-dd",
+                    if (
 
-                    value
+                        j === 5 &&
 
-                  );
+                        typeof value === "number"
 
-              }
+                    ) {
+
+                        value =
+
+                            XLSX.SSF.format(
+
+                                "yyyy-mm-dd",
+
+                                value
+
+                            );
+
+                    }
+
+                }
+
+                html +=
+
+                    i === 0
+
+                        ?
+
+                        "<th>" +
+
+                        value +
+
+                        "</th>"
+
+                        :
+
+                        "<td" +
+
+                        style +
+
+                        ">" +
+
+                        value +
+
+                        "</td>";
 
             }
 
-            html +=
-
-              i === 0
-
-                ?
-
-                "<th>" +
-
-                value +
-
-                "</th>"
-
-                :
-
-                "<td" +
-
-                style +
-
-                ">" +
-
-                value +
-
-                "</td>";
-
-          }
-
-          html += "</tr>";
+            html += "</tr>";
 
         }
 
         html +=
 
-          "</tbody>" +
+            "</tbody>" +
 
-          "</table>" +
+            "</table>" +
 
-          "</div>";
+            "</div>";
 
         html +=
 
-          buildPreviewSummary(
+            buildPreviewSummary(
 
-            totalData,
+                totalData,
 
-            totalValid,
+                totalValid,
 
-            totalError
+                totalError
 
-          );
+            );
 
         document.getElementById(
 
-          "btnUploadSiswa"
+            "btnUploadSiswa"
 
         ).disabled =
 
-          totalError > 0;
+            totalError > 0;
 
         document.getElementById(
 
-          "previewImportSiswa"
+            "previewImportSiswa"
 
         ).innerHTML =
 
-          html;
+            html;
 
-      }
+    }
 
-      /* === UPLOAD IMPORT SISWA === */
+    let fileImportSiswa =
+        null;
 
-      function uploadImportSiswa() {
+    /* === UPLOAD IMPORT SISWA === */
+
+    function uploadImportSiswa() {
 
         uploadImportEngine({
 
-          file:
+            file:
 
-            fileImportSiswa,
+                fileImportSiswa,
 
-          button:
+            button:
 
-            "btnUploadSiswa",
+                "btnUploadSiswa",
 
-          onRead:
+            onRead:
 
-            function (
+                function (
 
-              workbook,
+                    workbook,
 
-              data,
-
-              btn
-
-            ) {
-
-              data.shift();
-
-              google.script.run
-
-                .withSuccessHandler(function (hasil) {
-
-                  stopButtonLoading(
+                    data,
 
                     btn
 
-                  );
+                ) {
 
-                  bootstrap.Modal
+                    data.shift();
 
-                    .getInstance(
+                    google.script.run
 
-                      document.getElementById(
+                        .withSuccessHandler(function (hasil) {
 
-                        "modalImportSiswa"
+                            stopButtonLoading(
 
-                      )
+                                btn
 
-                    )
+                            );
 
-                    ?.hide();
+                            bootstrap.Modal
 
-                  loadStudents();
+                                .getInstance(
 
-                  let pesan = "";
+                                    document.getElementById(
 
-                  if (
+                                        "modalImportSiswa"
 
-                    hasil.berhasil > 0
+                                    )
 
-                  ) {
+                                )
 
-                    pesan +=
+                                ?.hide();
 
-                      "Berhasil : " +
+                            loadStudents();
 
-                      hasil.berhasil +
+                            let pesan = "";
 
-                      " data";
+                            if (
 
-                  }
+                                hasil.berhasil > 0
 
-                  if (
+                            ) {
 
-                    hasil.gagal > 0
+                                pesan +=
 
-                  ) {
+                                    "Berhasil : " +
 
-                    if (
+                                    hasil.berhasil +
 
-                      pesan !== ""
+                                    " data";
 
-                    ) {
+                            }
 
-                      pesan += "\n";
+                            if (
 
-                    }
+                                hasil.gagal > 0
 
-                    pesan +=
+                            ) {
 
-                      "Duplikat : " +
+                                if (
 
-                      hasil.gagal +
+                                    pesan !== ""
 
-                      " data";
+                                ) {
 
-                  }
+                                    pesan += "\n";
 
-                  if (
+                                }
 
-                    hasil.berhasil === 0
+                                pesan +=
 
-                  ) {
+                                    "Duplikat : " +
 
-                    showToast(
+                                    hasil.gagal +
 
-                      "Seluruh data sudah ada.\n\n" +
+                                    " data";
 
-                      pesan,
+                            }
 
-                      "warning"
+                            if (
 
-                    );
+                                hasil.berhasil === 0
 
-                  }
+                            ) {
 
-                  else {
+                                showToast(
 
-                    showToast(
+                                    "Seluruh data sudah ada.\n\n" +
 
-                      "Import selesai.\n\n" +
+                                    pesan,
 
-                      pesan
+                                    "warning"
 
-                    );
+                                );
 
-                  }
+                            }
 
-                })
+                            else {
 
-                .withFailureHandler(function (error) {
+                                showToast(
 
-                  console.error(
+                                    "Import selesai.\n\n" +
 
-                    error
+                                    pesan
 
-                  );
+                                );
 
-                  stopButtonLoading(
+                            }
 
-                    btn
+                        })
 
-                  );
+                        .withFailureHandler(function (error) {
 
-                  showToast(
+                            console.error(
 
-                    error.message ||
+                                error
 
-                    "Import gagal",
+                            );
 
-                    "error"
+                            stopButtonLoading(
 
-                  );
+                                btn
 
-                })
+                            );
 
-                .importSiswa(
+                            showToast(
 
-                  localStorage.getItem(
+                                error.message ||
 
-                    "wongmit_session"
+                                "Import gagal",
 
-                  ),
+                                "error"
 
-                  data
+                            );
 
-                );
+                        })
 
-            }
+                        .importSiswa(
+
+                            localStorage.getItem(
+
+                                "wongmit_session"
+
+                            ),
+
+                            data
+
+                        );
+
+                }
 
         });
 
-      }
+    }
+
+    document.addEventListener(
+
+        "change",
+
+        function (event) {
+
+            if (
+
+                event.target.id !==
+
+                "fileImportSiswa"
+
+            ) {
+
+                return;
+
+            }
+
+            if (
+
+                event.target.files.length === 0
+
+            ) {
+
+                return;
+
+            }
+
+            fileImportSiswa =
+
+                event.target.files[0];
+
+            document.getElementById(
+
+                "namaFileSiswa"
+
+            ).innerHTML =
+
+                "<strong>" +
+
+                fileImportSiswa.name +
+
+                "</strong>";
+
+            previewImportSiswa();
+
+        }
+
+    );
 
 </script>

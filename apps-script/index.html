@@ -3681,87 +3681,6 @@
 
       }
 
-      function renderStudentsTable(data) {
-
-        const table = document.getElementById("tableSiswa");
-
-        if (!table) return;
-
-        const roleSiswaTable =
-          localStorage.getItem("wongmit_role") || "";
-
-        const bolehEditHapus =
-
-          roleSiswaTable.includes("Admin") ||
-          roleSiswaTable.includes("KepalaSekolah");
-
-        let html = "";
-
-        if (data.length === 0) {
-
-          html = `
-          <tr>
-            <td colspan="9" class="text-center">
-              Tidak ada data siswa
-            </td>
-          </tr>
-        `;
-
-            } else {
-
-              data.forEach(function (row) {
-
-                html += `
-          <tr>
-
-            <td>${row[0] ?? ""}</td>
-            <td>${row[1] ?? ""}</td>
-            <td>${row[2] ?? ""}</td>
-            <td>${row[4] ?? ""}</td>
-            <td>${formatTanggal(row[5])}</td>
-            <td>${row[3] ?? ""}</td>
-            <td>${row[6] ?? ""}</td>
-            <td>${row[7] ?? ""}</td>
-
-            <td>
-
-              ${bolehEditHapus ? `
-              <div class="d-flex justify-content-center gap-1">
-
-                <button
-                  class="btn btn-warning btn-sm"
-                  onclick="editSiswa('${row[0]}')">
-
-                  <i class="fa-solid fa-pen"></i>
-
-                </button>
-
-                <button
-                  class="btn btn-danger btn-sm"
-                  onclick="hapusSiswa('${row[0]}')">
-
-                  <i class="fa-solid fa-trash"></i>
-
-                </button>
-
-              </div>
-              ` : ""}
-
-            </td>
-
-          </tr>
-          `;
-
-          });
-
-        }
-
-        table.innerHTML = html;
-
-        updateSortIcons();
-
-      }
-
       /* =========================================================
         P4 — FRONTEND MASTER DATA BUNDLE
         ========================================================= */
@@ -7487,9 +7406,6 @@
       let fileImportMapel =
         null;
 
-      let fileImportSiswa =
-        null;
-
       let deleteCallback =
         null;
 
@@ -8295,56 +8211,6 @@
             fileImportMapel.name +
 
             "</strong>";
-
-        }
-
-      );
-
-      document.addEventListener(
-
-        "change",
-
-        function (event) {
-
-          if (
-
-            event.target.id !==
-
-            "fileImportSiswa"
-
-          ) {
-
-            return;
-
-          }
-
-          if (
-
-            event.target.files.length === 0
-
-          ) {
-
-            return;
-
-          }
-
-          fileImportSiswa =
-
-            event.target.files[0];
-
-          document.getElementById(
-
-            "namaFileSiswa"
-
-          ).innerHTML =
-
-            "<strong>" +
-
-            fileImportSiswa.name +
-
-            "</strong>";
-
-          previewImportSiswa();
 
         }
 
