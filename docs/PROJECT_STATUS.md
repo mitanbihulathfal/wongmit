@@ -146,6 +146,30 @@ Masih memungkinkan dilakukan optimasi di masa depan.
 
 ---
 
+## Mata Pelajaran (Mapel)
+
+Status:
+SELESAI
+
+Kondisi:
+
+* CRUD Mata Pelajaran berjalan.
+* Import Mapel tersedia.
+* Template Mapel tersedia.
+* Refactoring modularisasi Mapel telah selesai.
+* Backend Mapel dipisahkan ke `Mapel.js`.
+* Frontend logic Mapel dipisahkan ke `js_mapel.html`.
+* Loader `<?!= getPage("js_mapel") ?>` ditambahkan ke `index.html`.
+* Dependency shared seperti `getMapelOptions`, `getMasterSheetData`, `checkRole`, dan cache invalidation tetap dipertahankan sesuai boundary masing-masing.
+* Endpoint `google.script.run`, authorization, database, dan behavior runtime tetap kompatibel.
+* Dependency Mapel terhadap Guru Mengajar tetap berjalan setelah extraction.
+* Deploy Uji dan Deploy Production setelah modularisasi telah LOLOS.
+* Pengembangan fitur Mapel berikutnya tetap diperlakukan sebagai sprint terpisah.
+
+Refactoring Mapel selesai tanpa perubahan struktur database dan tanpa perubahan behavior runtime yang terdeteksi.
+
+---
+
 ## Absensi Harian
 
 Status:

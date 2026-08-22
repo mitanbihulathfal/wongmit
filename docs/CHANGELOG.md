@@ -33,6 +33,51 @@ Catatan
 
 ## 2026-08-22
 
+### Refactoring Modularisasi Mata Pelajaran (Mapel)
+
+**Judul**
+
+Refactoring dan Modularisasi Mapel
+
+**Perubahan**
+
+* Backend Mapel dipindahkan dari `Code.js` ke `Mapel.js`.
+* Frontend logic Mapel dipindahkan dari `index.html` ke `js_mapel.html`.
+* Loader `<?!= getPage("js_mapel") ?>` ditambahkan ke `index.html`.
+* `page_pengaturan.html` dan view lain tidak diubah sebagai bagian extraction.
+* Endpoint `google.script.run`, authorization, dependency shared, database, dan behavior runtime dipertahankan.
+* Dependency Mapel yang digunakan oleh Guru Mengajar tetap berjalan.
+* Import Mapel dan download template Mapel tetap berjalan setelah modularisasi.
+* Export lintas modul tidak menjadi bagian extraction ini.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+Extract Mapel (Guru Mengajar) module and add loader
+
+**Validasi**
+
+* Deploy Uji LOLOS.
+* Daftar Mapel LOLOS.
+* Tambah Mapel LOLOS.
+* Edit Mapel LOLOS.
+* Hapus Mapel LOLOS.
+* Import Mapel LOLOS.
+* Download Template Mapel LOLOS.
+* Dependency Guru Mengajar LOLOS.
+* Navigasi LOLOS.
+* Deploy Production LOLOS.
+
+**Catatan**
+
+Refactoring Mapel selesai tanpa perubahan struktur database atau endpoint runtime.
+
+
+## 2026-08-22
+
 ### Refactoring Modularisasi Guru Mengajar + Bugfix Import Massal
 
 **Judul**

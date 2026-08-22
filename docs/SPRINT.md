@@ -1083,3 +1083,37 @@ Hasil
 ✅ Import Massal berhasil diuji
 
 ✅ Deploy Production LOLOS
+
+# Sprint Mapel — Refactoring & Modularisasi
+
+Status
+
+DONE
+
+Target
+
+Memisahkan domain Mata Pelajaran dari file utama tanpa mengubah behavior runtime.
+
+Hasil
+
+✅ Backend Mapel dipisahkan ke `Mapel.js`.
+
+✅ Frontend Mapel dipisahkan ke `js_mapel.html`.
+
+✅ Loader `<?!= getPage("js_mapel") ?>` ditambahkan.
+
+✅ Endpoint dan signature Google Apps Script tetap kompatibel.
+
+✅ Import Mapel tetap berjalan.
+
+✅ Download Template Mapel tetap berjalan.
+
+✅ Dependency Guru Mengajar tetap berjalan.
+
+✅ Deploy Uji LOLOS.
+
+✅ Deploy Production LOLOS.
+
+Catatan
+
+Refactoring Mapel selesai tanpa perubahan database dan tanpa perubahan behavior runtime yang terdeteksi.
