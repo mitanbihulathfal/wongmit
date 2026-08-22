@@ -217,3 +217,403 @@ function deleteStudent(sessionId, id) {
   return false;
 
 }
+
+/* === TEMPLATE SISWA (UTILITY) === */
+
+function downloadTemplateSiswa() {
+
+  const template =
+
+    createTemplateSpreadsheet(
+
+      "TEMPLATE_SISWA",
+
+      [
+
+        "ID",
+        "NISN",
+        "Nama Siswa",
+        "JK",
+        "Tempat Lahir",
+        "Tanggal Lahir",
+        "Kelas",
+        "Status"
+
+      ]
+
+    );
+
+  const spreadsheet =
+
+    template.spreadsheet;
+
+  const sheetImport =
+
+    template.sheet;
+
+  const sheetReferensi =
+
+    spreadsheet.insertSheet(
+
+      "Referensi"
+
+    );
+
+  const kelasData =
+
+    SS.getSheetByName(
+
+      "Kelas"
+
+    ).getDataRange().getValues();
+
+  sheetReferensi
+
+    .getRange("A1")
+
+    .setValue(
+
+      "Kelas"
+
+    );
+
+  for (
+
+    let i = 1;
+
+    i < kelasData.length;
+
+    i++
+
+  ) {
+
+    sheetReferensi
+
+      .getRange(
+
+        i + 1,
+
+        1
+
+      )
+
+      .setValue(
+
+        kelasData[i][1]
+
+      );
+
+  }
+
+  sheetReferensi
+
+    .getRange("B1")
+
+    .setValue(
+
+      "JK"
+
+    );
+
+  sheetReferensi
+
+    .getRange(
+
+      2,
+
+      2,
+
+      2,
+
+      1
+
+    )
+
+    .setValues([
+
+      ["L"],
+
+      ["P"]
+
+    ]);
+
+  sheetReferensi
+
+    .getRange("C1")
+
+    .setValue(
+
+      "Status"
+
+    );
+
+  sheetReferensi
+
+    .getRange(
+
+      2,
+
+      3,
+
+      3,
+
+      1
+
+    )
+
+    .setValues([
+
+      ["Aktif"],
+
+      ["Lulus"],
+
+      ["Mutasi"]
+
+    ]);
+
+  setDropdownValidation(
+
+    sheetImport,
+
+    "D2:D1000",
+
+    sheetReferensi,
+
+    "B2:B"
+
+  );
+
+  setDropdownValidation(
+
+    sheetImport,
+
+    "G2:G1000",
+
+    sheetReferensi,
+
+    "A2:A"
+
+  );
+
+  setDropdownValidation(
+
+    sheetImport,
+
+    "H2:H1000",
+
+    sheetReferensi,
+
+    "C2:C"
+
+  );
+
+  const file =
+
+    exportSpreadsheetAsXlsx(
+
+      template.spreadsheetId,
+
+      "TEMPLATE_SISWA"
+
+    );
+
+  return {
+
+    spreadsheetId: template.spreadsheetId,
+    exportUrl: file
+
+  };
+
+}
+
+/* === IMPORT SISWA (UTILITY) === */
+
+function importSiswa(
+
+  sessionId,
+
+  rows
+
+) {
+
+  const allowed =
+
+    checkRole(
+
+      sessionId,
+
+      [
+
+        "Admin",
+
+        "KepalaSekolah"
+
+      ]
+
+    );
+
+  if (
+
+    !allowed
+
+  ) {
+
+    throw new Error(
+
+      "Akses ditolak"
+
+    );
+
+  }
+
+  const sheet =
+
+    SS.getSheetByName(
+
+      "Siswa"
+
+    );
+
+  const dataSiswa =
+
+    sheet.getDataRange().getValues();
+
+  const idExist =
+
+    new Set();
+
+  const nisnExist =
+
+    new Set();
+
+  for (
+
+    let i = 1;
+
+    i < dataSiswa.length;
+
+    i++
+
+  ) {
+
+    idExist.add(
+
+      String(
+
+        dataSiswa[i][0]
+
+      ).trim()
+
+    );
+
+    nisnExist.add(
+
+      String(
+
+        dataSiswa[i][1]
+
+      ).trim()
+
+    );
+
+  }
+
+  const hasil = {
+
+    berhasil: 0,
+
+    gagal: 0
+
+  };
+
+  for (
+
+    let i = 0;
+
+    i < rows.length;
+
+    i++
+
+  ) {
+
+    const row =
+
+      rows[i];
+
+    const id =
+
+      String(
+
+        row[0] || ""
+
+      ).trim();
+
+    const nisn =
+
+      String(
+
+        row[1] || ""
+
+      ).trim();
+
+    if (
+
+      id === "" &&
+
+      nisn === ""
+
+    ) {
+
+      continue;
+
+    }
+
+    if (
+
+      idExist.has(id) ||
+
+      nisnExist.has(nisn)
+
+    ) {
+
+      hasil.gagal++;
+
+      continue;
+
+    }
+
+    sheet.appendRow([
+
+      id,
+
+      nisn,
+
+      row[2],
+
+      row[3],
+
+      row[4],
+
+      row[5],
+
+      row[6],
+
+      row[7]
+
+    ]);
+
+    idExist.add(id);
+
+    nisnExist.add(nisn);
+
+    hasil.berhasil++;
+
+  }
+
+  if (hasil.berhasil > 0) {
+    invalidateMasterCache("Siswa");
+  }
+
+  return hasil;
+
+}
