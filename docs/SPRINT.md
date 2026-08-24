@@ -1117,3 +1117,17 @@ Hasil
 Catatan
 
 Refactoring Mapel selesai tanpa perubahan database dan tanpa perubahan behavior runtime yang terdeteksi.
+
+#### Refactoring Absensi Harian — SELESAI
+
+Absensi Harian telah dimodularisasi secara atomic:
+`Code.js` → `Absensi.js`
+`index.html` → `js_absensi.html`
+
+Loader frontend:
+`<?!= getPage("js_absensi") ?>`
+
+Seluruh fungsi dan state Absensi yang termasuk boundary modul telah dipindahkan, termasuk alur Absensi Baru, Draft, Simpan, dan Revisi.
+
+Hasil Deploy Uji:
+**LOLOS seluruh QA Absensi Harian.**

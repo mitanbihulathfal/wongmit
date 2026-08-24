@@ -184,6 +184,26 @@ Kondisi:
 - Mendukung revisi absensi.
 - Menjadi sumber data utama rekap.
 
+Status Refactoring Modulasi ### Absensi Harian — SELESAI
+
+- Backend: `Code.js` → `Absensi.js`
+- Frontend: `index.html` → `js_absensi.html`
+- Loader: `<?!= getPage("js_absensi") ?>` ditempatkan di `index.html`
+- Extraction dilakukan sebagai satu atomic change: backend + frontend + loader.
+- Shared/global utilities tetap berada di `Code.js`.
+- Dependency lintas modul tetap menggunakan fungsi top-level Apps Script.
+- Status: **SELESAI**
+- Deploy Uji: **LOLOS**
+- QA:
+  - Halaman Absensi: LOLOS
+  - Absensi Baru: LOLOS
+  - Draft: LOLOS
+  - Simpan: LOLOS
+  - Revisi: LOLOS
+  - Responsive: LOLOS
+  - Regression: LOLOS
+  - Console: LOLOS
+
 ---
 
 ## Rekap Absensi

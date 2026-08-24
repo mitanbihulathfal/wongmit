@@ -31,6 +31,17 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-24
+
+## [Refactoring] Absensi Harian
+
+- Mengekstrak backend Absensi Harian dari `Code.js` ke `Absensi.js`.
+- Mengekstrak frontend Absensi Harian dari `index.html` ke `js_absensi.html`.
+- Menambahkan loader `<?!= getPage("js_absensi") ?>` pada `index.html`.
+- Mempertahankan shared utilities dan dependency lintas modul.
+- Menyelesaikan extraction state/event Absensi yang sebelumnya masih tertinggal di `index.html`.
+- Deploy Uji dan pengujian fungsional selesai dengan hasil **LOLOS**.
+
 ## 2026-08-22
 
 ### Refactoring Modularisasi Mata Pelajaran (Mapel)
@@ -74,7 +85,6 @@ Extract Mapel (Guru Mengajar) module and add loader
 **Catatan**
 
 Refactoring Mapel selesai tanpa perubahan struktur database atau endpoint runtime.
-
 
 ## 2026-08-22
 

@@ -36,6 +36,32 @@ Google Spreadsheet (Database)
 
 ---
 
+# STRUKTUR WONG MIT - update 2026-08-24
+
+apps-script/
+├── Code.js
+├── Absensi.js
+├── GuruMengajar.js
+├── Mapel.js
+├── Siswa.js
+├── Guru.js
+├── Kelas.js
+├── Dashboard.js
+├── Pengaturan.js
+├── index.html
+├── js_absensi.html
+├── js_gurumengajar.html
+├── js_mapel.html
+├── js_siswa.html
+├── js_guru.html
+├── js_kelas.html
+├── js_dashboard.html
+└── js_pengaturan.html
+
+- `index.html` kini berfungsi semakin kuat sebagai shell/orchestrator, sedangkan logic domain ditempatkan pada partial frontend masing-masing.
+
+---
+
 # BACKEND
 
 Seluruh backend berada pada project Google Apps Script.
