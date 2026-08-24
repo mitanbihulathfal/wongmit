@@ -1,110 +1,110 @@
 <script>
 
-/* =========================
-   MENU PENGATURAN AKADEMIK
-========================= */
+  /* =========================
+     MENU PENGATURAN AKADEMIK
+  ========================= */
 
-function bukaPengaturanAkademik() {
+  function bukaPengaturanAkademik() {
 
-  showToast(
-    "Pengaturan Akademik akan tersedia pada sprint berikutnya"
-  );
+    showToast(
+      "Pengaturan Akademik akan tersedia pada sprint berikutnya"
+    );
 
-}
+  }
 
 
-/* =========================
-   LOAD AKADEMIK
-========================= */
+  /* =========================
+     LOAD AKADEMIK
+  ========================= */
 
-function loadAcademicSettings() {
+  function loadAcademicSettings() {
 
-  google.script.run
+    google.script.run
 
-    .withSuccessHandler(function (data) {
+      .withSuccessHandler(function (data) {
 
-      const tahun =
+        const tahun =
 
-        document.getElementById(
-          "previewTahunAjaran"
-        );
+          document.getElementById(
+            "previewTahunAjaran"
+          );
 
-      const semester =
+        const semester =
 
-        document.getElementById(
-          "previewSemester"
-        );
+          document.getElementById(
+            "previewSemester"
+          );
 
-      const libur =
+        const libur =
 
-        document.getElementById(
-          "previewHariLibur"
-        );
+          document.getElementById(
+            "previewHariLibur"
+          );
 
-      if (tahun) {
+        if (tahun) {
 
-        tahun.innerText =
-          data.tahunAjaran;
+          tahun.innerText =
+            data.tahunAjaran;
 
-      }
+        }
 
-      if (semester) {
+        if (semester) {
 
-        semester.innerText =
-          data.semester;
+          semester.innerText =
+            data.semester;
 
-      }
+        }
 
-      if (libur) {
+        if (libur) {
 
-        libur.innerText =
-          data.hariLibur;
+          libur.innerText =
+            data.hariLibur;
 
-      }
+        }
 
-    })
+      })
 
-    .getAcademicSettings(
+      .getAcademicSettings(
         localStorage.getItem(
           "wongmit_session"
         )
       );
 
-}
+  }
 
 
-/* =========================
-   CHECKBOX HARI LIBUR
-========================= */
+  /* =========================
+     CHECKBOX HARI LIBUR
+  ========================= */
 
-function buatCheckboxHariLibur(selected) {
+  function buatCheckboxHariLibur(selected) {
 
-  const hari = [
+    const hari = [
 
-    "Senin",
-    "Selasa",
-    "Rabu",
-    "Kamis",
-    "Jumat",
-    "Sabtu",
-    "Minggu"
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jumat",
+      "Sabtu",
+      "Minggu"
 
-  ];
+    ];
 
-  const dipilih =
+    const dipilih =
 
-    selected
-      .split(",")
+      selected
+        .split(",")
 
-      .map(function (h) {
+        .map(function (h) {
 
-        return h.trim();
+          return h.trim();
 
-      });
+        });
 
-  return hari.map(function (h) {
+    return hari.map(function (h) {
 
-    return `
+      return `
 
       <div class="form-check">
 
@@ -128,45 +128,45 @@ function buatCheckboxHariLibur(selected) {
 
     `;
 
-  }).join("");
+    }).join("");
 
-}
+  }
 
 
-/* =========================
-   MODE EDIT AKADEMIK
-========================= */
+  /* =========================
+     MODE EDIT AKADEMIK
+  ========================= */
 
-function aktifkanEditAkademik() {
+  function aktifkanEditAkademik() {
 
-  const tahun =
+    const tahun =
 
-    document.getElementById(
-      "previewTahunAjaran"
-    ).innerText;
+      document.getElementById(
+        "previewTahunAjaran"
+      ).innerText;
 
-  const semester =
+    const semester =
 
-    document.getElementById(
-      "previewSemester"
-    ).innerText;
+      document.getElementById(
+        "previewSemester"
+      ).innerText;
 
-  const libur =
+    const libur =
 
-    document.getElementById(
-      "previewHariLibur"
-    ).innerText;
+      document.getElementById(
+        "previewHariLibur"
+      ).innerText;
 
-  const container =
+    const container =
 
-    document.getElementById(
-      "academicContainer"
-    );
+      document.getElementById(
+        "academicContainer"
+      );
 
-  container.className =
-    "pengaturan-edit";
+    container.className =
+      "pengaturan-edit";
 
-  container.innerHTML = `
+    container.innerHTML = `
 
     <div class="mb-2">
 
@@ -235,156 +235,156 @@ function aktifkanEditAkademik() {
 
   `;
 
-  document.getElementById(
-
-    "editSemester"
-
-  ).value = semester;
-
-  tampilkanButtonEdit();
-
-}
-
-
-/* =========================
-   SIMPAN AKADEMIK
-========================= */
-
-function simpanAkademik() {
-
-  const btn =
-
     document.getElementById(
-      "btnSimpanAkademik"
-    );
 
-  const tahun =
-
-    document.getElementById(
-      "editTahunAjaran"
-    ).value.trim();
-
-  const semester =
-
-    document.getElementById(
       "editSemester"
-    ).value;
 
-  const hari = [];
+    ).value = semester;
 
-  document
-
-    .querySelectorAll(
-      "#editHariLibur input:checked"
-    )
-
-    .forEach(function (cb) {
-
-      hari.push(cb.value);
-
-    });
-
-  if (!tahun) {
-
-    showToast(
-      "Tahun Ajaran wajib diisi",
-      "warning"
-    );
-
-    return;
+    tampilkanButtonEdit();
 
   }
 
-  if (hari.length === 0) {
 
-    showToast(
-      "Pilih minimal satu Hari Libur",
-      "warning"
-    );
+  /* =========================
+     SIMPAN AKADEMIK
+  ========================= */
 
-    return;
+  function simpanAkademik() {
 
-  }
+    const btn =
 
-  showConfirmModal(
-
-    "Simpan Pengaturan",
-
-    "Yakin ingin menyimpan perubahan Pengaturan Akademik?",
-
-    function () {
-
-      setButtonLoading(
-
-        btn,
-
-        "Menyimpan..."
-
+      document.getElementById(
+        "btnSimpanAkademik"
       );
 
-      google.script.run
+    const tahun =
 
-        .withSuccessHandler(function () {
+      document.getElementById(
+        "editTahunAjaran"
+      ).value.trim();
 
-          resetButtonLoading(btn);
+    const semester =
 
-          showToast(
-            "Pengaturan Akademik berhasil disimpan"
-          );
+      document.getElementById(
+        "editSemester"
+      ).value;
 
-          batalEditAkademik();
+    const hari = [];
 
-          loadAcademicSettings();
+    document
 
-        })
+      .querySelectorAll(
+        "#editHariLibur input:checked"
+      )
 
-        .withFailureHandler(function () {
+      .forEach(function (cb) {
 
-          resetButtonLoading(btn);
+        hari.push(cb.value);
 
-          showToast(
-            "Gagal menyimpan",
-            "error"
-          );
+      });
 
-        })
+    if (!tahun) {
 
-        .saveAcademicSettings(
+      showToast(
+        "Tahun Ajaran wajib diisi",
+        "warning"
+      );
 
-          localStorage.getItem(
-            "wongmit_session"
-          ),
-
-          {
-
-            tahunAjaran: tahun,
-
-            semester: semester,
-
-            hariLibur: hari.join(",")
-
-          }
-
-        );
+      return;
 
     }
 
-  );
+    if (hari.length === 0) {
 
-}
+      showToast(
+        "Pilih minimal satu Hari Libur",
+        "warning"
+      );
+
+      return;
+
+    }
+
+    showConfirmModal(
+
+      "Simpan Pengaturan",
+
+      "Yakin ingin menyimpan perubahan Pengaturan Akademik?",
+
+      function () {
+
+        setButtonLoading(
+
+          btn,
+
+          "Menyimpan..."
+
+        );
+
+        google.script.run
+
+          .withSuccessHandler(function () {
+
+            resetButtonLoading(btn);
+
+            showToast(
+              "Pengaturan Akademik berhasil disimpan"
+            );
+
+            batalEditAkademik();
+
+            loadAcademicSettings();
+
+          })
+
+          .withFailureHandler(function () {
+
+            resetButtonLoading(btn);
+
+            showToast(
+              "Gagal menyimpan",
+              "error"
+            );
+
+          })
+
+          .saveAcademicSettings(
+
+            localStorage.getItem(
+              "wongmit_session"
+            ),
+
+            {
+
+              tahunAjaran: tahun,
+
+              semester: semester,
+
+              hariLibur: hari.join(",")
+
+            }
+
+          );
+
+      }
+
+    );
+
+  }
 
 
-/* =========================
-   BUTTON EDIT
-========================= */
+  /* =========================
+     BUTTON EDIT
+  ========================= */
 
-function tampilkanButtonEdit() {
+  function tampilkanButtonEdit() {
 
-  document.getElementById(
+    document.getElementById(
 
-    "academicButtonArea"
+      "academicButtonArea"
 
-  ).innerHTML = `
+    ).innerHTML = `
 
     <button
 
@@ -412,19 +412,19 @@ function tampilkanButtonEdit() {
 
   `;
 
-}
+  }
 
 
-/* =========================
-   BATAL EDIT
-========================= */
+  /* =========================
+     BATAL EDIT
+  ========================= */
 
-function batalEditAkademik() {
+  function batalEditAkademik() {
 
-  loadPage(
-    "page_pengaturan"
-  );
+    loadPage(
+      "page_pengaturan"
+    );
 
-}
+  }
 
 </script>

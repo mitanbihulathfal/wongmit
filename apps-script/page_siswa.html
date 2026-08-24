@@ -14,10 +14,7 @@
 
     <div class="d-flex gap-2">
 
-      <button
-        class="btn btn-outline-primary"
-        id="btnDownloadSiswa"
-        onclick="showModalDownloadSiswa()">
+      <button class="btn btn-outline-primary" id="btnDownloadSiswa" onclick="showModalDownloadSiswa()">
 
         <i class="fa-solid fa-download"></i>
         <span class="d-none d-sm-inline">Download</span>
@@ -26,10 +23,7 @@
 
       <div class="btn-group" id="grupTambahSiswa">
 
-        <button
-          class="btn btn-primary dropdown-toggle"
-          data-bs-toggle="dropdown"
-          aria-label="Menu tambah siswa">
+        <button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-label="Menu tambah siswa">
 
           <i class="fa-solid fa-plus"></i>
 
@@ -77,21 +71,14 @@
 
     <div class="col-md-4">
 
-      <input
-        type="text"
-        class="form-control"
-        id="searchSiswa"
-        placeholder="Cari Nama atau NISN..."
+      <input type="text" class="form-control" id="searchSiswa" placeholder="Cari Nama atau NISN..."
         onkeyup="filterSiswa()">
 
     </div>
 
     <div class="col-md-3">
 
-      <select
-        class="form-select"
-        id="filterKelas"
-        onchange="filterSiswa()">
+      <select class="form-select" id="filterKelas" onchange="filterSiswa()">
 
         <option value="">
           Semua Kelas
@@ -180,10 +167,7 @@
           Tambah Siswa
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
@@ -194,34 +178,23 @@
 
           <div class="col-md-6">
             <label>ID</label>
-            <input
-              type="text"
-              class="form-control"
-              id="idSiswa">
+            <input type="text" class="form-control" id="idSiswa">
           </div>
 
           <div class="col-md-6">
             <label>NISN</label>
-            <input
-              type="text"
-              class="form-control"
-              id="nisn">
+            <input type="text" class="form-control" id="nisn">
           </div>
 
           <div class="col-md-12">
             <label>Nama Siswa</label>
-            <input
-              type="text"
-              class="form-control"
-              id="namaSiswa">
+            <input type="text" class="form-control" id="namaSiswa">
           </div>
 
           <div class="col-md-4">
             <label>JK</label>
 
-            <select
-              class="form-select"
-              id="jk">
+            <select class="form-select" id="jk">
 
               <option value="L">Laki-laki</option>
               <option value="P">Perempuan</option>
@@ -232,34 +205,23 @@
 
           <div class="col-md-4">
             <label>Tempat Lahir</label>
-            <input
-              type="text"
-              class="form-control"
-              id="tempatLahir">
+            <input type="text" class="form-control" id="tempatLahir">
           </div>
 
           <div class="col-md-4">
             <label>Tanggal Lahir</label>
-            <input
-              type="date"
-              class="form-control"
-              id="tanggalLahir">
+            <input type="date" class="form-control" id="tanggalLahir">
           </div>
 
           <div class="col-md-6">
             <label>Kelas</label>
-            <input
-              type="text"
-              class="form-control"
-              id="kelas">
+            <input type="text" class="form-control" id="kelas">
           </div>
 
           <div class="col-md-6">
             <label>Status</label>
 
-            <select
-              class="form-select"
-              id="status">
+            <select class="form-select" id="status">
 
               <option value="Aktif">Aktif</option>
               <option value="Lulus">Lulus</option>
@@ -275,18 +237,13 @@
 
       <div class="modal-footer">
 
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
 
           Batal
 
         </button>
 
-        <button
-          id="btnSimpanSiswa"
-          class="btn btn-success"
-          onclick="simpanSiswa()">
+        <button id="btnSimpanSiswa" class="btn btn-success" onclick="simpanSiswa()">
 
           Simpan
 
@@ -318,10 +275,7 @@
 
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
@@ -341,8 +295,7 @@
             cursor:pointer;
             background:#fafafa;">
 
-          <i
-            class="fa-solid fa-cloud-arrow-up fa-3x text-primary mb-3">
+          <i class="fa-solid fa-cloud-arrow-up fa-3x text-primary mb-3">
           </i>
 
           <h5>
@@ -353,11 +306,7 @@
             Format yang didukung: .xlsx
           </div>
 
-          <input
-            type="file"
-            id="fileImportSiswa"
-            accept=".xlsx"
-            hidden>
+          <input type="file" id="fileImportSiswa" accept=".xlsx" hidden>
 
         </div>
 
@@ -383,18 +332,13 @@
 
       <div class="modal-footer">
 
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
 
           Tutup
 
         </button>
 
-        <button
-          id="btnUploadSiswa"
-          class="btn btn-primary"
-          onclick="uploadImportSiswa()">
+        <button id="btnUploadSiswa" class="btn btn-primary" onclick="uploadImportSiswa()">
 
           <i class="fa-solid fa-upload"></i>
 
@@ -425,10 +369,7 @@
           Download Data Siswa
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
@@ -437,9 +378,7 @@
 
         <label class="form-label">Pilih Kelas</label>
 
-        <select
-          class="form-select"
-          id="kelasDownloadSiswa">
+        <select class="form-select" id="kelasDownloadSiswa">
 
           <option value="">Semua Kelas</option>
 
@@ -449,20 +388,14 @@
 
       <div class="modal-footer">
 
-        <button
-          class="btn btn-success flex-fill"
-          id="btnDownloadSiswaExcel"
-          onclick="downloadSiswaExcel()">
+        <button class="btn btn-success flex-fill" id="btnDownloadSiswaExcel" onclick="downloadSiswaExcel()">
 
           <i class="fa-solid fa-file-excel"></i>
           Excel
 
         </button>
 
-        <button
-          class="btn btn-danger flex-fill"
-          id="btnDownloadSiswaPdf"
-          onclick="downloadSiswaPdf()">
+        <button class="btn btn-danger flex-fill" id="btnDownloadSiswaPdf" onclick="downloadSiswaPdf()">
 
           <i class="fa-solid fa-file-pdf"></i>
           PDF

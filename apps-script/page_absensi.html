@@ -38,10 +38,7 @@
 
         </label>
 
-        <select
-          id="filterKelasAbsensi"
-          class="form-select"
-          onchange="loadStudentsByClass()">
+        <select id="filterKelasAbsensi" class="form-select" onchange="loadStudentsByClass()">
 
           <option value="">
 
@@ -65,11 +62,7 @@
 
         </label>
 
-        <input
-          type="date"
-          id="tanggalAbsensi"
-          class="form-control"
-          onchange="
+        <input type="date" id="tanggalAbsensi" class="form-control" onchange="
             updateHariAbsensi();
             loadExistingAttendance();
           ">
@@ -88,11 +81,7 @@
 
         </label>
 
-        <input
-          type="text"
-          id="hariAbsensi"
-          class="form-control"
-          readonly>
+        <input type="text" id="hariAbsensi" class="form-control" readonly>
 
       </div>
 
@@ -108,11 +97,7 @@
 
         </label>
 
-        <input
-          type="text"
-          id="cariSiswaAbsensi"
-          class="form-control"
-          placeholder="Cari siswa..."
+        <input type="text" id="cariSiswaAbsensi" class="form-control" placeholder="Cari siswa..."
           onkeyup="filterSiswaAbsensi()">
 
       </div>
@@ -131,8 +116,7 @@
 
       <div class="text-muted mb-1">
 
-        <i
-          class="fa-solid fa-clock text-primary">
+        <i class="fa-solid fa-clock text-primary">
         </i>
 
         Absensi Terakhir
@@ -155,8 +139,7 @@
 
       <div class="text-muted mb-1">
 
-        <i
-          class="fa-solid fa-user text-success">
+        <i class="fa-solid fa-user text-success">
         </i>
 
         Diinput Oleh
@@ -177,29 +160,22 @@
 
 <div class="d-flex justify-content-end gap-2 mt-2 flex-wrap">
 
-  <button
- class="btn btn-success"
- id="btnHadirSemua"
- onclick="hadirSemua()">
+  <button class="btn btn-success" id="btnHadirSemua" onclick="hadirSemua()">
 
-<i class="fa-solid fa-check-double"></i>
+    <i class="fa-solid fa-check-double"></i>
 
-Hadir Semua
+    Hadir Semua
 
   </button>
 
-  <button
- class="btn btn-primary"
- id="btnSimpanAbsensi"
- onclick="simpanAbsensi()">
+  <button class="btn btn-primary" id="btnSimpanAbsensi" onclick="simpanAbsensi()">
 
-  <i
-    class="fa-solid fa-floppy-disk">
-  </i>
+    <i class="fa-solid fa-floppy-disk">
+    </i>
 
-  Simpan
+    Simpan
 
-</button>
+  </button>
 
 </div>
 
@@ -262,10 +238,7 @@ Hadir Semua
 
 <div class="d-flex justify-content-end gap-2 mt-2 flex-wrap" id="toolbarAbsensiBottom">
 
-  <button
-    class="btn btn-success"
-    id="btnHadirSemuaBottom"
-    onclick="hadirSemua()">
+  <button class="btn btn-success" id="btnHadirSemuaBottom" onclick="hadirSemua()">
 
     <i class="fa-solid fa-check-double"></i>
 
@@ -273,10 +246,7 @@ Hadir Semua
 
   </button>
 
-  <button
-    class="btn btn-primary"
-    id="btnSimpanAbsensiBottom"
-    onclick="simpanAbsensi()">
+  <button class="btn btn-primary" id="btnSimpanAbsensiBottom" onclick="simpanAbsensi()">
 
     <i class="fa-solid fa-floppy-disk"></i>
 
@@ -302,10 +272,7 @@ Hadir Semua
 
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
@@ -324,18 +291,13 @@ Hadir Semua
 
       <div class="modal-footer">
 
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
 
           Batal
 
         </button>
 
-        <button
-          class="btn btn-warning"
-          id="btnLanjutkanRevisi"
-          onclick="konfirmasiRevisiAbsensi()">
+        <button class="btn btn-warning" id="btnLanjutkanRevisi" onclick="konfirmasiRevisiAbsensi()">
 
           Lanjutkan
 
@@ -364,8 +326,7 @@ Hadir Semua
             color:#dc3545;
           ">
 
-          <i
-            class="fa-solid fa-circle-exclamation">
+          <i class="fa-solid fa-circle-exclamation">
           </i>
 
         </div>
@@ -387,9 +348,7 @@ Hadir Semua
 
       <div class="modal-footer justify-content-center">
 
-        <button
-          class="btn btn-danger"
-          data-bs-dismiss="modal">
+        <button class="btn btn-danger" data-bs-dismiss="modal">
 
           Lengkapi
 
@@ -418,8 +377,7 @@ Hadir Semua
             color:#f0ad4e;
           ">
 
-          <i
-            class="fa-solid fa-pen-to-square">
+          <i class="fa-solid fa-pen-to-square">
           </i>
 
         </div>
@@ -441,26 +399,19 @@ Hadir Semua
 
       <div class="modal-footer justify-content-center">
 
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
 
           Kembali Edit
 
         </button>
 
-        <button
-          class="btn btn-danger"
-          onclick="batalkanPerubahanRevisi()">
+        <button class="btn btn-danger" onclick="batalkanPerubahanRevisi()">
 
           Batalkan
 
         </button>
 
-        <button
-          class="btn btn-warning"
-          id="btnYaSimpanRevisi"
-          onclick="simpanRevisiFinal()">
+        <button class="btn btn-warning" id="btnYaSimpanRevisi" onclick="simpanRevisiFinal()">
 
           Ya, Simpan
 

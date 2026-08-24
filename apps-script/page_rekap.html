@@ -1,5 +1,4 @@
 <style>
-
   /* =========================================================
      REKAP PAGE SCOPED STYLES (Sprint Rekap 2A-2)
      Prefix   : .rekap-*
@@ -9,18 +8,18 @@
      ========================================================= */
 
   /* ----- REKAP : 0. DESIGN TOKENS LOKAL ----- */
-  .rekap-page{
+  .rekap-page {
     --rekap-radius-btn: 14px;
     --rekap-radius-pill: 999px;
     --rekap-primary: #0b2d6b;
     --rekap-primary-soft: #eef4ff;
     --rekap-accent: #3b82f6;
-    --rekap-success: linear-gradient(135deg,#10b981,#059669);
-    --rekap-border-soft: 1px solid rgba(15,23,42,.06);
-    --rekap-shadow-card: 0 10px 28px rgba(15,23,42,.06);
-    --rekap-shadow-hover: 0 14px 34px rgba(15,23,42,.10);
-    --rekap-shadow-btn-primary: 0 6px 16px rgba(11,45,107,.18);
-    --rekap-shadow-btn-success: 0 6px 16px rgba(16,185,129,.22);
+    --rekap-success: linear-gradient(135deg, #10b981, #059669);
+    --rekap-border-soft: 1px solid rgba(15, 23, 42, .06);
+    --rekap-shadow-card: 0 10px 28px rgba(15, 23, 42, .06);
+    --rekap-shadow-hover: 0 14px 34px rgba(15, 23, 42, .10);
+    --rekap-shadow-btn-primary: 0 6px 16px rgba(11, 45, 107, .18);
+    --rekap-shadow-btn-success: 0 6px 16px rgba(16, 185, 129, .22);
     --rekap-transition: .20s ease;
     --rekap-skeleton-duration: 1.5s;
     --rekap-header-icon-size: 52px;
@@ -29,12 +28,13 @@
   }
 
   /* ----- REKAP : 1. HEADER (adopsi .pengaturan-header pattern) ----- */
-  .rekap-page .rekap-header{
+  .rekap-page .rekap-header {
     display: flex;
     align-items: center;
     gap: 16px;
   }
-  .rekap-page .rekap-header-icon{
+
+  .rekap-page .rekap-header-icon {
     width: var(--rekap-header-icon-size);
     height: var(--rekap-header-icon-size);
     border-radius: 16px;
@@ -46,11 +46,13 @@
     font-size: 22px;
     flex-shrink: 0;
   }
-  .rekap-page .rekap-header-title{
+
+  .rekap-page .rekap-header-title {
     flex: 1 1 auto;
     min-width: 0;
   }
-  .rekap-page .rekap-header-title h3{
+
+  .rekap-page .rekap-header-title h3 {
     margin: 0 0 4px 0;
     font-size: 24px;
     font-weight: 700;
@@ -58,54 +60,62 @@
     letter-spacing: -0.02em;
     line-height: 1.2;
   }
-  .rekap-page .rekap-header-title p{
+
+  .rekap-page .rekap-header-title p {
     margin: 0;
     color: #64748b;
     font-size: 14px;
   }
 
   /* ----- REKAP : 2. FILTER CARD ----- */
-  .rekap-page .rekap-filter-card{
+  .rekap-page .rekap-filter-card {
     position: relative;
     overflow: hidden;
     padding-top: 16px;
   }
-  .rekap-page .rekap-filter-card .re-filter-row{
+
+  .rekap-page .rekap-filter-card .re-filter-row {
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
     row-gap: 14px;
   }
-  .rekap-page .rekap-filter-card .form-label{
+
+  .rekap-page .rekap-filter-card .form-label {
     display: block;
     margin-bottom: 8px;
   }
-  .rekap-page .rekap-filter-card::before{
+
+  .rekap-page .rekap-filter-card::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg,var(--rekap-primary),var(--rekap-accent));
+    background: linear-gradient(90deg, var(--rekap-primary), var(--rekap-accent));
   }
-  .rekap-page .rekap-btn-wrapper{
+
+  .rekap-page .rekap-btn-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     height: 100%;
   }
-  .rekap-page .rekap-action-col{
+
+  .rekap-page .rekap-action-col {
     display: flex;
     align-items: stretch;
   }
-  .rekap-page .rekap-action-group{
+
+  .rekap-page .rekap-action-group {
     display: inline-flex;
     align-items: stretch;
     gap: 10px;
     width: 100%;
   }
-  .rekap-page .rekap-action-group .btn{
+
+  .rekap-page .rekap-action-group .btn {
     min-height: 44px;
     min-width: 138px;
     display: inline-flex;
@@ -116,7 +126,7 @@
   }
 
   /* ----- REKAP : 3. BUTTONS + ACCESSIBILITY (focus / hover / disabled) ----- */
-  .rekap-page .rekap-btn-primary{
+  .rekap-page .rekap-btn-primary {
     background: var(--rekap-primary);
     border-color: var(--rekap-primary);
     color: #fff;
@@ -126,16 +136,19 @@
     box-shadow: var(--rekap-shadow-btn-primary);
     transition: transform var(--rekap-transition), box-shadow var(--rekap-transition), opacity var(--rekap-transition);
   }
-  .rekap-page .rekap-btn-primary:hover:not(:disabled){
+
+  .rekap-page .rekap-btn-primary:hover:not(:disabled) {
     background: #0a285f;
     border-color: #0a285f;
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 9px 22px rgba(11,45,107,.24);
+    box-shadow: 0 9px 22px rgba(11, 45, 107, .24);
   }
-  .rekap-page .rekap-btn-primary:active:not(:disabled){
+
+  .rekap-page .rekap-btn-primary:active:not(:disabled) {
     transform: translateY(0) scale(1);
   }
-  .rekap-page .rekap-btn-success{
+
+  .rekap-page .rekap-btn-success {
     background: var(--rekap-success);
     border-color: transparent;
     color: #fff;
@@ -145,18 +158,20 @@
     box-shadow: var(--rekap-shadow-btn-success);
     transition: transform var(--rekap-transition), box-shadow var(--rekap-transition), opacity var(--rekap-transition);
   }
-  .rekap-page .rekap-btn-success:hover:not(:disabled){
-    background: linear-gradient(135deg,#059669,#047857);
+
+  .rekap-page .rekap-btn-success:hover:not(:disabled) {
+    background: linear-gradient(135deg, #059669, #047857);
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 9px 22px rgba(16,185,129,.30);
+    box-shadow: 0 9px 22px rgba(16, 185, 129, .30);
   }
-  .rekap-page .rekap-btn-success:active:not(:disabled){
+
+  .rekap-page .rekap-btn-success:active:not(:disabled) {
     transform: translateY(0) scale(1);
   }
 
   /* --- Disabled state (A11Y) --- */
   .rekap-page .btn:disabled,
-  .rekap-page .btn[disabled]{
+  .rekap-page .btn[disabled] {
     background: #cbd5e1 !important;
     border-color: #94a3b8 !important;
     color: #475569 !important;
@@ -167,41 +182,47 @@
   }
 
   /* --- Focus-visible keyboard (A11Y) --- */
-  .rekap-page .btn:focus-visible{
+  .rekap-page .btn:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(11,45,107,.20), var(--rekap-shadow-btn-primary) !important;
+    box-shadow: 0 0 0 3px rgba(11, 45, 107, .20), var(--rekap-shadow-btn-primary) !important;
     outline-offset: 2px;
   }
-  .rekap-page .rekap-btn-success:focus-visible{
-    box-shadow: 0 0 0 3px rgba(5,150,105,.18), var(--rekap-shadow-btn-success) !important;
+
+  .rekap-page .rekap-btn-success:focus-visible {
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, .18), var(--rekap-shadow-btn-success) !important;
   }
+
   .rekap-page .form-control:focus-visible,
-  .rekap-page .form-select:focus-visible{
+  .rekap-page .form-select:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 .18rem rgba(13,110,253,.12) !important;
+    box-shadow: 0 0 0 .18rem rgba(13, 110, 253, .12) !important;
   }
 
   /* ----- REKAP : 4. SUMMARY CARD (untuk #rekapSummary nanti) ----- */
-  .rekap-page .rekap-summary-shell{
+  .rekap-page .rekap-summary-shell {
     min-height: 0;
     display: block;
     margin: 0;
   }
-  .rekap-page .rekap-summary-row{
+
+  .rekap-page .rekap-summary-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 14px;
     align-content: start;
   }
-  .rekap-page #rekapSummary{
+
+  .rekap-page #rekapSummary {
     animation: rekap-summary-enter .24s ease both;
     transform-origin: top center;
   }
-  .rekap-page #rekapSummary:not([style*="display:none"]){
+
+  .rekap-page #rekapSummary:not([style*="display:none"]) {
     min-height: 88px;
     margin-bottom: 12px;
   }
-  .rekap-page .rekap-summary-card{
+
+  .rekap-page .rekap-summary-card {
     background: #fff;
     border: var(--rekap-border-soft);
     border-radius: 18px;
@@ -213,122 +234,169 @@
     gap: 12px;
     min-height: 88px;
   }
-  .rekap-page .rekap-summary-card:hover{
+
+  .rekap-page .rekap-summary-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--rekap-shadow-hover);
   }
-  .rekap-page .rekap-summary-icon{
+
+  .rekap-page .rekap-summary-icon {
     width: var(--rekap-summary-icon-size);
     height: var(--rekap-summary-icon-size);
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg,#dbeafe,#bfdbfe);
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
     color: var(--rekap-primary);
     font-size: 16px;
     flex-shrink: 0;
   }
-  .rekap-page .rekap-summary-info{
+
+  .rekap-page .rekap-summary-info {
     flex: 1 1 auto;
     min-width: 0;
   }
-  .rekap-page .rekap-summary-info small{
+
+  .rekap-page .rekap-summary-info small {
     display: block;
     color: #64748b;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: .02em;
   }
-  .rekap-page .rekap-summary-info h4{
+
+  .rekap-page .rekap-summary-info h4 {
     margin: 2px 0 0 0;
     font-size: 22px;
     font-weight: 700;
     color: #0f172a;
     line-height: 1.1;
   }
+
   /* FUTURE Sprint Rekap 2B: Color-coded summary badges + icons per kategori (Sempurna, Perlu Tindak Lanjut) */
-  @keyframes rekap-summary-enter{
-    from{
+  @keyframes rekap-summary-enter {
+    from {
       opacity: 0;
       transform: translateY(6px);
     }
-    to{
+
+    to {
       opacity: 1;
       transform: translateY(0);
     }
   }
 
   /* ----- REKAP : 5. LOADING SKELETON (PONDASI GLOBAL LOADER WONG MIT) ----- */
-  .rekap-page .rekap-loading-shell{
+  .rekap-page .rekap-loading-shell {
     position: relative;
   }
-  .rekap-page .rekap-loading{
+
+  .rekap-page .rekap-loading {
     padding: 0 !important;
   }
-  .rekap-page .rekap-loading-panel{
+
+  .rekap-page .rekap-loading-panel {
     padding: 28px 24px;
-    border: 1px solid rgba(219,228,238,.85);
+    border: 1px solid rgba(219, 228, 238, .85);
     border-radius: 18px;
-    background: linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
   }
-  .rekap-page .rekap-skeleton-wrap{
+
+  .rekap-page .rekap-skeleton-wrap {
     max-width: 780px;
     margin: 0 auto;
     text-align: left;
   }
-  .rekap-page .rekap-skeleton{
+
+  .rekap-page .rekap-skeleton {
     height: 14px;
     margin-bottom: 12px;
     border-radius: 8px;
-    background: linear-gradient(90deg,#e2e8f0 0%,#f1f5f9 50%,#e2e8f0 100%);
+    background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%);
     background-size: 200% 100%;
     animation: rekap-pulse var(--rekap-skeleton-duration) ease-in-out infinite;
   }
-  .rekap-page .rekap-skeleton.w-100{ width: 100%; }
-  .rekap-page .rekap-skeleton.w-92{ width: 92%; }
-  .rekap-page .rekap-skeleton.w-87{ width: 87%; }
-  .rekap-page .rekap-skeleton.w-96{ width: 96%; }
-  .rekap-page .rekap-skeleton.w-82{ width: 82%; }
-  .rekap-page .rekap-skeleton.w-91{ width: 91%; }
-  .rekap-page .rekap-skeleton.w-78{ width: 78%; }
-  .rekap-page .rekap-skeleton.w-95{ width: 95%; }
-  .rekap-page .rekap-skeleton-lg{
+
+  .rekap-page .rekap-skeleton.w-100 {
+    width: 100%;
+  }
+
+  .rekap-page .rekap-skeleton.w-92 {
+    width: 92%;
+  }
+
+  .rekap-page .rekap-skeleton.w-87 {
+    width: 87%;
+  }
+
+  .rekap-page .rekap-skeleton.w-96 {
+    width: 96%;
+  }
+
+  .rekap-page .rekap-skeleton.w-82 {
+    width: 82%;
+  }
+
+  .rekap-page .rekap-skeleton.w-91 {
+    width: 91%;
+  }
+
+  .rekap-page .rekap-skeleton.w-78 {
+    width: 78%;
+  }
+
+  .rekap-page .rekap-skeleton.w-95 {
+    width: 95%;
+  }
+
+  .rekap-page .rekap-skeleton-lg {
     height: 44px;
     border-radius: 12px;
     margin-bottom: 14px;
-    background: linear-gradient(90deg,#e2e8f0 0%,#f1f5f9 50%,#e2e8f0 100%);
+    background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%);
     background-size: 200% 100%;
     animation: rekap-pulse var(--rekap-skeleton-duration) ease-in-out infinite;
   }
-  .rekap-page .rekap-loading-caption{
+
+  .rekap-page .rekap-loading-caption {
     margin-top: 20px;
     text-align: center;
   }
-  .rekap-page .rekap-loading-caption strong{
+
+  .rekap-page .rekap-loading-caption strong {
     display: block;
     color: var(--rekap-primary);
     font-size: 15px;
     font-weight: 600;
   }
-  .rekap-page .rekap-loading-caption span{
+
+  .rekap-page .rekap-loading-caption span {
     display: block;
     color: #94a3b8;
     font-size: 12px;
     margin-top: 4px;
   }
-  @keyframes rekap-pulse{
-    0%{ background-position: 200% 0; }
-    100%{ background-position: -200% 0; }
+
+  @keyframes rekap-pulse {
+    0% {
+      background-position: 200% 0;
+    }
+
+    100% {
+      background-position: -200% 0;
+    }
   }
+
   /* FUTURE Global Loader: Extract .rekap-skeleton + @keyframes ke index.css untuk dipakai page lain */
 
   /* ----- REKAP : 6. EMPTY STATE ----- */
-  .rekap-page .rekap-empty{
+  .rekap-page .rekap-empty {
     padding: 48px 20px;
     text-align: center;
   }
-  .rekap-page .rekap-empty-icon{
+
+  .rekap-page .rekap-empty-icon {
     width: var(--rekap-empty-icon-size);
     height: var(--rekap-empty-icon-size);
     border-radius: 24px;
@@ -340,18 +408,21 @@
     font-size: 32px;
     margin: 0 auto 18px;
   }
-  .rekap-page .rekap-empty-title{
+
+  .rekap-page .rekap-empty-title {
     font-size: 18px;
     font-weight: 600;
     color: #334155;
     margin: 0 0 6px 0;
   }
-  .rekap-page .rekap-empty-sub{
+
+  .rekap-page .rekap-empty-sub {
     color: #64748b;
     font-size: 14px;
     margin: 0 0 20px 0;
   }
-  .rekap-page .rekap-empty-steps{
+
+  .rekap-page .rekap-empty-steps {
     max-width: 360px;
     margin: 0 auto;
     text-align: left;
@@ -360,7 +431,8 @@
     border-radius: 16px;
     padding: 16px 18px;
   }
-  .rekap-page .rekap-empty-steps > div{
+
+  .rekap-page .rekap-empty-steps>div {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -368,42 +440,47 @@
     color: #475569;
     font-size: 13px;
   }
-  .rekap-page .rekap-empty-steps > div + div{
+
+  .rekap-page .rekap-empty-steps>div+div {
     border-top: 1px dashed #e2e8f0;
   }
-  .rekap-page .rekap-empty-steps i{
+
+  .rekap-page .rekap-empty-steps i {
     color: #10b981;
     font-size: 14px;
     flex-shrink: 0;
   }
-  .rekap-page .rekap-empty-steps strong{
+
+  .rekap-page .rekap-empty-steps strong {
     color: #0f172a;
     font-weight: 600;
   }
 
   /* ----- REKAP : 7. TABLE ----- */
-  .rekap-page .rekap-table-wrapper{
-      --rekap-table-sticky-top: 0px;
-      --rekap-table-sticky-left-no: 0px;
-      --rekap-table-sticky-left-kls: 60px;
-      border: 1px solid #edf1f5;
-      border-radius: 16px;
-      overflow-x: auto;
-      overflow-y: auto;
-      max-height: 70vh;
-      background: #fff;
-      position: relative;
-      isolation: isolate;
+  .rekap-page .rekap-table-wrapper {
+    --rekap-table-sticky-top: 0px;
+    --rekap-table-sticky-left-no: 0px;
+    --rekap-table-sticky-left-kls: 60px;
+    border: 1px solid #edf1f5;
+    border-radius: 16px;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 70vh;
+    background: #fff;
+    position: relative;
+    isolation: isolate;
   }
+
   /* FUTURE Sprint Rekap 2B: Sticky header dan sticky column menggunakan custom property di atas */
-  .rekap-page #rekapTableWrapper table{
+  .rekap-page #rekapTableWrapper table {
     min-width: 860px;
   }
+
   /* FUTURE Sprint Rekap 2B: Jadikan thead th position:sticky; top:var(--rekap-table-sticky-top); */
   /* FUTURE Sprint Rekap 2B: Jadikan kolom No/KLS sticky dengan left offset dari custom property */
 
-  .rekap-page #rekapTableWrapper thead th{
-    background: linear-gradient(to right,#f8fafc,#eef2f7);
+  .rekap-page #rekapTableWrapper thead th {
+    background: linear-gradient(to right, #f8fafc, #eef2f7);
     color: #64748b;
     font-size: 12px;
     font-weight: 700;
@@ -418,60 +495,72 @@
     top: 0;
     z-index: 5;
   }
-  .rekap-page #rekapTableWrapper thead th[data-rekap-sort]{
+
+  .rekap-page #rekapTableWrapper thead th[data-rekap-sort] {
     cursor: pointer;
     user-select: none;
   }
-  .rekap-page #rekapTableWrapper thead th[data-rekap-sort]:hover{
+
+  .rekap-page #rekapTableWrapper thead th[data-rekap-sort]:hover {
     color: #2563eb;
   }
-  .rekap-page .rekap-sort-icon{
+
+  .rekap-page .rekap-sort-icon {
     display: inline-block;
     width: 12px;
     margin-left: 3px;
     color: #94a3b8;
     font-size: 10px;
   }
-  .rekap-page #rekapTableWrapper thead th:nth-child(2){
+
+  .rekap-page #rekapTableWrapper thead th:nth-child(2) {
     text-align: left;
   }
-  .rekap-page #rekapTableWrapper tbody td{
+
+  .rekap-page #rekapTableWrapper tbody td {
     border-bottom: 1px solid #eef2f7;
     padding: 12px 16px;
     vertical-align: middle;
     font-size: 14px;
     color: #1e293b;
   }
-  .rekap-page #rekapTableWrapper tbody tr:nth-child(even) td{
+
+  .rekap-page #rekapTableWrapper tbody tr:nth-child(even) td {
     background-color: #fbfcfd;
   }
+
   .rekap-page #rekapTableWrapper tbody tr:hover td,
-  .rekap-page #rekapTableWrapper tbody tr:focus-within td{
+  .rekap-page #rekapTableWrapper tbody tr:focus-within td {
     background: #f5f9ff;
   }
-  .rekap-page #rekapTableWrapper tbody td:first-child{
+
+  .rekap-page #rekapTableWrapper tbody td:first-child {
     text-align: center;
     background-color: #fafbfc;
     font-weight: 600;
     color: #475569;
   }
-  .rekap-page #rekapTableWrapper tbody td:nth-child(3){
+
+  .rekap-page #rekapTableWrapper tbody td:nth-child(3) {
     text-align: center;
     background-color: #fafbfc;
     font-weight: 600;
     color: #475569;
   }
-  .rekap-page #rekapTableWrapper tbody td:nth-child(8){
+
+  .rekap-page #rekapTableWrapper tbody td:nth-child(8) {
     text-align: right;
     font-weight: 700;
     color: #0f172a;
     font-variant-numeric: tabular-nums;
   }
-  .rekap-page #rekapTableWrapper tbody td:last-child{
+
+  .rekap-page #rekapTableWrapper tbody td:last-child {
     font-size: 12px;
   }
+
   .rekap-page #rekapTableWrapper tbody td:last-child .badge,
-  .rekap-page #rekapTableWrapper tbody td:last-child span{
+  .rekap-page #rekapTableWrapper tbody td:last-child span {
     display: inline-block;
     padding: 4px 12px;
     border-radius: var(--rekap-radius-pill);
@@ -480,12 +569,14 @@
     font-weight: 600;
     font-size: 12px;
   }
-  .rekap-page #tableRekapAbsensi > tr > td[colspan="9"]{
+
+  .rekap-page #tableRekapAbsensi>tr>td[colspan="9"] {
     padding: 34px 20px 40px;
     text-align: center;
     white-space: normal;
   }
-  .rekap-page .rekap-empty{
+
+  .rekap-page .rekap-empty {
     width: min(420px, calc(100vw - 72px));
     max-width: 100%;
     margin: 0 auto;
@@ -494,55 +585,56 @@
     transform: translateX(-50%);
     z-index: 1;
   }
+
   /* FUTURE Sprint Rekap 2B: 7-Level badge color-coded Keterangan (Sempurna s/d Tindak Lanjut) */
 
   /* ----- REKAP : 7B. BADGE KETERANGAN ----- */
 
-  .rekap-page .rekap-badge{
-    display:inline-block;
-    padding:5px 12px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:600;
-    white-space:nowrap;
+  .rekap-page .rekap-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
   }
 
-  .rekap-page .rekap-badge-sempurna{
-    background:#dcfce7;
-    color:#166534;
+  .rekap-page .rekap-badge-sempurna {
+    background: #dcfce7;
+    color: #166534;
   }
 
-  .rekap-page .rekap-badge-sangat-baik{
-    background:#dbeafe;
-    color:#1d4ed8;
+  .rekap-page .rekap-badge-sangat-baik {
+    background: #dbeafe;
+    color: #1d4ed8;
   }
 
-  .rekap-page .rekap-badge-baik{
-    background:#ecfccb;
-    color:#3f6212;
+  .rekap-page .rekap-badge-baik {
+    background: #ecfccb;
+    color: #3f6212;
   }
 
-  .rekap-page .rekap-badge-cukup{
-    background:#fef3c7;
-    color:#92400e;
+  .rekap-page .rekap-badge-cukup {
+    background: #fef3c7;
+    color: #92400e;
   }
 
-  .rekap-page .rekap-badge-peningkatan{
-    background:#ffedd5;
-    color:#c2410c;
+  .rekap-page .rekap-badge-peningkatan {
+    background: #ffedd5;
+    color: #c2410c;
   }
 
-  .rekap-page .rekap-badge-perhatian{
-    background:#fee2e2;
-    color:#b91c1c;
+  .rekap-page .rekap-badge-perhatian {
+    background: #fee2e2;
+    color: #b91c1c;
   }
 
-  .rekap-page .rekap-badge-tindak{
-    background:#cf5763;
-    color:#ffffff;
+  .rekap-page .rekap-badge-tindak {
+    background: #cf5763;
+    color: #ffffff;
   }
 
-  .rekap-page .rekap-section-header{
+  .rekap-page .rekap-section-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -550,14 +642,16 @@
     gap: 8px;
     margin-bottom: 12px;
   }
-  .rekap-page .rekap-section-header h5{
+
+  .rekap-page .rekap-section-header h5 {
     margin: 0;
     font-size: 16px;
     font-weight: 700;
     color: #0f172a;
     letter-spacing: -0.01em;
   }
-  .rekap-page .rekap-badge-pill{
+
+  .rekap-page .rekap-badge-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -568,52 +662,61 @@
     font-size: 12px;
     font-weight: 600;
   }
-  .rekap-page .rekap-badge-pill i{
+
+  .rekap-page .rekap-badge-pill i {
     color: #10b981;
     font-size: 10px;
   }
 
   /* ----- REKAP : 8. MOBILE RESPONSIVE — FOKUS UTAMA SPRINT INI ----- */
-  @media (max-width: 768px){
+  @media (max-width: 768px) {
 
-    .rekap-page{
+    .rekap-page {
       --rekap-header-icon-size: 44px;
       --rekap-empty-icon-size: 64px;
     }
 
     /* Header mobile compact */
-    .rekap-page .rekap-header{
+    .rekap-page .rekap-header {
       gap: 12px;
     }
-    .rekap-page .rekap-header-icon{
+
+    .rekap-page .rekap-header-icon {
       border-radius: 14px;
       font-size: 19px;
     }
-    .rekap-page .rekap-header-title h3{
+
+    .rekap-page .rekap-header-title h3 {
       font-size: 20px;
     }
-    .rekap-page .rekap-header-title p{
+
+    .rekap-page .rekap-header-title p {
       font-size: 13px;
     }
 
     /* Filter: FULL WIDTH per baris (pengalaman mobile nyaman) */
-    .rekap-page .re-filter-row > [class*="col-"]{
+    .rekap-page .re-filter-row>[class*="col-"] {
       width: 100%;
       flex: 0 0 100%;
       max-width: 100%;
     }
-    .rekap-page .rekap-btn-wrapper{
+
+    .rekap-page .rekap-btn-wrapper {
       gap: 0;
     }
-    .rekap-page .rekap-action-col{
+
+    .rekap-page .rekap-action-col {
       width: 100%;
     }
-    .rekap-page .rekap-action-group{
+
+    .rekap-page .rekap-action-group {
       display: grid;
       gap: 10px;
     }
-    .rekap-page .rekap-action-group .btn{
-      min-height: 48px; /* Apple HIG touch target */
+
+    .rekap-page .rekap-action-group .btn {
+      min-height: 48px;
+      /* Apple HIG touch target */
       font-size: 15px;
       width: 100%;
       min-width: 0;
@@ -621,57 +724,64 @@
 
     /* Cegah iOS auto zoom: 16px minimum font-size untuk input */
     .rekap-page .form-control,
-    .rekap-page .form-select{
+    .rekap-page .form-select {
       font-size: 16px !important;
       padding-left: 16px !important;
       padding-right: 16px !important;
       min-height: 48px !important;
     }
-    .rekap-page .form-label{
+
+    .rekap-page .form-label {
       font-size: 13px;
       margin-bottom: 8px;
     }
 
     /* Summary card mobile: 2 kolom */
-    .rekap-page .rekap-summary-shell{
+    .rekap-page .rekap-summary-shell {
       min-height: 0;
       margin: 0;
     }
-    .rekap-page .rekap-summary-row{
+
+    .rekap-page .rekap-summary-row {
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
-    .rekap-page #rekapSummary:not([style*="display:none"]){
+
+    .rekap-page #rekapSummary:not([style*="display:none"]) {
       margin-bottom: 8px;
     }
-    .rekap-page .rekap-summary-card{
+
+    .rekap-page .rekap-summary-card {
       padding: 12px 14px;
       min-height: 76px;
       border-radius: 16px;
       gap: 10px;
     }
-    .rekap-page .rekap-summary-icon{
+
+    .rekap-page .rekap-summary-icon {
       width: 36px;
       height: 36px;
       font-size: 14px;
       border-radius: 10px;
     }
-    .rekap-page .rekap-summary-info h4{
+
+    .rekap-page .rekap-summary-info h4 {
       font-size: 18px;
     }
 
     /* Loading skeleton mobile: hanya 6 baris + ringkas */
-    .rekap-page .rekap-loading-panel{
+    .rekap-page .rekap-loading-panel {
       padding: 20px 14px;
       border-radius: 16px;
     }
-    .rekap-page .rekap-skeleton{
+
+    .rekap-page .rekap-skeleton {
       height: 12px;
       margin-bottom: 10px;
     }
 
     /* Empty state mobile */
-    .rekap-page .rekap-empty{
+    .rekap-page .rekap-empty {
       padding: 28px 12px;
       width: min(100%, 340px);
       margin: 0 auto;
@@ -680,106 +790,117 @@
       transform: none;
       z-index: auto;
     }
-    .rekap-page .rekap-empty-icon{
+
+    .rekap-page .rekap-empty-icon {
       border-radius: 20px;
       font-size: 26px;
       margin-bottom: 14px;
     }
-    .rekap-page .rekap-empty-title{
+
+    .rekap-page .rekap-empty-title {
       font-size: 16px;
     }
-    .rekap-page .rekap-empty-steps{
+
+    .rekap-page .rekap-empty-steps {
       padding: 12px 14px;
       border-radius: 14px;
     }
 
     /* Table compact mobile + indikator scroll horizontal */
-    .rekap-page .rekap-table-wrapper{
+    .rekap-page .rekap-table-wrapper {
       border-radius: 14px;
-      box-shadow: inset -10px 0 14px -14px rgba(15,23,42,.08) inset;
+      box-shadow: inset -10px 0 14px -14px rgba(15, 23, 42, .08) inset;
       position: relative;
     }
-    .rekap-page #rekapTableWrapper{
+
+    .rekap-page #rekapTableWrapper {
       -webkit-overflow-scrolling: touch;
       scrollbar-width: thin;
       touch-action: pan-x pan-y;
     }
-    .rekap-page #rekapTableWrapper thead th{
+
+    .rekap-page #rekapTableWrapper thead th {
       padding: 12px 12px;
       font-size: 11px;
       white-space: nowrap;
     }
-    .rekap-page #rekapTableWrapper tbody td{
+
+    .rekap-page #rekapTableWrapper tbody td {
       padding: 10px 12px;
       font-size: 13px;
       white-space: nowrap;
     }
-    .rekap-page #tableRekapAbsensi > tr > td[colspan="9"]{
+
+    .rekap-page #tableRekapAbsensi>tr>td[colspan="9"] {
       padding: 24px 12px 30px;
       white-space: normal;
     }
-    .rekap-page .rekap-section-header{
+
+    .rekap-page .rekap-section-header {
       gap: 6px;
       margin-bottom: 10px;
     }
   }
 
-  .rekap-page #rekapTableWrapper .rekap-badge-sempurna{
-      background:#dcfce7 !important;
-      color:#166534 !important;
+  .rekap-page #rekapTableWrapper .rekap-badge-sempurna {
+    background: #dcfce7 !important;
+    color: #166534 !important;
   }
 
-  .rekap-page #rekapTableWrapper .rekap-badge-sangat-baik{
-      background:#dbeafe !important;
-      color:#1d4ed8 !important;
+  .rekap-page #rekapTableWrapper .rekap-badge-sangat-baik {
+    background: #dbeafe !important;
+    color: #1d4ed8 !important;
   }
 
-  .rekap-page #rekapTableWrapper .rekap-badge-baik{
-      background:#ecfccb !important;
-      color:#3f6212 !important;
+  .rekap-page #rekapTableWrapper .rekap-badge-baik {
+    background: #ecfccb !important;
+    color: #3f6212 !important;
   }
 
-  .rekap-page #rekapTableWrapper .rekap-badge-cukup{
-      background:#fef3c7 !important;
-      color:#92400e !important;
+  .rekap-page #rekapTableWrapper .rekap-badge-cukup {
+    background: #fef3c7 !important;
+    color: #92400e !important;
   }
 
-  .rekap-page #rekapTableWrapper .rekap-badge-peningkatan{
-      background:#ffedd5 !important;
-      color:#c2410c !important;
+  .rekap-page #rekapTableWrapper .rekap-badge-peningkatan {
+    background: #ffedd5 !important;
+    color: #c2410c !important;
   }
 
-  .rekap-page #rekapTableWrapper .rekap-badge-perhatian{
-      background:#fee2e2 !important;
-      color:#b91c1c !important;
+  .rekap-page #rekapTableWrapper .rekap-badge-perhatian {
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
   }
 
-  .rekap-page #rekapTableWrapper .rekap-badge-tindak{
-      background:#cf5763 !important;
-      color:#ffffff !important;
+  .rekap-page #rekapTableWrapper .rekap-badge-tindak {
+    background: #cf5763 !important;
+    color: #ffffff !important;
   }
 
   /* ----- REKAP : 9. ANIMASI FADE-IN TABEL (Sprint Rekap 7B) ----- */
-  .rekap-page #tableRekapAbsensi{
+  .rekap-page #tableRekapAbsensi {
     animation: rekap-table-enter .22s ease both;
   }
-  @keyframes rekap-table-enter{
-    from{
+
+  @keyframes rekap-table-enter {
+    from {
       opacity: 0;
       transform: translateY(4px);
     }
-    to{
+
+    to {
       opacity: 1;
       transform: translateY(0);
     }
   }
 
   /* ----- REKAP : 10. PETUNJUK SCROLL MOBILE (Sprint Rekap 7B) ----- */
-  .rekap-page .rekap-scroll-hint{
+  .rekap-page .rekap-scroll-hint {
     display: none;
   }
-  @media (max-width: 768px){
-    .rekap-page .rekap-scroll-hint{
+
+  @media (max-width: 768px) {
+    .rekap-page .rekap-scroll-hint {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -789,11 +910,11 @@
       font-size: 12px;
       font-weight: 500;
     }
-    .rekap-page .rekap-scroll-hint i{
+
+    .rekap-page .rekap-scroll-hint i {
       font-size: 11px;
     }
   }
-
 </style>
 
 <div class="rekap-page">
@@ -827,11 +948,7 @@
           Tanggal Awal
         </label>
 
-        <input
-          type="date"
-          id="tanggalAwalRekap"
-          class="form-control"
-          aria-label="Pilih tanggal awal periode rekap">
+        <input type="date" id="tanggalAwalRekap" class="form-control" aria-label="Pilih tanggal awal periode rekap">
 
       </div>
 
@@ -841,11 +958,7 @@
           Tanggal Akhir
         </label>
 
-        <input
-          type="date"
-          id="tanggalAkhirRekap"
-          class="form-control"
-          aria-label="Pilih tanggal akhir periode rekap">
+        <input type="date" id="tanggalAkhirRekap" class="form-control" aria-label="Pilih tanggal akhir periode rekap">
 
       </div>
 
@@ -855,10 +968,7 @@
           Guru
         </label>
 
-        <select
-          id="filterGuruRekap"
-          class="form-select"
-          aria-label="Pilih guru untuk filter rekap">
+        <select id="filterGuruRekap" class="form-select" aria-label="Pilih guru untuk filter rekap">
 
           <option value="">
             Semua Guru
@@ -874,10 +984,7 @@
           Kelas
         </label>
 
-        <select
-          id="filterKelasRekap"
-          class="form-select"
-          aria-label="Pilih kelas untuk filter rekap">
+        <select id="filterKelasRekap" class="form-select" aria-label="Pilih kelas untuk filter rekap">
 
           <option value="">
             Semua Kelas
@@ -893,10 +1000,7 @@
           Mapel
         </label>
 
-        <select
-          id="filterMapelRekap"
-          class="form-select"
-          aria-label="Pilih mata pelajaran untuk filter rekap">
+        <select id="filterMapelRekap" class="form-select" aria-label="Pilih mata pelajaran untuk filter rekap">
 
           <option value="">
             Semua Mapel
@@ -910,10 +1014,7 @@
 
         <div class="rekap-action-group" role="group" aria-label="Aksi rekap absensi">
 
-          <button
-            class="btn btn-primary rekap-btn-primary"
-            id="btnTampilkanRekap"
-            onclick="tampilkanRekap()"
+          <button class="btn btn-primary rekap-btn-primary" id="btnTampilkanRekap" onclick="tampilkanRekap()"
             aria-label="Tampilkan rekap absensi berdasarkan filter terpilih">
 
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -922,9 +1023,7 @@
 
           </button>
 
-          <button
-            class="btn btn-success rekap-btn-success"
-            id="btnExportRekap"
+          <button class="btn btn-success rekap-btn-success" id="btnExportRekap"
             aria-label="Export data rekap ke file Excel">
 
             <i class="fa-solid fa-file-excel"></i>
@@ -956,20 +1055,14 @@
     </div>
 
     <div class="rekap-summary-shell" aria-live="polite">
-      <div
-        id="rekapSummary"
-        class="rekap-summary-row"
-        style="display:none;">
+      <div id="rekapSummary" class="rekap-summary-row" style="display:none;">
 
       </div>
     </div>
 
     <!-- Loading Skeleton (Pondasi Global Loader) -->
     <div class="rekap-loading-shell" aria-live="polite">
-      <div
-        id="loadingRekap"
-        class="rekap-loading"
-        style="display:none;">
+      <div id="loadingRekap" class="rekap-loading" style="display:none;">
 
         <div class="rekap-loading-panel">
           <div class="rekap-skeleton-wrap">
@@ -996,26 +1089,31 @@
     </div>
 
     <!-- Table Wrapper -->
-    <div
-      id="rekapTableWrapper"
-      class="table-responsive rekap-table-wrapper">
+    <div id="rekapTableWrapper" class="table-responsive rekap-table-wrapper">
 
-      <table
-        class="table table-hover align-middle mb-0">
+      <table class="table table-hover align-middle mb-0">
 
         <thead>
 
           <tr>
 
             <th width="60">No</th>
-            <th data-rekap-sort="nama" tabindex="0" aria-sort="none">Nama Siswa<span class="rekap-sort-icon" aria-hidden="true"></span></th>
-            <th width="80" data-rekap-sort="kelas" tabindex="0" aria-sort="none">KLS<span class="rekap-sort-icon" aria-hidden="true"></span></th>
-            <th width="70" data-rekap-sort="hadir" tabindex="0" aria-sort="none">H<span class="rekap-sort-icon" aria-hidden="true"></span></th>
-            <th width="70" data-rekap-sort="sakit" tabindex="0" aria-sort="none">S<span class="rekap-sort-icon" aria-hidden="true"></span></th>
-            <th width="70" data-rekap-sort="izin" tabindex="0" aria-sort="none">I<span class="rekap-sort-icon" aria-hidden="true"></span></th>
-            <th width="70" data-rekap-sort="alpa" tabindex="0" aria-sort="none">A<span class="rekap-sort-icon" aria-hidden="true"></span></th>
-            <th width="90" data-rekap-sort="persentase" tabindex="0" aria-sort="none">%<span class="rekap-sort-icon" aria-hidden="true"></span></th>
-            <th width="150" data-rekap-sort="keterangan" tabindex="0" aria-sort="none">Ket<span class="rekap-sort-icon" aria-hidden="true"></span></th>
+            <th data-rekap-sort="nama" tabindex="0" aria-sort="none">Nama Siswa<span class="rekap-sort-icon"
+                aria-hidden="true"></span></th>
+            <th width="80" data-rekap-sort="kelas" tabindex="0" aria-sort="none">KLS<span class="rekap-sort-icon"
+                aria-hidden="true"></span></th>
+            <th width="70" data-rekap-sort="hadir" tabindex="0" aria-sort="none">H<span class="rekap-sort-icon"
+                aria-hidden="true"></span></th>
+            <th width="70" data-rekap-sort="sakit" tabindex="0" aria-sort="none">S<span class="rekap-sort-icon"
+                aria-hidden="true"></span></th>
+            <th width="70" data-rekap-sort="izin" tabindex="0" aria-sort="none">I<span class="rekap-sort-icon"
+                aria-hidden="true"></span></th>
+            <th width="70" data-rekap-sort="alpa" tabindex="0" aria-sort="none">A<span class="rekap-sort-icon"
+                aria-hidden="true"></span></th>
+            <th width="90" data-rekap-sort="persentase" tabindex="0" aria-sort="none">%<span class="rekap-sort-icon"
+                aria-hidden="true"></span></th>
+            <th width="150" data-rekap-sort="keterangan" tabindex="0" aria-sort="none">Ket<span class="rekap-sort-icon"
+                aria-hidden="true"></span></th>
 
           </tr>
 

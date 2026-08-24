@@ -14,9 +14,7 @@
 
     </div>
 
-    <button
-      class="btn btn-primary"
-      onclick="showTambahKelas()">
+    <button class="btn btn-primary" onclick="showTambahKelas()">
 
       <i class="fa-solid fa-plus"></i>
       Tambah Kelas
@@ -33,12 +31,7 @@
 
     <div class="col-md-4">
 
-      <input
-        type="text"
-        class="form-control"
-        id="searchKelas"
-        placeholder="Cari kelas..."
-        onkeyup="filterKelas()">
+      <input type="text" class="form-control" id="searchKelas" placeholder="Cari kelas..." onkeyup="filterKelas()">
 
     </div>
 
@@ -78,10 +71,7 @@
 
 <!-- MODAL KELAS -->
 
-<div
-  class="modal fade"
-  id="modalKelas"
-  tabindex="-1">
+<div class="modal fade" id="modalKelas" tabindex="-1">
 
   <div class="modal-dialog">
 
@@ -93,10 +83,7 @@
           Tambah Kelas
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
@@ -107,10 +94,7 @@
 
           <label>ID Kelas</label>
 
-          <input
-            type="text"
-            class="form-control"
-            id="idKelas">
+          <input type="text" class="form-control" id="idKelas">
 
         </div>
 
@@ -118,10 +102,7 @@
 
           <label>Nama Kelas</label>
 
-          <input
-            type="text"
-            class="form-control"
-            id="namaKelas">
+          <input type="text" class="form-control" id="namaKelas">
 
         </div>
 
@@ -129,9 +110,7 @@
 
           <label>Wali Kelas</label>
 
-          <select
-            class="form-select"
-            id="waliKelas">
+          <select class="form-select" id="waliKelas">
 
             <option value="">
               Memuat data guru...
@@ -145,9 +124,7 @@
 
           <label>Status</label>
 
-          <select
-            class="form-select"
-            id="statusKelas">
+          <select class="form-select" id="statusKelas">
 
             <option value="Aktif">
               Aktif
@@ -165,18 +142,13 @@
 
       <div class="modal-footer">
 
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
 
           Batal
 
         </button>
 
-        <button
-          id="btnSimpanKelas"
-          class="btn btn-success"
-          onclick="simpanKelas()">
+        <button id="btnSimpanKelas" class="btn btn-success" onclick="simpanKelas()">
 
           Simpan
 

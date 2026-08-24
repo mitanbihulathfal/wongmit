@@ -59,33 +59,33 @@
 
     html,
     body {
-    
+
       margin: 0;
-    
+
       padding: 0;
-    
+
       width: 100%;
-    
+
       height: 100%;
-    
+
       -webkit-text-size-adjust: 100%;
-    
+
       text-size-adjust: 100%;
-    
+
     }
 
     #appRoot {
 
       position: relative;
-    
+
       width: 100%;
-    
+
       min-height: 100vh;
-    
+
       background: var(--bg);
-    
+
       overflow-x: hidden;
-    
+
     }
 
     .sidebar {
@@ -179,7 +179,7 @@
     /* =========================
        P7-D.3 — LOGIN LAYOUT ISOLATION
     ========================= */
-    
+
     body.login-active .content {
       margin-left: 0 !important;
       width: 100% !important;
@@ -342,6 +342,7 @@
       margin-top: 2px;
       line-height: 1.1;
     }
+
     .dashboard-attendance-guru {
       flex: 1 1 auto;
       min-width: 0;
@@ -352,6 +353,7 @@
       font-size: 13px;
       color: #6c757d;
     }
+
     .dashboard-attendance-loading {
 
       min-height: 180px;
@@ -1374,7 +1376,7 @@
 
       }
 
-     .dashboard-profile-actions {
+      .dashboard-profile-actions {
 
         position: absolute;
 
@@ -2420,16 +2422,12 @@
                 Monitoring Absensi Hari Ini
               </h5>
 
-              <small
-                id="dashboardAttendanceDate"
-                class="text-muted">
+              <small id="dashboardAttendanceDate" class="text-muted">
               </small>
 
             </div>
 
-            <button
-              class="btn-close"
-              data-bs-dismiss="modal">
+            <button class="btn-close" data-bs-dismiss="modal">
             </button>
 
           </div>
@@ -2943,7 +2941,7 @@
               }
 
             },
-            { once: true }
+            {once: true}
           );
 
           modal.hide();
@@ -3758,39 +3756,39 @@
               const ws =
                 XLSX.utils.aoa_to_sheet(wsData);
 
-                ws['!views'] = [
-                  { showGridLines: false }
-                ];
+              ws['!views'] = [
+                {showGridLines: false}
+              ];
 
               ws['!merges'] = [
 
-                { s: { r: 0, c: 0 }, e: { r: 0, c: 7 } },
-                { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } },
-                { s: { r: 2, c: 0 }, e: { r: 2, c: 7 } },
-                { s: { r: 4, c: 0 }, e: { r: 4, c: 1 } },
-                { s: { r: 4, c: 5 }, e: { r: 4, c: 7 } },
-                { s: { r: 5, c: 0 }, e: { r: 5, c: 1 } },
-                { s: { r: 5, c: 5 }, e: { r: 5, c: 7 } }
+                {s: {r: 0, c: 0}, e: {r: 0, c: 7}},
+                {s: {r: 1, c: 0}, e: {r: 1, c: 7}},
+                {s: {r: 2, c: 0}, e: {r: 2, c: 7}},
+                {s: {r: 4, c: 0}, e: {r: 4, c: 1}},
+                {s: {r: 4, c: 5}, e: {r: 4, c: 7}},
+                {s: {r: 5, c: 0}, e: {r: 5, c: 1}},
+                {s: {r: 5, c: 5}, e: {r: 5, c: 7}}
 
               ];
 
               ws['!cols'] = [
 
-                { wch: 4 },   // No
-                { wch: 13 },  // NISN
-                { wch: 43 },  // Nama
-                { wch: 15 },  // Tempat Lahir
-                { wch: 18 },  // Tanggal Lahir
-                { wch: 6 },   // JK
-                { wch: 10 },  // Kelas
-                { wch: 10 }   // Status
+                {wch: 4},   // No
+                {wch: 13},  // NISN
+                {wch: 43},  // Nama
+                {wch: 15},  // Tempat Lahir
+                {wch: 18},  // Tanggal Lahir
+                {wch: 6},   // JK
+                {wch: 10},  // Kelas
+                {wch: 10}   // Status
 
               ];
 
               for (let r = 0; r <= 2; r++) {
 
                 const addr =
-                  XLSX.utils.encode_cell({ r: r, c: 0 });
+                  XLSX.utils.encode_cell({r: r, c: 0});
 
                 if (ws[addr]) {
 
@@ -3853,7 +3851,7 @@
               for (let c = 0; c < 8; c++) {
 
                 const addr =
-                  XLSX.utils.encode_cell({ r: headerRowIdx, c: c });
+                  XLSX.utils.encode_cell({r: headerRowIdx, c: c});
 
                 if (ws[addr]) {
 
@@ -3862,12 +3860,12 @@
                     font: {
                       name: "Cambria",
                       bold: true,
-                      color: { rgb: "FFFFFF" },
-                      sz: 12 
+                      color: {rgb: "FFFFFF"},
+                      sz: 12
                     },
 
-                    fill: { 
-                      fgColor: { rgb: "4A90D9" }
+                    fill: {
+                      fgColor: {rgb: "4A90D9"}
                     }
 
                   };
@@ -3884,7 +3882,7 @@
                 for (let c = 0; c < 8; c++) {
 
                   const addr =
-                    XLSX.utils.encode_cell({ r: headerRowIdx + 1 + i, c: c });
+                    XLSX.utils.encode_cell({r: headerRowIdx + 1 + i, c: c});
 
                   if (ws[addr]) {
 
@@ -3895,25 +3893,25 @@
                       },
 
                       fill: {
-                        fgColor: { rgb: warna }
+                        fgColor: {rgb: warna}
                       },
 
                       border: {
                         top: {
                           style: "thin",
-                          color: { rgb: "B7B7B7" }
+                          color: {rgb: "B7B7B7"}
                         },
                         bottom: {
                           style: "thin",
-                          color: { rgb: "B7B7B7" }
+                          color: {rgb: "B7B7B7"}
                         },
                         left: {
                           style: "thin",
-                          color: { rgb: "B7B7B7" }
+                          color: {rgb: "B7B7B7"}
                         },
                         right: {
                           style: "thin",
-                          color: { rgb: "B7B7B7" }
+                          color: {rgb: "B7B7B7"}
                         }
                       }
                     };
@@ -4023,7 +4021,7 @@
               const tahunAjaran =
                 settings.tahunAjaran || "-";
 
-              const { jsPDF } = window.jspdf;
+              const {jsPDF} = window.jspdf;
 
               const doc =
                 new jsPDF(
@@ -4046,7 +4044,7 @@
                 "DATA SISWA",
                 pageWidth / 2,
                 15,
-                { align: "center" }
+                {align: "center"}
               );
 
               doc.setFontSize(12);
@@ -4055,14 +4053,14 @@
                 "MIS TANBIHUL ATHFAL",
                 pageWidth / 2,
                 22,
-                { align: "center" }
+                {align: "center"}
               );
 
               doc.text(
                 "TAHUN AJARAN " + tahunAjaran,
                 pageWidth / 2,
                 28,
-                { align: "center" }
+                {align: "center"}
               );
 
               doc.setFont(
@@ -4128,14 +4126,14 @@
                 },
 
                 columnStyles: {
-                  0: { cellWidth: 10 },
-                  1: { cellWidth: 25 },
-                  2: { cellWidth: 45 },
-                  3: { cellWidth: 30 },
-                  4: { cellWidth: 25 },
-                  5: { cellWidth: 12 },
-                  6: { cellWidth: 18 },
-                  7: { cellWidth: 20 }
+                  0: {cellWidth: 10},
+                  1: {cellWidth: 25},
+                  2: {cellWidth: 45},
+                  3: {cellWidth: 30},
+                  4: {cellWidth: 25},
+                  5: {cellWidth: 12},
+                  6: {cellWidth: 18},
+                  7: {cellWidth: 20}
                 },
 
                 styles: {
@@ -4660,46 +4658,46 @@
           document.getElementById(
             "loginPassword"
           );
-      
+
         const icon =
           document.getElementById(
             "loginPasswordIcon"
           );
-      
+
         if (!input || !icon) {
           return;
         }
-      
+
         const showPassword =
           input.type === "password";
-      
+
         /*
          * Simpan posisi cursor apabila
          * browser masih mempertahankan
          * selection pada input.
          */
-      
+
         const wasFocused =
           document.activeElement === input;
-      
+
         let selectionStart = null;
         let selectionEnd = null;
-      
+
         try {
-      
+
           selectionStart =
             input.selectionStart;
-      
+
           selectionEnd =
             input.selectionEnd;
-      
+
         } catch (error) {
-      
+
           selectionStart = null;
           selectionEnd = null;
-      
+
         }
-      
+
         /*
          * =========================
          * P7-D.3 — MOBILE TOUCH FIX
@@ -4710,73 +4708,73 @@
          * melakukan layout/repaint, lalu
          * kembalikan focus secara aman.
          */
-      
+
         if (wasFocused) {
-      
+
           input.blur();
-      
+
         }
-      
+
         input.type =
           showPassword
             ? "text"
             : "password";
-      
+
         icon.className =
           showPassword
             ? "fa-solid fa-eye-slash"
             : "fa-solid fa-eye";
-      
+
         /*
          * Force layout/reflow.
          */
-      
+
         void input.offsetHeight;
-      
+
         if (wasFocused) {
-      
+
           requestAnimationFrame(
             function () {
-      
+
               try {
-      
+
                 input.focus({
                   preventScroll: true
                 });
-      
+
               } catch (error) {
-      
+
                 input.focus();
-      
+
               }
-      
+
               if (
                 selectionStart !== null &&
                 selectionEnd !== null
               ) {
-      
+
                 try {
-      
+
                   input.setSelectionRange(
                     selectionStart,
                     selectionEnd
                   );
-      
+
                 } catch (error) {
-      
+
                   // Browser tertentu
                   // tidak mengizinkan
                   // selection pada state ini.
-      
+
                 }
-      
+
               }
-      
+
             }
           );
-      
+
         }
-      
+
       }
 
       function saveLoginUsername(username) {
@@ -5155,97 +5153,97 @@
 
         const body =
           document.body;
-      
+
         const sidebar =
           document.getElementById(
             "sidebar"
           );
-      
+
         const mobileBtn =
           document.getElementById(
             "mobileToggle"
           );
-      
+
         /*
          * =========================
          * P7-D.3 — EXIT LOGIN MODE
          * =========================
          */
-      
+
         if (body) {
-      
+
           body.classList.remove(
             "login-active"
           );
-      
+
         }
-      
+
         if (sidebar) {
-      
+
           sidebar.style.display =
             "block";
-      
+
           sidebar.classList.remove(
             "show"
           );
-      
+
         }
-      
+
         if (mobileBtn) {
-      
+
           mobileBtn.style.display =
             isMobileLayout()
               ? "flex"
               : "none";
-      
+
         }
-      
+
         /*
          * Kembalikan layout normal
          * setelah sidebar aktif kembali.
          */
-      
+
         const contentArea =
           document.getElementById(
             "contentArea"
           );
-      
+
         if (contentArea) {
-      
+
           contentArea.style.removeProperty(
             "margin-left"
           );
-      
+
           contentArea.style.removeProperty(
             "width"
           );
-      
+
         }
-      
+
         updateResponsiveLayout();
-      
+
         applyRoleMenu();
-      
+
         // =========================
         // HEADER DATE & TIME
         // =========================
-      
+
         updateHeaderDateTime();
-      
+
         if (headerDateTimeInterval) {
-      
+
           clearInterval(
             headerDateTimeInterval
           );
-      
+
         }
-      
+
         headerDateTimeInterval =
           setInterval(
             updateHeaderDateTime,
             1000
           );
-      
+
       }
 
       window.addEventListener(
@@ -5259,22 +5257,22 @@
 
         const body =
           document.body;
-      
+
         const sidebar =
           document.getElementById(
             "sidebar"
           );
-      
+
         const contentArea =
           document.getElementById(
             "contentArea"
           );
-      
+
         const mobileBtn =
           document.getElementById(
             "mobileToggle"
           );
-      
+
         /*
          * =========================
          * P7-D.3 — LOGIN LAYOUT
@@ -5283,49 +5281,49 @@
          * Login harus benar-benar
          * keluar dari layout sidebar.
          */
-      
+
         if (body) {
-      
+
           body.classList.add(
             "login-active"
           );
-      
+
         }
-      
+
         if (sidebar) {
-      
+
           sidebar.style.display =
             "none";
-      
+
           sidebar.classList.remove(
             "show"
           );
-      
+
         }
-      
+
         if (contentArea) {
-      
+
           contentArea.style.setProperty(
             "margin-left",
             "0",
             "important"
           );
-      
+
           contentArea.style.setProperty(
             "width",
             "100%",
             "important"
           );
-      
+
         }
-      
+
         if (mobileBtn) {
-      
+
           mobileBtn.style.display =
             "none";
-      
+
         }
-      
+
       }
 
       let modeMapel =
@@ -5511,70 +5509,70 @@
         selectedKelas = "",
         selectedMapel = ""
       ) {
-      
+
         google.script.run
-      
+
           .withSuccessHandler(
             function (result) {
-      
+
               if (
                 requestId !==
                 rekapFilterRequestId
               ) {
                 return;
               }
-      
+
               const data =
                 JSON.parse(result);
-      
+
               const select =
                 document.getElementById(
                   "filterKelasRekap"
                 );
-      
+
               if (!select) {
                 return;
               }
-      
+
               select.innerHTML =
                 '<option value="">Semua Kelas</option>';
-      
+
               for (
                 let i = 1;
                 i < data.length;
                 i++
               ) {
-      
+
                 select.innerHTML +=
                   '<option value="' +
                   data[i][1] +
                   '">' +
                   data[i][1] +
                   '</option>';
-      
+
               }
-      
+
               if (
                 selectedKelas &&
                 Array.from(
                   select.options
                 ).some(
                   function (option) {
-      
+
                     return (
                       option.value ===
                       selectedKelas
                     );
-      
+
                   }
                 )
               ) {
-      
+
                 select.value =
                   selectedKelas;
-      
+
               }
-      
+
               /*
                * Kelas hanya disabled
                * selama request berlangsung.
@@ -5582,7 +5580,7 @@
                * wajib kembali aktif.
                */
               select.disabled = false;
-      
+
               loadMapelRekap(
                 document.getElementById(
                   "filterGuruRekap"
@@ -5591,42 +5589,42 @@
                 selectedMapel,
                 requestId
               );
-      
+
             }
           )
-      
+
           .withFailureHandler(
             function (error) {
-      
+
               if (
                 requestId !==
                 rekapFilterRequestId
               ) {
                 return;
               }
-      
+
               const select =
                 document.getElementById(
                   "filterKelasRekap"
                 );
-      
+
               if (select) {
-      
+
                 select.disabled = false;
-      
+
               }
-      
+
               console.error(error);
-      
+
             }
           )
-      
+
           .getAllClassesRekap(
             localStorage.getItem(
               "wongmit_session"
             )
           );
-      
+
       }
 
       function loadMapelRekap(
@@ -5635,103 +5633,103 @@
         selectedValue = "",
         requestId = rekapFilterRequestId
       ) {
-      
+
         google.script.run
-      
+
           .withSuccessHandler(
             function (result) {
-      
+
               if (
                 requestId !==
                 rekapFilterRequestId
               ) {
                 return;
               }
-      
+
               const data =
                 JSON.parse(result);
-      
+
               const select =
                 document.getElementById(
                   "filterMapelRekap"
                 );
-      
+
               if (!select) {
                 return;
               }
-      
+
               select.innerHTML =
                 '<option value="">Semua Mapel</option>';
-      
+
               for (
                 let i = 0;
                 i < data.length;
                 i++
               ) {
-      
+
                 select.innerHTML +=
                   '<option value="' +
                   data[i] +
                   '">' +
                   data[i] +
                   '</option>';
-      
+
               }
-      
+
               if (
                 selectedValue &&
                 Array.from(
                   select.options
                 ).some(
                   function (option) {
-      
+
                     return (
                       option.value ===
                       selectedValue
                     );
-      
+
                   }
                 )
               ) {
-      
+
                 select.value =
                   selectedValue;
-      
+
               }
-      
+
               select.disabled =
                 false;
-      
+
             }
           )
-      
+
           .withFailureHandler(
             function (error) {
-      
+
               if (
                 requestId !==
                 rekapFilterRequestId
               ) {
                 return;
               }
-      
+
               console.error(error);
-      
+
               const select =
                 document.getElementById(
                   "filterMapelRekap"
                 );
-      
+
               if (select) {
-      
+
                 select.disabled =
                   false;
-      
+
               }
-      
+
             }
           )
-      
+
           .getMapelRekap(
             localStorage.getItem(
               "wongmit_session"
@@ -5739,7 +5737,7 @@
             guru,
             kelas
           );
-      
+
       }
 
       function loadKelasDropdown(
@@ -6579,129 +6577,129 @@
       /* =========================
          P7-B.3 — REKAP REQUEST STATE
       ========================= */
-      
+
       let rekapFilterRequestId = 0;
 
       function loadRekap() {
 
         const hariIni =
           new Date();
-      
+
         const awalBulan =
           new Date(
             hariIni.getFullYear(),
             hariIni.getMonth(),
             1
           );
-      
+
         document.getElementById(
           "tanggalAwalRekap"
         ).value =
           awalBulan
             .toISOString()
             .split("T")[0];
-      
+
         document.getElementById(
           "tanggalAkhirRekap"
         ).value =
           hariIni
             .toISOString()
             .split("T")[0];
-      
+
         document.getElementById(
           "filterGuruRekap"
         ).onchange = function () {
-      
+
           updateFilterGuruRekap();
-      
+
         };
-      
+
         document.getElementById(
           "filterKelasRekap"
         ).onchange = function () {
-      
+
           const requestId =
             ++rekapFilterRequestId;
-      
+
           const guru =
             document.getElementById(
               "filterGuruRekap"
             ).value;
-      
+
           const kelas =
             document.getElementById(
               "filterKelasRekap"
             ).value;
-      
+
           const mapelSelect =
             document.getElementById(
               "filterMapelRekap"
             );
-      
+
           if (mapelSelect) {
-      
+
             mapelSelect.innerHTML =
               '<option value="">Memuat mapel...</option>';
-      
+
             mapelSelect.disabled =
               true;
-      
+
           }
-      
+
           loadMapelRekap(
             guru,
             kelas,
             "",
             requestId
           );
-      
+
         };
-      
+
         document.getElementById(
           "btnExportRekap"
         ).onclick = function () {
-      
+
           exportRekapExcel();
-      
+
         };
-      
+
         document.querySelectorAll(
           "#rekapTableWrapper thead th[data-rekap-sort]"
         ).forEach(function (header) {
-      
+
           header.onclick = function () {
-      
+
             sortRekapTable(
               header.dataset.rekapSort
             );
-      
+
           };
-      
+
           header.onkeydown =
             function (event) {
-      
+
               if (
                 event.key === "Enter" ||
                 event.key === " "
               ) {
-      
+
                 event.preventDefault();
-      
+
                 sortRekapTable(
                   header.dataset.rekapSort
                 );
-      
+
               }
-      
+
             };
-      
+
         });
-      
+
         loadGuruDropdown(
           "filterGuruRekap",
           "Semua Guru"
         );
-      
+
       }
 
       function updateFilterRekap() {
@@ -6716,65 +6714,65 @@
         selectedMapel = "",
         requestId = rekapFilterRequestId
       ) {
-      
+
         google.script.run
-      
+
           .withSuccessHandler(
             function (result) {
-      
+
               if (
                 requestId !==
                 rekapFilterRequestId
               ) {
                 return;
               }
-      
+
               const data =
                 JSON.parse(result);
-      
+
               const select =
                 document.getElementById(
                   "filterKelasRekap"
                 );
-      
+
               if (!select) {
                 return;
               }
-      
+
               select.innerHTML =
                 '<option value="">Semua Kelas</option>';
-      
+
               const daftarKelas =
                 [];
-      
+
               for (
                 let i = 1;
                 i < data.length;
                 i++
               ) {
-      
+
                 const idGuruData =
                   String(
                     data[i][1]
                   ).trim();
-      
+
                 const kelas =
                   String(
                     data[i][3]
                   ).trim();
-      
+
                 const status =
                   String(
                     data[i][6]
                   ).trim();
-      
+
                 if (
                   status &&
                   status !== "Aktif"
                 ) {
                   continue;
                 }
-      
+
                 if (
                   idGuruData !==
                   String(
@@ -6783,7 +6781,7 @@
                 ) {
                   continue;
                 }
-      
+
                 if (
                   daftarKelas.includes(
                     kelas
@@ -6791,41 +6789,41 @@
                 ) {
                   continue;
                 }
-      
+
                 daftarKelas.push(
                   kelas
                 );
-      
+
                 select.innerHTML +=
                   '<option value="' +
                   kelas +
                   '">' +
                   kelas +
                   '</option>';
-      
+
               }
-      
+
               if (
                 selectedValue &&
                 Array.from(
                   select.options
                 ).some(
                   function (option) {
-      
+
                     return (
                       option.value ===
                       selectedValue
                     );
-      
+
                   }
                 )
               ) {
-      
+
                 select.value =
                   selectedValue;
-      
+
               }
-      
+
               /*
                * Kelas hanya disabled
                * selama request berlangsung.
@@ -6833,103 +6831,103 @@
                * wajib kembali aktif.
                */
               select.disabled = false;
-      
+
               loadMapelRekap(
                 idGuru,
                 select.value,
                 selectedMapel,
                 requestId
               );
-      
+
             }
           )
-      
+
           .withFailureHandler(
             function (error) {
-      
+
               if (
                 requestId !==
                 rekapFilterRequestId
               ) {
                 return;
               }
-      
+
               const select =
                 document.getElementById(
                   "filterKelasRekap"
                 );
-      
+
               if (select) {
-      
+
                 select.disabled = false;
-      
+
               }
-      
+
               console.error(error);
-      
+
             }
           )
-      
+
           .getGuruMengajar(
             localStorage.getItem(
               "wongmit_session"
             )
           );
-      
+
       }
 
       function updateFilterGuruRekap() {
 
         const requestId =
           ++rekapFilterRequestId;
-      
+
         const idGuru =
           document.getElementById(
             "filterGuruRekap"
           ).value;
-      
+
         const kelasSelect =
           document.getElementById(
             "filterKelasRekap"
           );
-      
+
         const mapelSelect =
           document.getElementById(
             "filterMapelRekap"
           );
-      
+
         const selectedKelas =
           kelasSelect
             ? kelasSelect.value
             : "";
-      
+
         const selectedMapel =
           mapelSelect
             ? mapelSelect.value
             : "";
-      
+
         if (kelasSelect) {
-      
+
           kelasSelect.disabled =
             true;
-      
+
           kelasSelect.innerHTML =
             '<option value="">Memuat kelas...</option>';
-      
+
         }
-      
+
         if (mapelSelect) {
-      
+
           mapelSelect.disabled =
             true;
-      
+
           mapelSelect.innerHTML =
             '<option value="">Memuat mapel...</option>';
-      
+
         }
-      
+
         if (!idGuru) {
-      
+
           /*
            * Semua Guru:
            * semua kelas tetap tersedia
@@ -6942,10 +6940,10 @@
             selectedKelas,
             selectedMapel
           );
-      
+
           return;
         }
-      
+
         /*
          * Guru tertentu:
          * kelas dibatasi berdasarkan
@@ -6959,7 +6957,7 @@
           selectedMapel,
           requestId
         );
-      
+
       }
 
       /* =========================
@@ -7155,13 +7153,13 @@
           let comparison;
 
           if (sortKey === "nama" ||
-              sortKey === "kelas" ||
-              sortKey === "keterangan") {
+            sortKey === "kelas" ||
+            sortKey === "keterangan") {
 
             comparison = String(firstValue || "").localeCompare(
               String(secondValue || ""),
               undefined,
-              { numeric: true, sensitivity: "base" }
+              {numeric: true, sensitivity: "base"}
             );
 
           } else {
@@ -7364,7 +7362,7 @@
             ) {
               return;
             }
-            
+
             stopRekapLoading();
 
             setRekapLoading(false);

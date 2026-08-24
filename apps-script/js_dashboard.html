@@ -1,351 +1,351 @@
 <script>
 
-/* =========================
-    DASHBOARD FRONTEND
-========================= */
+    /* =========================
+        DASHBOARD FRONTEND
+    ========================= */
 
-function loadDashboard() {
+    function loadDashboard() {
 
-google.script.run
-    .withSuccessHandler(function (data) {
+        google.script.run
+            .withSuccessHandler(function (data) {
 
-    const totalSiswa = document.getElementById('totalSiswa');
-    const totalGuru = document.getElementById('totalGuru');
-    const totalKelas = document.getElementById('totalKelas');
+                const totalSiswa = document.getElementById('totalSiswa');
+                const totalGuru = document.getElementById('totalGuru');
+                const totalKelas = document.getElementById('totalKelas');
 
-    if (totalSiswa) totalSiswa.innerText = data.totalSiswa;
-    if (totalGuru) totalGuru.innerText = data.totalGuru;
-    if (totalKelas) totalKelas.innerText = data.totalKelas;
+                if (totalSiswa) totalSiswa.innerText = data.totalSiswa;
+                if (totalGuru) totalGuru.innerText = data.totalGuru;
+                if (totalKelas) totalKelas.innerText = data.totalKelas;
 
-    const semester =
-        document.getElementById(
-        "dashboardSemester"
-        );
+                const semester =
+                    document.getElementById(
+                        "dashboardSemester"
+                    );
 
-    const tahun =
-        document.getElementById(
-        "dashboardTahunAjaran"
-        );
+                const tahun =
+                    document.getElementById(
+                        "dashboardTahunAjaran"
+                    );
 
-    if (semester) {
+                if (semester) {
 
-        semester.innerText =
-        data.semester;
+                    semester.innerText =
+                        data.semester;
 
-    }
+                }
 
-    if (tahun) {
+                if (tahun) {
 
-        tahun.innerText =
-        data.tahunAjaran;
+                    tahun.innerText =
+                        data.tahunAjaran;
 
-    }
+                }
 
-    const hadir = document.getElementById('hadir');
-    const jmlHadir = document.getElementById('jmlHadir');
-    const jmlIzin = document.getElementById('jmlIzin');
-    const jmlSakit = document.getElementById('jmlSakit');
-    const jmlAlpa = document.getElementById('jmlAlpa');
+                const hadir = document.getElementById('hadir');
+                const jmlHadir = document.getElementById('jmlHadir');
+                const jmlIzin = document.getElementById('jmlIzin');
+                const jmlSakit = document.getElementById('jmlSakit');
+                const jmlAlpa = document.getElementById('jmlAlpa');
 
-    if (hadir) {
+                if (hadir) {
 
-        hadir.innerText =
-        data.hadir + "/" + data.totalDiabsen;
+                    hadir.innerText =
+                        data.hadir + "/" + data.totalDiabsen;
 
-    }
+                }
 
-    if (jmlHadir) jmlHadir.innerText = data.hadir;
-    if (jmlIzin) jmlIzin.innerText = data.izin;
-    if (jmlSakit) jmlSakit.innerText = data.sakit;
-    if (jmlAlpa) jmlAlpa.innerText = data.alpa;
+                if (jmlHadir) jmlHadir.innerText = data.hadir;
+                if (jmlIzin) jmlIzin.innerText = data.izin;
+                if (jmlSakit) jmlSakit.innerText = data.sakit;
+                if (jmlAlpa) jmlAlpa.innerText = data.alpa;
 
-    })
-    .getDashboardData();
+            })
+            .getDashboardData();
 
-const idGuru =
+        const idGuru =
 
-    localStorage.getItem(
-    'wongmit_idguru'
-    );
+            localStorage.getItem(
+                'wongmit_idguru'
+            );
 
-if (idGuru) {
+        if (idGuru) {
 
-    google.script.run
-    .withSuccessHandler(function (profile) {
+            google.script.run
+                .withSuccessHandler(function (profile) {
 
-        if (!profile) {
-        return;
-        }
+                    if (!profile) {
+                        return;
+                    }
 
-        const jam = new Date().getHours();
+                    const jam = new Date().getHours();
 
-        let sapaan = "Selamat Datang";
+                    let sapaan = "Selamat Datang";
 
-        if (jam >= 4 && jam < 11) {
+                    if (jam >= 4 && jam < 11) {
 
-        sapaan = "Selamat Pagi";
+                        sapaan = "Selamat Pagi";
 
-        } else if (jam >= 11 && jam < 15) {
+                    } else if (jam >= 11 && jam < 15) {
 
-        sapaan = "Selamat Siang";
+                        sapaan = "Selamat Siang";
 
-        } else if (jam >= 15 && jam < 18) {
+                    } else if (jam >= 15 && jam < 18) {
 
-        sapaan = "Selamat Sore";
+                        sapaan = "Selamat Sore";
 
-        } else {
+                    } else {
 
-        sapaan = "Selamat Malam";
+                        sapaan = "Selamat Malam";
 
-        }
+                    }
 
-        const sapaanDashboard =
-        document.getElementById(
-            "sapaanDashboard"
-        );
+                    const sapaanDashboard =
+                        document.getElementById(
+                            "sapaanDashboard"
+                        );
 
-        if (sapaanDashboard) {
+                    if (sapaanDashboard) {
 
-        sapaanDashboard.innerText =
-            sapaan;
+                        sapaanDashboard.innerText =
+                            sapaan;
 
-        }
+                    }
 
-        const namaGuruLogin =
-        document.getElementById(
-            'namaGuruLogin'
-        );
+                    const namaGuruLogin =
+                        document.getElementById(
+                            'namaGuruLogin'
+                        );
 
-        const roleGuruLogin =
-        document.getElementById(
-            'roleGuruLogin'
-        );
+                    const roleGuruLogin =
+                        document.getElementById(
+                            'roleGuruLogin'
+                        );
 
-        const kelasMengajar =
-        document.getElementById(
-            'kelasMengajar'
-        );
+                    const kelasMengajar =
+                        document.getElementById(
+                            'kelasMengajar'
+                        );
 
-        const waliKelasLogin =
-        document.getElementById(
-            'waliKelasLogin'
-        );
+                    const waliKelasLogin =
+                        document.getElementById(
+                            'waliKelasLogin'
+                        );
 
-        if (namaGuruLogin) {
+                    if (namaGuruLogin) {
 
-        namaGuruLogin.innerText =
-            profile.nama;
+                        namaGuruLogin.innerText =
+                            profile.nama;
 
-        }
+                    }
 
-        if (roleGuruLogin) {
+                    if (roleGuruLogin) {
 
-        const roleMap = {
+                        const roleMap = {
 
-            "Admin": "badge-admin",
+                            "Admin": "badge-admin",
 
-            "KepalaSekolah": "badge-kepsek",
+                            "KepalaSekolah": "badge-kepsek",
 
-            "WaliKelas": "badge-wali",
+                            "WaliKelas": "badge-wali",
 
-            "GuruMapel": "badge-mapel"
+                            "GuruMapel": "badge-mapel"
 
-        };
+                        };
 
-        let html = "";
+                        let html = "";
 
-        profile.role
-            .split(",")
-            .forEach(function (role) {
+                        profile.role
+                            .split(",")
+                            .forEach(function (role) {
 
-            const teks = role
-                .replace(
-                "KepalaSekolah",
-                "Kepala Sekolah"
-                )
-                .replace(
-                "WaliKelas",
-                "Wali Kelas"
-                )
-                .replace(
-                "GuruMapel",
-                "Guru Mapel"
-                );
+                                const teks = role
+                                    .replace(
+                                        "KepalaSekolah",
+                                        "Kepala Sekolah"
+                                    )
+                                    .replace(
+                                        "WaliKelas",
+                                        "Wali Kelas"
+                                    )
+                                    .replace(
+                                        "GuruMapel",
+                                        "Guru Mapel"
+                                    );
 
-            html += `
+                                html += `
             <span class="dashboard-badge ${roleMap[role] || 'badge-mapel'}">
             ${teks}
             </span>
         `;
 
-            });
+                            });
 
-        roleGuruLogin.innerHTML = html;
+                        roleGuruLogin.innerHTML = html;
 
-        }
+                    }
 
-        if (kelasMengajar) {
+                    if (kelasMengajar) {
 
-        if (profile.mengajar.length) {
+                        if (profile.mengajar.length) {
 
-            kelasMengajar.innerHTML =
-            profile.mengajar
-                .map(function (kelas) {
+                            kelasMengajar.innerHTML =
+                                profile.mengajar
+                                    .map(function (kelas) {
 
-                return `
+                                        return `
                 <span class="dashboard-badge badge-kelas">
                 ${kelas}
                 </span>
             `;
 
-                })
-                .join("");
+                                    })
+                                    .join("");
 
-        } else {
+                        } else {
 
-            kelasMengajar.innerHTML = "-";
+                            kelasMengajar.innerHTML = "-";
 
-        }
+                        }
 
-        }
+                    }
 
-        if (waliKelasLogin) {
+                    if (waliKelasLogin) {
 
-        if (profile.waliKelas.length) {
+                        if (profile.waliKelas.length) {
 
-            waliKelasLogin.innerHTML =
-            profile.waliKelas
-                .map(function (kelas) {
+                            waliKelasLogin.innerHTML =
+                                profile.waliKelas
+                                    .map(function (kelas) {
 
-                return `
+                                        return `
                 <span class="dashboard-badge badge-walikelas">
                 ${kelas}
                 </span>
             `;
 
+                                    })
+                                    .join("");
+
+                        } else {
+
+                            waliKelasLogin.innerHTML = "-";
+
+                        }
+
+                    }
+
                 })
-                .join("");
-
-        } else {
-
-            waliKelasLogin.innerHTML = "-";
+                .getGuruProfile(
+                    idGuru
+                );
 
         }
 
+    }
+
+    function showDashboardAttendance(card) {
+
+        if (!card) {
+            return;
         }
 
-    })
-    .getGuruProfile(
-        idGuru
-    );
+        if (
+            card.dataset.loading === "true"
+        ) {
+            return;
+        }
 
-}
+        card.dataset.loading = "true";
 
-}
+        card.classList.add(
+            "card-clicking"
+        );
 
-function showDashboardAttendance(card) {
+        const body =
+            document.getElementById(
+                "dashboardAttendanceBody"
+            );
 
-if (!card) {
-    return;
-}
+        const modalElement =
+            document.getElementById(
+                "modalDashboard"
+            );
 
-if (
-    card.dataset.loading === "true"
-) {
-    return;
-}
+        const modal =
+            bootstrap.Modal.getOrCreateInstance(
+                modalElement
+            );
 
-card.dataset.loading = "true";
+        /* =========================
+            TANGGAL HARI INI
+        ========================= */
 
-card.classList.add(
-    "card-clicking"
-);
+        const tanggalSekarang =
+            new Date();
 
-const body =
-    document.getElementById(
-    "dashboardAttendanceBody"
-    );
+        const namaHari = [
+            "Minggu",
+            "Senin",
+            "Selasa",
+            "Rabu",
+            "Kamis",
+            "Jumat",
+            "Sabtu"
+        ][
+            tanggalSekarang.getDay()
+        ];
 
-const modalElement =
-    document.getElementById(
-    "modalDashboard"
-    );
+        const tanggal =
+            String(
+                tanggalSekarang.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
 
-const modal =
-    bootstrap.Modal.getOrCreateInstance(
-    modalElement
-    );
+        const namaBulan = [
+            "Januari",
+            "Februari",
+            "Maret",
+            "April",
+            "Mei",
+            "Juni",
+            "Juli",
+            "Agustus",
+            "September",
+            "Oktober",
+            "November",
+            "Desember"
+        ][
+            tanggalSekarang.getMonth()
+        ];
 
-/* =========================
-    TANGGAL HARI INI
-========================= */
+        const tahun =
+            tanggalSekarang.getFullYear();
 
-const tanggalSekarang =
-    new Date();
+        const dateElement =
+            document.getElementById(
+                "dashboardAttendanceDate"
+            );
 
-const namaHari = [
-    "Minggu",
-    "Senin",
-    "Selasa",
-    "Rabu",
-    "Kamis",
-    "Jumat",
-    "Sabtu"
-][
-    tanggalSekarang.getDay()
-];
+        if (dateElement) {
 
-const tanggal =
-    String(
-    tanggalSekarang.getDate()
-    ).padStart(
-    2,
-    "0"
-    );
+            dateElement.textContent =
+                namaHari +
+                ", " +
+                tanggal +
+                " " +
+                namaBulan +
+                " " +
+                tahun;
 
-const namaBulan = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember"
-][
-    tanggalSekarang.getMonth()
-];
+        }
 
-const tahun =
-    tanggalSekarang.getFullYear();
+        /* =========================
+            LAZY-LOAD LOADING
+        ========================= */
 
-const dateElement =
-    document.getElementById(
-    "dashboardAttendanceDate"
-    );
-
-if (dateElement) {
-
-    dateElement.textContent =
-    namaHari +
-    ", " +
-    tanggal +
-    " " +
-    namaBulan +
-    " " +
-    tahun;
-
-}
-
-/* =========================
-    LAZY-LOAD LOADING
-========================= */
-
-body.innerHTML = `
+        body.innerHTML = `
 
     <div class="dashboard-attendance-loading">
 
@@ -361,40 +361,40 @@ body.innerHTML = `
 
 `;
 
-/*
-    Modal dibuka segera.
-    Data detail baru diminta setelah
-    pengguna benar-benar membuka Card.
-*/
+        /*
+            Modal dibuka segera.
+            Data detail baru diminta setelah
+            pengguna benar-benar membuka Card.
+        */
 
-modal.show();
+        modal.show();
 
-/* =========================
-    LAZY-LOAD DATA DETAIL
-========================= */
+        /* =========================
+            LAZY-LOAD DATA DETAIL
+        ========================= */
 
-google.script.run
+        google.script.run
 
-    .withSuccessHandler(
-    function (data) {
+            .withSuccessHandler(
+                function (data) {
 
-        if (
-        !Array.isArray(data)
-        ) {
+                    if (
+                        !Array.isArray(data)
+                    ) {
 
-        throw new Error(
-            "Format data absensi Dashboard tidak valid."
-        );
+                        throw new Error(
+                            "Format data absensi Dashboard tidak valid."
+                        );
 
-        }
+                    }
 
-        let html = "";
+                    let html = "";
 
-        if (
-        data.length === 0
-        ) {
+                    if (
+                        data.length === 0
+                    ) {
 
-        html = `
+                        html = `
 
             <div class="text-center text-muted py-4">
 
@@ -404,22 +404,22 @@ google.script.run
 
         `;
 
-        }
+                    }
 
-        else {
+                    else {
 
-        data.forEach(
-            function (item) {
+                        data.forEach(
+                            function (item) {
 
-            /* =========================
-                BELUM DIABSEN
-            ========================= */
+                                /* =========================
+                                    BELUM DIABSEN
+                                ========================= */
 
-            if (
-                item.status
-            ) {
+                                if (
+                                    item.status
+                                ) {
 
-                html += `
+                                    html += `
 
                 <div class="dashboard-summary-card">
 
@@ -455,15 +455,15 @@ google.script.run
 
                 `;
 
-                return;
+                                    return;
 
-            }
+                                }
 
-            /* =========================
-                SUDAH DIABSEN
-            ========================= */
+                                /* =========================
+                                    SUDAH DIABSEN
+                                ========================= */
 
-            html += `
+                                html += `
 
                 <div class="dashboard-summary-card">
 
@@ -521,33 +521,33 @@ google.script.run
 
             `;
 
-            }
-        );
+                            }
+                        );
 
-        }
+                    }
 
-        body.innerHTML =
-        html;
+                    body.innerHTML =
+                        html;
 
-        card.dataset.loading =
-        "false";
+                    card.dataset.loading =
+                        "false";
 
-        card.classList.remove(
-        "card-clicking"
-        );
+                    card.classList.remove(
+                        "card-clicking"
+                    );
 
-    }
-    )
+                }
+            )
 
-    .withFailureHandler(
-    function (error) {
+            .withFailureHandler(
+                function (error) {
 
-        console.error(
-        "showDashboardAttendance:",
-        error
-        );
+                    console.error(
+                        "showDashboardAttendance:",
+                        error
+                    );
 
-        body.innerHTML = `
+                    body.innerHTML = `
 
         <div class="dashboard-attendance-loading">
 
@@ -567,18 +567,18 @@ google.script.run
 
         `;
 
-        card.dataset.loading =
-        "false";
+                    card.dataset.loading =
+                        "false";
 
-        card.classList.remove(
-        "card-clicking"
-        );
+                    card.classList.remove(
+                        "card-clicking"
+                    );
+
+                }
+            )
+
+            .getDashboardAttendanceSummary();
 
     }
-    )
-
-    .getDashboardAttendanceSummary();
-
-}
 
 </script>

@@ -107,22 +107,15 @@
 
     <div class="d-flex gap-2 align-items-center">
 
-      <button
-        type="button"
-        class="btn btn-outline-secondary btn-sm guru-collapse-toggle"
-        data-bs-toggle="collapse"
-        data-bs-target="#guruMapelBody"
-        aria-expanded="false"
-        aria-controls="guruMapelBody"
+      <button type="button" class="btn btn-outline-secondary btn-sm guru-collapse-toggle" data-bs-toggle="collapse"
+        data-bs-target="#guruMapelBody" aria-expanded="false" aria-controls="guruMapelBody"
         title="Tampilkan / Sembunyikan daftar mata pelajaran">
 
         <i class="fa-solid fa-chevron-up guru-collapse-icon guru-collapse-icon-rotate"></i>
 
       </button>
 
-      <button
-        class="btn btn-outline-primary"
-        onclick="bukaModalImportMapel()">
+      <button class="btn btn-outline-primary" onclick="bukaModalImportMapel()">
 
         <i class="fa-solid fa-file-import"></i>
 
@@ -130,10 +123,7 @@
 
       </button>
 
-      <button
-        class="btn btn-primary"
-        id="btnTambahMapel"
-        onclick="bukaModalMapel()">
+      <button class="btn btn-primary" id="btnTambahMapel" onclick="bukaModalMapel()">
 
         <i class="fa-solid fa-plus"></i>
 
@@ -146,25 +136,18 @@
   </div>
 
   <!-- Body panel (default closed) -->
-  <div
-    id="guruMapelBody"
-    class="collapse guru-collapse-body guru-panel-body">
+  <div id="guruMapelBody" class="collapse guru-collapse-body guru-panel-body">
 
     <div class="guru-search-box mb-3">
 
-      <input
-        type="text"
-        class="form-control"
-        id="guruSearchMapel"
-        placeholder="Cari mata pelajaran..."
+      <input type="text" class="form-control" id="guruSearchMapel" placeholder="Cari mata pelajaran..."
         onkeyup="filterMapel()">
 
     </div>
 
     <div class="table-responsive">
 
-      <table
-        class="table table-hover align-middle mb-0">
+      <table class="table table-hover align-middle mb-0">
 
         <thead>
 
@@ -198,9 +181,7 @@
 
           <tr>
 
-            <td
-              colspan="4"
-              class="text-center py-4 text-muted">
+            <td colspan="4" class="text-center py-4 text-muted">
 
               Belum ada data mata pelajaran
 
@@ -246,23 +227,15 @@
 
     <div class="d-flex gap-2 align-items-center">
 
-      <button
-        type="button"
-        class="btn btn-outline-secondary btn-sm guru-collapse-toggle"
-        data-bs-toggle="collapse"
-        data-bs-target="#guruGuruMengajarBody"
-        aria-expanded="false"
-        aria-controls="guruGuruMengajarBody"
+      <button type="button" class="btn btn-outline-secondary btn-sm guru-collapse-toggle" data-bs-toggle="collapse"
+        data-bs-target="#guruGuruMengajarBody" aria-expanded="false" aria-controls="guruGuruMengajarBody"
         title="Tampilkan / Sembunyikan daftar guru mengajar">
 
         <i class="fa-solid fa-chevron-up guru-collapse-icon guru-collapse-icon-rotate"></i>
 
       </button>
 
-      <button
-        class="btn btn-outline-primary"
-        id="btnImportGuruMengajar"
-        onclick="bukaModalImportGuruMengajar()">
+      <button class="btn btn-outline-primary" id="btnImportGuruMengajar" onclick="bukaModalImportGuruMengajar()">
 
         <i class="fa-solid fa-file-import"></i>
 
@@ -270,10 +243,7 @@
 
       </button>
 
-      <button
-        class="btn btn-primary"
-        id="btnTambahGuruMengajar"
-        onclick="bukaModalGuruMengajar()">
+      <button class="btn btn-primary" id="btnTambahGuruMengajar" onclick="bukaModalGuruMengajar()">
 
         <i class="fa-solid fa-plus"></i>
 
@@ -286,25 +256,18 @@
   </div>
 
   <!-- Body panel (default closed) -->
-  <div
-    id="guruGuruMengajarBody"
-    class="collapse guru-collapse-body guru-panel-body">
+  <div id="guruGuruMengajarBody" class="collapse guru-collapse-body guru-panel-body">
 
     <div class="guru-search-box mb-3">
 
-      <input
-        type="text"
-        class="form-control"
-        id="guruSearchGuruMengajar"
-        placeholder="Cari guru, kelas, hari, mapel..."
+      <input type="text" class="form-control" id="guruSearchGuruMengajar" placeholder="Cari guru, kelas, hari, mapel..."
         onkeyup="filterGuruMengajar()">
 
     </div>
 
     <div class="table-responsive">
 
-      <table
-        class="table table-hover align-middle mb-0">
+      <table class="table table-hover align-middle mb-0">
 
         <thead>
 
@@ -325,9 +288,7 @@
 
           <tr>
 
-            <td
-              colspan="6"
-              class="text-center py-4">
+            <td colspan="6" class="text-center py-4">
 
               Memuat data...
 
@@ -346,10 +307,7 @@
 </div>
 
 <!-- MODAL IMPORT MAPEL -->
-<div
-  class="modal fade"
-  id="modalImportMapel"
-  tabindex="-1">
+<div class="modal fade" id="modalImportMapel" tabindex="-1">
 
   <div class="modal-dialog modal-lg">
 
@@ -365,10 +323,7 @@
 
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
@@ -377,9 +332,7 @@
 
         <div class="mb-3">
 
-          <a
-            href="javascript:void(0)"
-            onclick="downloadTemplateMapel()">
+          <a href="javascript:void(0)" onclick="downloadTemplateMapel()">
 
             <i class="fa-solid fa-download"></i>
 
@@ -389,9 +342,7 @@
 
         </div>
 
-        <div
-          id="dropAreaMapel"
-          class="border rounded text-center p-5"
+        <div id="dropAreaMapel" class="border rounded text-center p-5"
           style="border-style:dashed!important;background:#fafafa;cursor:pointer;">
 
           <i class="fa-solid fa-cloud-arrow-up fa-3x text-primary mb-3"></i>
@@ -402,17 +353,11 @@
             Format yang didukung: .xlsx
           </div>
 
-          <input
-            type="file"
-            id="fileImportMapel"
-            accept=".xlsx"
-            hidden>
+          <input type="file" id="fileImportMapel" accept=".xlsx" hidden>
 
         </div>
 
-        <div
-          id="namaFileMapel"
-          class="mt-3 text-center text-muted">
+        <div id="namaFileMapel" class="mt-3 text-center text-muted">
 
           Belum ada file dipilih.
 
@@ -434,18 +379,13 @@
 
       <div class="modal-footer">
 
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
 
           Tutup
 
         </button>
 
-        <button
-          class="btn btn-primary"
-          id="btnUploadMapel"
-          onclick="uploadImportMapel()">
+        <button class="btn btn-primary" id="btnUploadMapel" onclick="uploadImportMapel()">
 
           <i class="fa-solid fa-upload"></i>
 
@@ -462,10 +402,7 @@
 </div>
 
 <!-- MODAL GURU MENGAJAR (Tambah/Edit) -->
-<div
-  class="modal fade"
-  id="modalGuruMengajar"
-  tabindex="-1">
+<div class="modal fade" id="modalGuruMengajar" tabindex="-1">
 
   <div class="modal-dialog">
 
@@ -479,19 +416,14 @@
 
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
 
       <div class="modal-body">
 
-        <input
-          type="hidden"
-          id="idRelasiMengajar">
+        <input type="hidden" id="idRelasiMengajar">
 
         <div class="mb-3">
 
@@ -501,9 +433,7 @@
 
           </label>
 
-          <select
-            class="form-select"
-            id="guruMengajar">
+          <select class="form-select" id="guruMengajar">
 
             <option value="">
               Pilih Guru
@@ -521,9 +451,7 @@
 
           </label>
 
-          <select
-            class="form-select"
-            id="kelasMengajar">
+          <select class="form-select" id="kelasMengajar">
 
             <option value="">
               Pilih Kelas
@@ -541,9 +469,7 @@
 
           </label>
 
-          <select
-            class="form-select"
-            id="hariMengajar">
+          <select class="form-select" id="hariMengajar">
 
             <option value="">
               Pilih Hari
@@ -561,25 +487,22 @@
 
           </label>
 
-          <div
-            id="listMapelMengajar"
-            class="
+          <div id="listMapelMengajar" class="
                border
                rounded
-               p-3"
-               style="
+               p-3" style="
                max-height:220px;
                overflow-y:auto;
                background:#fafafa;
              ">
 
-             <div class="text-muted">
+            <div class="text-muted">
 
-               Memuat daftar mata pelajaran...
+              Memuat daftar mata pelajaran...
 
-             </div>
+            </div>
 
-           </div>
+          </div>
 
         </div>
 
@@ -591,9 +514,7 @@
 
           </label>
 
-          <select
-            class="form-select"
-            id="statusMengajar">
+          <select class="form-select" id="statusMengajar">
 
             <option value="Aktif">
               Aktif
@@ -611,18 +532,13 @@
 
       <div class="modal-footer">
 
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
 
           Batal
 
         </button>
 
-        <button
-          class="btn btn-primary"
-          id="btnSimpanGuruMengajar"
-          onclick="simpanGuruMengajar()">
+        <button class="btn btn-primary" id="btnSimpanGuruMengajar" onclick="simpanGuruMengajar()">
 
           <i class="fa-solid fa-floppy-disk"></i>
 
@@ -639,10 +555,7 @@
 </div>
 
 <!-- MODAL IMPORT GURU MENGAJAR -->
-<div
-  class="modal fade"
-  id="modalImportGuruMengajar"
-  tabindex="-1">
+<div class="modal fade" id="modalImportGuruMengajar" tabindex="-1">
 
   <div class="modal-dialog modal-lg">
 
@@ -658,10 +571,7 @@
 
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
@@ -670,10 +580,7 @@
 
         <div class="mb-3">
 
-          <a
-            href="javascript:void(0)"
-            id="downloadTemplateGuruMengajar"
-            onclick="downloadTemplateGuruMengajar()">
+          <a href="javascript:void(0)" id="downloadTemplateGuruMengajar" onclick="downloadTemplateGuruMengajar()">
 
             <i class="fa-solid fa-download"></i>
 
@@ -683,16 +590,12 @@
 
         </div>
 
-        <div
-          id="dropAreaGuruMengajar"
-          class="border rounded text-center p-5"
-          style="
+        <div id="dropAreaGuruMengajar" class="border rounded text-center p-5" style="
             border-style:dashed !important;
             cursor:pointer;
             background:#fafafa;">
 
-          <i
-            class="fa-solid fa-cloud-arrow-up fa-3x text-primary mb-3">
+          <i class="fa-solid fa-cloud-arrow-up fa-3x text-primary mb-3">
           </i>
 
           <h6>
@@ -707,17 +610,11 @@
 
           </div>
 
-          <input
-            type="file"
-            id="fileImportGuruMengajar"
-            accept=".xlsx"
-            hidden>
+          <input type="file" id="fileImportGuruMengajar" accept=".xlsx" hidden>
 
         </div>
 
-        <div
-          id="namaFileGuruMengajar"
-          class="mt-3 text-muted text-center">
+        <div id="namaFileGuruMengajar" class="mt-3 text-muted text-center">
 
           Belum ada file dipilih.
 
@@ -725,8 +622,7 @@
 
         <hr>
 
-        <div
-          id="previewImportGuruMengajar">
+        <div id="previewImportGuruMengajar">
 
           <div class="text-muted text-center py-4">
 
@@ -740,18 +636,13 @@
 
       <div class="modal-footer">
 
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
 
           Tutup
 
         </button>
 
-        <button
-          class="btn btn-primary"
-          id="btnUploadGuruMengajar"
-          onclick="uploadImportGuruMengajar()">
+        <button class="btn btn-primary" id="btnUploadGuruMengajar" onclick="uploadImportGuruMengajar()">
 
           <i class="fa-solid fa-upload"></i>
 
@@ -768,10 +659,7 @@
 </div>
 
 <!-- MODAL TAMBAH/UBAH MAPEL -->
-<div
-  class="modal fade"
-  id="modalMapel"
-  tabindex="-1">
+<div class="modal fade" id="modalMapel" tabindex="-1">
 
   <div class="modal-dialog">
 
@@ -785,19 +673,14 @@
 
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
 
       <div class="modal-body">
 
-        <input
-          type="hidden"
-          id="idMapel">
+        <input type="hidden" id="idMapel">
 
         <div class="mb-3">
 
@@ -807,11 +690,7 @@
 
           </label>
 
-          <input
-            type="text"
-            class="form-control"
-            id="namaMapel"
-            maxlength="50">
+          <input type="text" class="form-control" id="namaMapel" maxlength="50">
 
         </div>
 
@@ -823,9 +702,7 @@
 
           </label>
 
-          <select
-            class="form-select"
-            id="kelompokMapel">
+          <select class="form-select" id="kelompokMapel">
 
             <option value="PAI">
 
@@ -857,9 +734,7 @@
 
           </label>
 
-          <select
-            class="form-select"
-            id="statusMapel">
+          <select class="form-select" id="statusMapel">
 
             <option value="Aktif">
 
@@ -881,18 +756,13 @@
 
       <div class="modal-footer">
 
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
 
           Batal
 
         </button>
 
-        <button
-          class="btn btn-primary"
-          id="btnSimpanMapel"
-          onclick="simpanMapel()">
+        <button class="btn btn-primary" id="btnSimpanMapel" onclick="simpanMapel()">
 
           <i class="fa-solid fa-floppy-disk"></i>
 
@@ -909,10 +779,7 @@
 </div>
 
 <!-- MODAL KONFIRMASI HAPUS -->
-<div
-  class="modal fade"
-  id="modalDeleteConfirm"
-  tabindex="-1">
+<div class="modal fade" id="modalDeleteConfirm" tabindex="-1">
 
   <div class="modal-dialog modal-dialog-centered">
 
@@ -928,10 +795,7 @@
 
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
@@ -948,20 +812,13 @@
 
       <div class="modal-footer">
 
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
 
           Batal
 
         </button>
 
-        <button
-          type="button"
-          class="btn btn-danger"
-          id="btnDeleteConfirm"
-          onclick="runDeleteCallback()">
+        <button type="button" class="btn btn-danger" id="btnDeleteConfirm" onclick="runDeleteCallback()">
 
           <i class="fa-solid fa-trash"></i>
 
@@ -978,10 +835,7 @@
 </div>
 
 <!-- MODAL: MAPEL MASIH DIGUNAKAN -->
-<div
-  class="modal fade"
-  id="modalMapelUsage"
-  tabindex="-1">
+<div class="modal fade" id="modalMapelUsage" tabindex="-1">
 
   <div class="modal-dialog modal-lg">
 
@@ -997,10 +851,7 @@
 
         </h5>
 
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal">
+        <button type="button" class="btn-close" data-bs-dismiss="modal">
         </button>
 
       </div>
@@ -1017,8 +868,7 @@
 
         <div class="table-responsive">
 
-          <table
-            class="table table-bordered table-sm align-middle">
+          <table class="table table-bordered table-sm align-middle">
 
             <thead>
 
@@ -1042,8 +892,7 @@
 
             </thead>
 
-            <tbody
-              id="tableMapelUsage">
+            <tbody id="tableMapelUsage">
 
             </tbody>
 
@@ -1051,13 +900,11 @@
 
         </div>
 
-        <div
-          class="mt-3 text-muted">
+        <div class="mt-3 text-muted">
 
           Total penggunaan :
 
-          <strong
-            id="mapelUsageCount">
+          <strong id="mapelUsageCount">
 
             0
 
@@ -1067,8 +914,7 @@
 
         </div>
 
-        <div
-          class="alert alert-warning mt-3 mb-0">
+        <div class="alert alert-warning mt-3 mb-0">
 
           Silakan ubah atau hapus jadwal mengajar tersebut terlebih dahulu sebelum menghapus mata pelajaran ini.
 
@@ -1078,9 +924,7 @@
 
       <div class="modal-footer">
 
-        <button
-          class="btn btn-secondary"
-          data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
 
           Tutup
 
