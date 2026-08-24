@@ -2005,4 +2005,41 @@
 
     }
 
+    window.addEventListener("resize", function () {
+
+        const currentState = isMobileLayout();
+
+        if (currentState === lastMobileState) {
+            return;
+        }
+
+        lastMobileState = currentState;
+
+        const kelas =
+            document.getElementById("filterKelasAbsensi");
+
+        const table =
+            document.getElementById("tableAbsensi");
+
+        const mobile =
+            document.getElementById("mobileAbsensiContainer");
+
+        if (
+            kelas &&
+            table &&
+            mobile &&
+            kelas.value &&
+            typeof loadStudentsByClass === "function"
+        ) {
+
+            if (modeAbsensi === "baru") {
+                simpanDraftAbsensi();
+            }
+
+            loadStudentsByClass();
+
+        }
+
+    });
+
 </script>
