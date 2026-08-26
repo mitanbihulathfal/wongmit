@@ -1,0 +1,1089 @@
+<script>
+
+    /* === P7-B.3 — REKAP REQUEST STATE === */
+
+    let rekapFilterRequestId = 0;
+
+    function loadRekap() {
+
+        const hariIni =
+            new Date();
+
+        const awalBulan =
+            new Date(
+                hariIni.getFullYear(),
+                hariIni.getMonth(),
+                1
+            );
+
+        document.getElementById(
+            "tanggalAwalRekap"
+        ).value =
+            awalBulan
+                .toISOString()
+                .split("T")[0];
+
+        document.getElementById(
+            "tanggalAkhirRekap"
+        ).value =
+            hariIni
+                .toISOString()
+                .split("T")[0];
+
+        document.getElementById(
+            "filterGuruRekap"
+        ).onchange = function () {
+
+            updateFilterGuruRekap();
+
+        };
+
+        document.getElementById(
+            "filterKelasRekap"
+        ).onchange = function () {
+
+            const requestId =
+                ++rekapFilterRequestId;
+
+            const guru =
+                document.getElementById(
+                    "filterGuruRekap"
+                ).value;
+
+            const kelas =
+                document.getElementById(
+                    "filterKelasRekap"
+                ).value;
+
+            const mapelSelect =
+                document.getElementById(
+                    "filterMapelRekap"
+                );
+
+            if (mapelSelect) {
+
+                mapelSelect.innerHTML =
+                    '<option value="">Memuat mapel...</option>';
+
+                mapelSelect.disabled =
+                    true;
+
+            }
+
+            loadMapelRekap(
+                guru,
+                kelas,
+                "",
+                requestId
+            );
+
+        };
+
+        document.getElementById(
+            "btnExportRekap"
+        ).onclick = function () {
+
+            exportRekapExcel();
+
+        };
+
+        document.querySelectorAll(
+            "#rekapTableWrapper thead th[data-rekap-sort]"
+        ).forEach(function (header) {
+
+            header.onclick = function () {
+
+                sortRekapTable(
+                    header.dataset.rekapSort
+                );
+
+            };
+
+            header.onkeydown =
+                function (event) {
+
+                    if (
+                        event.key === "Enter" ||
+                        event.key === " "
+                    ) {
+
+                        event.preventDefault();
+
+                        sortRekapTable(
+                            header.dataset.rekapSort
+                        );
+
+                    }
+
+                };
+
+        });
+
+        loadGuruDropdown(
+            "filterGuruRekap",
+            "Semua Guru"
+        );
+
+    }
+
+    function updateFilterRekap() {
+
+        updateFilterGuruRekap();
+
+    }
+
+    function loadKelasGuruRekap(
+        idGuru,
+        selectedValue = "",
+        selectedMapel = "",
+        requestId = rekapFilterRequestId
+    ) {
+
+        google.script.run
+
+            .withSuccessHandler(
+                function (result) {
+
+                    if (
+                        requestId !==
+                        rekapFilterRequestId
+                    ) {
+                        return;
+                    }
+
+                    const data =
+                        JSON.parse(result);
+
+                    const select =
+                        document.getElementById(
+                            "filterKelasRekap"
+                        );
+
+                    if (!select) {
+                        return;
+                    }
+
+                    select.innerHTML =
+                        '<option value="">Semua Kelas</option>';
+
+                    const daftarKelas =
+                        [];
+
+                    for (
+                        let i = 1;
+                        i < data.length;
+                        i++
+                    ) {
+
+                        const idGuruData =
+                            String(
+                                data[i][1]
+                            ).trim();
+
+                        const kelas =
+                            String(
+                                data[i][3]
+                            ).trim();
+
+                        const status =
+                            String(
+                                data[i][6]
+                            ).trim();
+
+                        if (
+                            status &&
+                            status !== "Aktif"
+                        ) {
+                            continue;
+                        }
+
+                        if (
+                            idGuruData !==
+                            String(
+                                idGuru
+                            ).trim()
+                        ) {
+                            continue;
+                        }
+
+                        if (
+                            daftarKelas.includes(
+                                kelas
+                            )
+                        ) {
+                            continue;
+                        }
+
+                        daftarKelas.push(
+                            kelas
+                        );
+
+                        select.innerHTML +=
+                            '<option value="' +
+                            kelas +
+                            '">' +
+                            kelas +
+                            '</option>';
+
+                    }
+
+                    if (
+                        selectedValue &&
+                        Array.from(
+                            select.options
+                        ).some(
+                            function (option) {
+
+                                return (
+                                    option.value ===
+                                    selectedValue
+                                );
+
+                            }
+                        )
+                    ) {
+
+                        select.value =
+                            selectedValue;
+
+                    }
+
+                    /*
+                     * Kelas hanya disabled
+                     * selama request berlangsung.
+                     * Setelah data kelas selesai,
+                     * wajib kembali aktif.
+                     */
+                    select.disabled = false;
+
+                    loadMapelRekap(
+                        idGuru,
+                        select.value,
+                        selectedMapel,
+                        requestId
+                    );
+
+                }
+            )
+
+            .withFailureHandler(
+                function (error) {
+
+                    if (
+                        requestId !==
+                        rekapFilterRequestId
+                    ) {
+                        return;
+                    }
+
+                    const select =
+                        document.getElementById(
+                            "filterKelasRekap"
+                        );
+
+                    if (select) {
+
+                        select.disabled = false;
+
+                    }
+
+                    console.error(error);
+
+                }
+            )
+
+            .getGuruMengajar(
+                localStorage.getItem(
+                    "wongmit_session"
+                )
+            );
+
+    }
+
+    function loadSemuaKelasRekap(
+        requestId = rekapFilterRequestId,
+        selectedKelas = "",
+        selectedMapel = ""
+    ) {
+
+        google.script.run
+
+            .withSuccessHandler(
+                function (result) {
+
+                    if (
+                        requestId !==
+                        rekapFilterRequestId
+                    ) {
+                        return;
+                    }
+
+                    const data =
+                        JSON.parse(result);
+
+                    const select =
+                        document.getElementById(
+                            "filterKelasRekap"
+                        );
+
+                    if (!select) {
+                        return;
+                    }
+
+                    select.innerHTML =
+                        '<option value="">Semua Kelas</option>';
+
+                    for (
+                        let i = 1;
+                        i < data.length;
+                        i++
+                    ) {
+
+                        select.innerHTML +=
+                            '<option value="' +
+                            data[i][1] +
+                            '">' +
+                            data[i][1] +
+                            '</option>';
+
+                    }
+
+                    if (
+                        selectedKelas &&
+                        Array.from(
+                            select.options
+                        ).some(
+                            function (option) {
+
+                                return (
+                                    option.value ===
+                                    selectedKelas
+                                );
+
+                            }
+                        )
+                    ) {
+
+                        select.value =
+                            selectedKelas;
+
+                    }
+
+                    /*
+                     * Kelas hanya disabled
+                     * selama request berlangsung.
+                     * Setelah data kelas selesai,
+                     * wajib kembali aktif.
+                     */
+                    select.disabled = false;
+
+                    loadMapelRekap(
+                        document.getElementById(
+                            "filterGuruRekap"
+                        ).value,
+                        select.value,
+                        selectedMapel,
+                        requestId
+                    );
+
+                }
+            )
+
+            .withFailureHandler(
+                function (error) {
+
+                    if (
+                        requestId !==
+                        rekapFilterRequestId
+                    ) {
+                        return;
+                    }
+
+                    const select =
+                        document.getElementById(
+                            "filterKelasRekap"
+                        );
+
+                    if (select) {
+
+                        select.disabled = false;
+
+                    }
+
+                    console.error(error);
+
+                }
+            )
+
+            .getAllClassesRekap(
+                localStorage.getItem(
+                    "wongmit_session"
+                )
+            );
+
+    }
+
+    function loadMapelRekap(
+        guru = "",
+        kelas = "",
+        selectedValue = "",
+        requestId = rekapFilterRequestId
+    ) {
+
+        google.script.run
+
+            .withSuccessHandler(
+                function (result) {
+
+                    if (
+                        requestId !==
+                        rekapFilterRequestId
+                    ) {
+                        return;
+                    }
+
+                    const data =
+                        JSON.parse(result);
+
+                    const select =
+                        document.getElementById(
+                            "filterMapelRekap"
+                        );
+
+                    if (!select) {
+                        return;
+                    }
+
+                    select.innerHTML =
+                        '<option value="">Semua Mapel</option>';
+
+                    for (
+                        let i = 0;
+                        i < data.length;
+                        i++
+                    ) {
+
+                        select.innerHTML +=
+                            '<option value="' +
+                            data[i] +
+                            '">' +
+                            data[i] +
+                            '</option>';
+
+                    }
+
+                    if (
+                        selectedValue &&
+                        Array.from(
+                            select.options
+                        ).some(
+                            function (option) {
+
+                                return (
+                                    option.value ===
+                                    selectedValue
+                                );
+
+                            }
+                        )
+                    ) {
+
+                        select.value =
+                            selectedValue;
+
+                    }
+
+                    select.disabled =
+                        false;
+
+                }
+            )
+
+            .withFailureHandler(
+                function (error) {
+
+                    if (
+                        requestId !==
+                        rekapFilterRequestId
+                    ) {
+                        return;
+                    }
+
+                    console.error(error);
+
+                    const select =
+                        document.getElementById(
+                            "filterMapelRekap"
+                        );
+
+                    if (select) {
+
+                        select.disabled =
+                            false;
+
+                    }
+
+                }
+            )
+
+            .getMapelRekap(
+                localStorage.getItem(
+                    "wongmit_session"
+                ),
+                guru,
+                kelas
+            );
+
+    }
+
+    function tampilkanRekap() {
+
+        const requestId =
+            ++rekapFilterRequestId;
+
+        const tanggalAwal =
+
+            document.getElementById(
+                "tanggalAwalRekap"
+            ).value;
+
+        const tanggalAkhir =
+
+            document.getElementById(
+                "tanggalAkhirRekap"
+            ).value;
+
+        if (
+            tanggalAwal &&
+            tanggalAkhir &&
+            tanggalAwal > tanggalAkhir
+        ) {
+
+            showToast(
+                "Tanggal awal tidak boleh lebih besar dari tanggal akhir",
+                "warning"
+            );
+
+            return;
+
+        }
+
+        const guru =
+
+            document.getElementById(
+                "filterGuruRekap"
+            ).value;
+
+        const kelas =
+
+            document.getElementById(
+                "filterKelasRekap"
+            ).value;
+
+        const mapel =
+
+            document.getElementById(
+                "filterMapelRekap"
+            ).value;
+
+        setRekapLoading(true);
+
+        startRekapLoading();
+
+        google.script.run
+
+            .withSuccessHandler(function (result) {
+
+                if (
+                    requestId !==
+                    rekapFilterRequestId
+                ) {
+                    return;
+                }
+
+                successRekapLoading();
+
+                setRekapLoading(false);
+
+                stopRekapLoading();
+
+                if (result == null) {
+
+                    console.error(
+                        "RESULT NULL"
+                    );
+
+                    showToast(
+                        "Result NULL",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+                const data =
+                    result;
+
+                rekapTableData = data.slice();
+                rekapSortKey = "";
+                rekapSortDirection = "asc";
+                updateRekapSortIndicators();
+
+                renderRekapSummary(data);
+
+                renderRekapTable(data);
+
+            })
+
+            .withFailureHandler(function (error) {
+
+                if (
+                    requestId !==
+                    rekapFilterRequestId
+                ) {
+                    return;
+                }
+
+                stopRekapLoading();
+
+                setRekapLoading(false);
+
+                console.error(error);
+
+                showToast(
+                    "Gagal membaca data absensi",
+                    "error"
+                );
+
+            })
+
+            .getRekapFinal(
+
+                localStorage.getItem(
+                    "wongmit_session"
+                ),
+
+                tanggalAwal,
+
+                tanggalAkhir,
+
+                guru,
+                kelas,
+                mapel
+
+            );
+
+    }
+
+    /* === REKAP SUMMARY CARD === */
+
+    function renderRekapSummary(data) {
+
+        const container =
+            document.getElementById("rekapSummary");
+
+        if (!container) return;
+
+        if (!data || data.length === 0) {
+            container.style.display = "none";
+            container.innerHTML = "";
+            return;
+        }
+
+        let totalSiswa = data.length;
+        let totalSempurna = 0;
+        let totalPerluPerhatian = 0;
+        let totalPersentase = 0;
+
+        data.forEach(function (item) {
+
+            totalPersentase += Number(item.persentase) || 0;
+
+            if (item.keterangan === "Sempurna") {
+                totalSempurna++;
+            }
+
+            if (
+                item.keterangan === "Perlu Perhatian" ||
+                item.keterangan === "Perlu Peningkatan" ||
+                item.keterangan === "Perlu Tindak Lanjut"
+            ) {
+                totalPerluPerhatian++;
+            }
+
+        });
+
+        const rataRata =
+            totalSiswa === 0
+                ? 0
+                : Math.round(totalPersentase / totalSiswa);
+
+        container.innerHTML = `
+
+          <div class="rekap-summary-card">
+            <div class="rekap-summary-icon">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="rekap-summary-info">
+              <small>Total Siswa</small>
+              <h4>${totalSiswa}</h4>
+            </div>
+          </div>
+
+          <div class="rekap-summary-card">
+            <div class="rekap-summary-icon">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <div class="rekap-summary-info">
+              <small>Sempurna</small>
+              <h4>${totalSempurna}</h4>
+            </div>
+          </div>
+
+          <div class="rekap-summary-card">
+            <div class="rekap-summary-icon">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="rekap-summary-info">
+              <small>Perlu Perhatian</small>
+              <h4>${totalPerluPerhatian}</h4>
+            </div>
+          </div>
+
+          <div class="rekap-summary-card">
+            <div class="rekap-summary-icon">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="rekap-summary-info">
+              <small>Rata-rata</small>
+              <h4>${rataRata}%</h4>
+            </div>
+          </div>
+
+        `;
+
+        container.style.display = "grid";
+
+    }
+
+    function getRekapBadge(keterangan) {
+
+        let badgeClass = "rekap-badge";
+
+        switch (keterangan) {
+
+            case "Sempurna":
+                badgeClass += " rekap-badge-sempurna";
+                break;
+
+            case "Sangat Baik":
+                badgeClass += " rekap-badge-sangat-baik";
+                break;
+
+            case "Baik":
+                badgeClass += " rekap-badge-baik";
+                break;
+
+            case "Cukup Baik":
+                badgeClass += " rekap-badge-cukup";
+                break;
+
+            case "Perlu Peningkatan":
+                badgeClass += " rekap-badge-peningkatan";
+                break;
+
+            case "Perlu Perhatian":
+                badgeClass += " rekap-badge-perhatian";
+                break;
+
+            default:
+                badgeClass += " rekap-badge-tindak";
+
+        }
+
+        return '<span class="' + badgeClass + '">' + keterangan + '</span>';
+
+    }
+
+    let rekapTableData = [];
+    let rekapSortKey = "";
+    let rekapSortDirection = "asc";
+
+    function updateRekapSortIndicators() {
+
+        document.querySelectorAll(
+            "#rekapTableWrapper thead th[data-rekap-sort]"
+        ).forEach(function (header) {
+
+            const isActive =
+                header.dataset.rekapSort === rekapSortKey;
+
+            const direction =
+                isActive ? rekapSortDirection : "none";
+
+            header.setAttribute(
+                "aria-sort",
+                direction === "asc" ? "ascending" :
+                    direction === "desc" ? "descending" : "none"
+            );
+
+            header.querySelector(
+                ".rekap-sort-icon"
+            ).textContent =
+                direction === "asc" ? "▲" :
+                    direction === "desc" ? "▼" : "";
+
+        });
+
+    }
+
+    function sortRekapTable(sortKey) {
+
+        if (!rekapTableData.length) {
+            return;
+        }
+
+        if (rekapSortKey === sortKey) {
+            rekapSortDirection =
+                rekapSortDirection === "asc" ? "desc" : "asc";
+        } else {
+            rekapSortKey = sortKey;
+            rekapSortDirection = "asc";
+        }
+
+        const sortedData =
+            rekapTableData.map(function (row, index) {
+                return {
+                    row: row,
+                    index: index
+                };
+            });
+
+        sortedData.sort(function (first, second) {
+
+            const firstValue = first.row[sortKey];
+            const secondValue = second.row[sortKey];
+            let comparison;
+
+            if (sortKey === "nama" ||
+                sortKey === "kelas" ||
+                sortKey === "keterangan") {
+
+                comparison = String(firstValue || "").localeCompare(
+                    String(secondValue || ""),
+                    undefined,
+                    {numeric: true, sensitivity: "base"}
+                );
+
+            } else {
+
+                comparison = Number(firstValue || 0) -
+                    Number(secondValue || 0);
+
+            }
+
+            return comparison || first.index - second.index;
+
+        });
+
+        if (rekapSortDirection === "desc") {
+            sortedData.reverse();
+        }
+
+        rekapTableData = sortedData.map(function (item) {
+            return item.row;
+        });
+
+        renderRekapTable(rekapTableData);
+        updateRekapSortIndicators();
+
+    }
+
+    function renderRekapTable(data) {
+
+        const tbody =
+            document.getElementById(
+                "tableRekapAbsensi"
+            );
+
+        if (data.length === 0) {
+
+            tbody.innerHTML =
+                '<tr>' +
+                '<td colspan="9" class="text-center py-5">' +
+                '<div class="rekap-empty">' +
+                '<div class="rekap-empty-icon">' +
+                '<i class="fa-solid fa-filter-circle-xmark"></i>' +
+                '</div>' +
+                '<h4 class="rekap-empty-title">Tidak ada data pada periode dan filter yang dipilih.</h4>' +
+                '<p class="rekap-empty-sub">Silakan ubah periode atau filter.</p>' +
+                '</div>' +
+                '</td>' +
+                '</tr>';
+
+            return;
+        }
+
+        const baris = [];
+
+        for (let i = 0; i < data.length; i++) {
+
+            baris.push(
+                '<tr>' +
+                '<td>' +
+                (i + 1) +
+                '</td>' +
+                '<td>' +
+                data[i].nama +
+                '</td>' +
+                '<td class="text-center">' +
+                data[i].kelas +
+                '</td>' +
+                '<td class="text-center">' +
+                data[i].hadir +
+                '</td>' +
+                '<td class="text-center">' +
+                data[i].sakit +
+                '</td>' +
+                '<td class="text-center">' +
+                data[i].izin +
+                '</td>' +
+                '<td class="text-center">' +
+                data[i].alpa +
+                '</td>' +
+                '<td class="text-center">' +
+                data[i].persentase +
+                '%' +
+                '</td>' +
+                '<td>' +
+                getRekapBadge(data[i].keterangan) +
+                '</td>' +
+                '</tr>'
+            );
+
+        }
+
+        tbody.innerHTML = baris.join("");
+
+    }
+
+    function exportRekapExcel() {
+
+        const tanggalAwal =
+
+            document.getElementById(
+                "tanggalAwalRekap"
+            ).value;
+
+        const tanggalAkhir =
+
+            document.getElementById(
+                "tanggalAkhirRekap"
+            ).value;
+
+        const guruSelect =
+            document.getElementById(
+                "filterGuruRekap"
+            );
+
+        const guru =
+            guruSelect.value;
+
+        const guruText =
+            guru
+                ? guruSelect.options[
+                    guruSelect.selectedIndex
+                ].text
+                : "";
+
+        const kelas =
+
+            document.getElementById(
+                "filterKelasRekap"
+            ).value;
+
+        const mapel =
+
+            document.getElementById(
+                "filterMapelRekap"
+            ).value;
+
+        const btnExport =
+
+            document.getElementById(
+                "btnExportRekap"
+            );
+
+        setButtonLoading(
+
+            btnExport,
+
+            "Menyiapkan Excel..."
+
+        );
+
+        google.script.run
+
+            .withSuccessHandler(function (result) {
+
+                resetButtonLoading(
+                    btnExport
+                );
+
+                window.open(
+
+                    result.exportUrl,
+
+                    "_blank"
+
+                );
+
+                showToast(
+                    "Export berhasil.",
+                    "success"
+                );
+
+                google.script.run
+                    .cleanupExportSpreadsheet(
+
+                        result.spreadsheetId
+
+                    );
+
+            })
+
+            .withFailureHandler(function (error) {
+
+                resetButtonLoading(
+                    btnExport
+                );
+
+                console.error(error);
+
+                showToast(
+
+                    "Export gagal.",
+
+                    "error"
+
+                );
+
+            })
+
+            .exportRekapExcel(
+                localStorage.getItem(
+                    "wongmit_session"
+                ),
+                tanggalAwal,
+                tanggalAkhir,
+                guru,
+                kelas,
+                mapel,
+                guruText,
+                rekapTableData
+            );
+
+    }
+
+</script>
