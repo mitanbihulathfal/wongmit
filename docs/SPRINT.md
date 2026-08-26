@@ -609,7 +609,6 @@ Hasil
 
 ---
 
-
 # Aturan Sprint
 
 Setiap sprint wajib melalui tahapan berikut.
@@ -712,6 +711,108 @@ Next:
 Catatan:
 
 Optimasi berikutnya tetap melalui audit bottleneck terlebih dahulu. Cache, perubahan struktur Sheet, index/summary table, dan optimasi berisiko tinggi tidak diterapkan tanpa bukti kebutuhan dan impact analysis.
+
+---
+
+# Sprint Modularisasi Infrastructure — Master Data, Export, Auth & Calendar
+
+Status
+
+DONE
+
+Target
+
+Menyelesaikan modularisasi shared infrastructure WONG MIT agar `Code.js` dan struktur aplikasi lebih terorganisasi tanpa mengubah endpoint, database, atau behavior production.
+
+Fokus
+
+- Master Data Infrastructure
+- Export Engine
+- Auth / Session / Role
+- Calendar Infrastructure
+- Audit dependency lintas modul
+- Mempertahankan fungsi top-level Apps Script
+- Memastikan regression setelah setiap extraction
+
+Hasil
+
+### Master Data
+
+✅ Master Data Infrastructure dipisahkan ke `MasterData.js`
+
+✅ Shared master-sheet access dan cache tetap kompatibel
+
+### Export
+
+✅ Export Engine dipisahkan ke `Export.js`
+
+✅ `createExportSpreadsheet()`
+
+✅ `createExportFileName()`
+
+✅ `exportSpreadsheetAsXlsx()`
+
+✅ `cleanupExportSpreadsheet()`
+
+✅ `exportSpreadsheetAsPdf()`
+
+✅ Export domain tetap berada pada modul masing-masing
+
+### Auth / Session / Role
+
+✅ Auth dipisahkan ke `Auth.js`
+
+✅ `checkLogin()`
+
+✅ `createSession()`
+
+✅ `checkSession()`
+
+✅ `logoutSession()`
+
+✅ `getRoleBySession()`
+
+✅ `checkRole()`
+
+✅ Session dan authorization tetap kompatibel
+
+### Calendar
+
+✅ Calendar Infrastructure dipisahkan ke `Calendar.js`
+
+✅ `getWeekDays()`
+
+✅ `validateWeekDay()`
+
+✅ `getWeeklyHolidays()`
+
+✅ `isSchoolHoliday()`
+
+✅ `getAttendanceCalendarContext()`
+
+✅ `getNamaHariIndonesia()`
+
+✅ Calendar Context Absensi tetap berjalan
+
+### Validasi
+
+✅ Audit dependency lintas modul LOLOS
+
+✅ Deploy Uji LOLOS
+
+✅ Deploy Production LOLOS
+
+✅ Regression lintas modul LOLOS
+
+✅ Tidak ada perubahan database
+
+✅ Endpoint runtime tetap kompatibel
+
+Catatan
+
+Batch ini menutup refactoring shared infrastructure utama yang telah diprioritaskan sebelum masuk ke fase penyempurnaan fitur.
+
+Setelah batch ini selesai, fokus pengembangan kembali ke sprint fitur, dimulai dari Sprint Pengaturan.
 
 ---
 

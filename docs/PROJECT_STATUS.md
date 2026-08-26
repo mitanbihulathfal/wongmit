@@ -279,6 +279,105 @@ Belum ditentukan. Akan mengikuti roadmap dan keputusan pengguna.
 
 ---
 
+## Master Data Infrastructure
+
+Status:
+SELESAI
+
+Kondisi:
+
+- Refactoring modularisasi Master Data Infrastructure telah selesai.
+- Backend Master Data dipisahkan ke `MasterData.js`.
+- Fungsi pembacaan master sheet dan cache master dipusatkan pada boundary Master Data.
+- Shared dependency lintas modul tetap menggunakan fungsi top-level Apps Script.
+- Endpoint, authorization, database, cache behavior, dan runtime behavior tetap kompatibel.
+- Modul Siswa, Guru, Kelas, Mapel, Guru Mengajar, Absensi, dan Rekap tetap dapat menggunakan Master Data setelah extraction.
+- Deploy Uji dan Deploy Production setelah refactoring telah LOLOS.
+
+Master Data Infrastructure resmi menjadi shared foundation untuk modul-modul aplikasi.
+
+---
+
+## Export Engine
+
+Status:
+SELESAI
+
+Kondisi:
+
+- Refactoring modularisasi Export Engine telah selesai.
+- Shared Export Engine dipisahkan dari `Code.js` ke `Export.js`.
+- Utility yang dipusatkan:
+  - `createExportSpreadsheet()`
+  - `createExportFileName()`
+  - `exportSpreadsheetAsXlsx()`
+  - `cleanupExportSpreadsheet()`
+  - `exportSpreadsheetAsPdf()`
+- Export domain tetap berada pada boundary masing-masing modul.
+- Export Siswa tetap berada pada `Siswa.js`.
+- Export Rekap tetap berada pada `Rekap.js`.
+- Template/export domain Guru Mengajar tetap berada pada boundary Guru Mengajar.
+- Tidak dibuat `js_export.html` karena Export Engine merupakan backend infrastructure.
+- Endpoint dan behavior runtime tetap kompatibel.
+- Deploy Uji dan Deploy Production setelah refactoring telah LOLOS.
+
+Export Engine resmi menjadi shared infrastructure untuk kebutuhan export lintas modul.
+
+---
+
+## Auth / Session / Role Infrastructure
+
+Status:
+SELESAI
+
+Kondisi:
+
+- Refactoring modularisasi Auth, Session, dan Role telah selesai.
+- Backend dipisahkan dari `Code.js` ke `Auth.js`.
+- Fungsi yang dipusatkan:
+  - `checkLogin()`
+  - `createSession()`
+  - `checkSession()`
+  - `logoutSession()`
+  - `getRoleBySession()`
+  - `checkRole()`
+- State Session pada Sheet `Session` tetap dipertahankan.
+- Authorization lintas modul tetap menggunakan endpoint dan fungsi yang sama.
+- Tidak dibuat `js_auth.html` karena Auth merupakan application infrastructure, bukan page/domain frontend.
+- Endpoint, authorization behavior, database, dan session behavior tetap kompatibel.
+- Deploy Uji dan Deploy Production setelah refactoring telah LOLOS.
+
+Auth / Session / Role resmi menjadi shared application infrastructure.
+
+---
+
+## Calendar Infrastructure
+
+Status:
+SELESAI
+
+Kondisi:
+
+- Refactoring modularisasi Calendar Infrastructure telah selesai.
+- Backend Calendar dipisahkan dari `Code.js` ke `Calendar.js`.
+- Fungsi yang dipusatkan:
+  - `getWeekDays()`
+  - `validateWeekDay()`
+  - `getWeeklyHolidays()`
+  - `isSchoolHoliday()`
+  - `getAttendanceCalendarContext()`
+  - `getNamaHariIndonesia()`
+- Calendar Context Absensi dipusatkan bersama Calendar Infrastructure.
+- Dependency terhadap Master Data, Guru, Guru Mengajar, dan Pengaturan tetap dipertahankan.
+- Tidak dibuat `js_calendar.html` karena Calendar merupakan backend infrastructure.
+- Endpoint dan behavior runtime tetap kompatibel.
+- Deploy Uji dan Deploy Production setelah refactoring telah LOLOS.
+- QA Calendar dan regression Absensi: LOLOS.
+
+Calendar Infrastructure resmi menjadi shared calendar/context layer aplikasi.
+
+---
+
 ## Pengaturan
 
 Status:
@@ -309,6 +408,24 @@ Seluruh halaman baru wajib mengikuti:
 - AI_RULES.md
 - ARCHITECTURE.md
 - DATABASE.md
+
+---
+
+## Modular Infrastructure
+
+Status:
+SELESAI
+
+Shared infrastructure yang telah dimodularisasi:
+
+- `MasterData.js` — Master Data dan cache layer
+- `Export.js` — Shared Export Engine
+- `Auth.js` — Authentication, Session, dan Role
+- `Calendar.js` — Calendar dan Attendance Calendar Context
+
+Boundary domain tetap dipisahkan pada modul masing-masing.
+
+Refactoring infrastructure dilakukan tanpa mengubah endpoint runtime, struktur database, atau behavior produksi yang telah stabil.
 
 ---
 

@@ -33,6 +33,56 @@ Catatan
 
 ## 2026-08-26
 
+### Refactoring Shared Infrastructure — Master Data, Export, Auth & Calendar
+
+**Judul**
+
+Penyelesaian Refactoring Shared Infrastructure WONG MIT
+
+**Perubahan**
+
+- Master Data Infrastructure dipisahkan ke `MasterData.js`.
+- Shared Export Engine dipisahkan ke `Export.js`.
+- Authentication, Session, dan Role dipisahkan ke `Auth.js`.
+- Calendar Infrastructure dipisahkan ke `Calendar.js`.
+- `getAttendanceCalendarContext()` dipusatkan pada `Calendar.js`.
+- Export domain Siswa dan Rekap tetap berada pada boundary masing-masing.
+- Tidak dibuat frontend partial khusus Export, Auth, atau Calendar karena ketiganya merupakan infrastructure backend.
+- Endpoint `google.script.run` tetap dipertahankan.
+- Dependency lintas modul tetap menggunakan fungsi top-level Apps Script.
+- Struktur database tidak berubah.
+- Behavior runtime production tetap kompatibel.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+Extract Master Data infrastructure layer
+
+Extract Export Engine infrastructure
+
+Extract Auth Session Role infrastructure
+
+Extract Calendar infrastructure
+
+**Validasi**
+
+- Deploy Uji LOLOS.
+- Deploy Production LOLOS.
+- Regression lintas modul LOLOS.
+- Auth / Session / Role LOLOS.
+- Export Engine LOLOS.
+- Calendar / Attendance Context LOLOS.
+- Master Data dependency LOLOS.
+
+**Catatan**
+
+Dengan selesainya batch ini, refactoring shared infrastructure utama telah selesai. Pengembangan berikutnya kembali difokuskan pada penyempurnaan fitur aplikasi melalui sprint terpisah.
+
+## 2026-08-26
+
 ### Refactoring Modularisasi Rekap Absensi
 
 **Judul**
