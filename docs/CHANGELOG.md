@@ -62,7 +62,7 @@ Extract Rekap module Part II
 
 **Validasi**
 
-- Deploy Uji LOLOS.
+- Deploy Uji & Deploy Production LOLOS.
 - Halaman Rekap LOLOS.
 - Filter LOLOS.
 - Kombinasi Filter LOLOS.
