@@ -132,6 +132,90 @@
 
     }
 
+    function updateFilterGuruRekap() {
+
+        const requestId =
+            ++rekapFilterRequestId;
+
+        const idGuru =
+            document.getElementById(
+                "filterGuruRekap"
+            ).value;
+
+        const kelasSelect =
+            document.getElementById(
+                "filterKelasRekap"
+            );
+
+        const mapelSelect =
+            document.getElementById(
+                "filterMapelRekap"
+            );
+
+        const selectedKelas =
+            kelasSelect
+                ? kelasSelect.value
+                : "";
+
+        const selectedMapel =
+            mapelSelect
+                ? mapelSelect.value
+                : "";
+
+        if (kelasSelect) {
+
+            kelasSelect.disabled =
+                true;
+
+            kelasSelect.innerHTML =
+                '<option value="">Memuat kelas...</option>';
+
+        }
+
+        if (mapelSelect) {
+
+            mapelSelect.disabled =
+                true;
+
+            mapelSelect.innerHTML =
+                '<option value="">Memuat mapel...</option>';
+
+        }
+
+        if (!idGuru) {
+
+            /*
+             * Semua Guru:
+             * semua kelas tetap tersedia
+             * dan dropdown Kelas akan
+             * diaktifkan kembali setelah
+             * data selesai dimuat.
+             */
+            loadSemuaKelasRekap(
+                requestId,
+                selectedKelas,
+                selectedMapel
+            );
+
+            return;
+        }
+
+        /*
+         * Guru tertentu:
+         * kelas dibatasi berdasarkan
+         * relasi Guru Mengajar,
+         * tetapi dropdown tetap aktif
+         * setelah request selesai.
+         */
+        loadKelasGuruRekap(
+            idGuru,
+            selectedKelas,
+            selectedMapel,
+            requestId
+        );
+
+    }
+
     function loadKelasGuruRekap(
         idGuru,
         selectedValue = "",
