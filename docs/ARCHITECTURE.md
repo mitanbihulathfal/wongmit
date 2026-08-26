@@ -48,6 +48,7 @@ apps-script/
 ├── Kelas.js
 ├── Dashboard.js
 ├── Pengaturan.js
+├── Rekap.js
 ├── index.html
 ├── js_absensi.html
 ├── js_gurumengajar.html
@@ -56,9 +57,13 @@ apps-script/
 ├── js_guru.html
 ├── js_kelas.html
 ├── js_dashboard.html
-└── js_pengaturan.html
+├── js_pengaturan.html
+└── js_rekap.html
 
-- `index.html` kini berfungsi semakin kuat sebagai shell/orchestrator, sedangkan logic domain ditempatkan pada partial frontend masing-masing.
+- `index.html` berfungsi sebagai shell/orchestrator, sedangkan logic domain ditempatkan pada partial frontend masing-masing.
+- Modul Rekap menggunakan boundary backend `Rekap.js` dan frontend `js_rekap.html`.
+- Shared utilities tetap berada pada boundary shared dan tidak diduplikasi ke modul domain.
+- Export engine bersama tetap terpisah dari boundary domain Rekap.
 
 ---
 

@@ -31,6 +31,54 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-26
+
+### Refactoring Modularisasi Rekap Absensi
+
+**Judul**
+
+Refactoring dan Modularisasi Rekap Absensi
+
+**Perubahan**
+
+- Backend Rekap dipindahkan dari `Code.js` ke `Rekap.js`.
+- Frontend logic Rekap dipindahkan dari `index.html` ke `js_rekap.html`.
+- Loader `<?!= getPage("js_rekap") ?>` ditambahkan ke `index.html`.
+- State dan filter khusus Rekap ikut dimodularisasi.
+- `updateFilterGuruRekap()` dipindahkan ke `js_rekap.html`.
+- Shared utilities dan dependency lintas modul tetap dipertahankan.
+- Export engine bersama tidak diubah.
+- Endpoint, authorization, database, dan behavior runtime tetap kompatibel.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+Extract Rekap module and add loader
+
+Extract Rekap module Part II
+
+**Validasi**
+
+- Deploy Uji LOLOS.
+- Halaman Rekap LOLOS.
+- Filter LOLOS.
+- Kombinasi Filter LOLOS.
+- Reset Filter LOLOS.
+- Sorting LOLOS.
+- Empty State LOLOS.
+- Request/Filter State LOLOS.
+- Navigasi/Reload LOLOS.
+- Role LOLOS.
+- Regression lintas modul LOLOS.
+- Console LOLOS.
+
+**Catatan**
+
+Refactoring Rekap selesai tanpa perubahan business logic atau struktur database. Modul Rekap tetap FROZEN. Refactoring export lintas modul tetap ditunda sesuai keputusan arsitektur.
+
 ## 2026-08-24
 
 ## [Refactoring] Absensi Harian

@@ -1131,3 +1131,56 @@ Seluruh fungsi dan state Absensi yang termasuk boundary modul telah dipindahkan,
 
 Hasil Deploy Uji:
 **LOLOS seluruh QA Absensi Harian.**
+
+# Sprint Rekap — Refactoring & Modularisasi
+
+Status
+
+DONE
+
+Target
+
+Memisahkan boundary backend dan frontend Rekap Absensi tanpa mengubah behavior, endpoint, database, authorization, maupun engine Rekap.
+
+Fokus
+
+- Memindahkan logic backend Rekap dari `Code.js` ke `Rekap.js`.
+- Memindahkan logic frontend Rekap dari `index.html` ke `js_rekap.html`.
+- Menambahkan loader `<?!= getPage("js_rekap") ?>`.
+- Mempertahankan dependency lintas modul.
+- Mempertahankan shared utility.
+- Mempertahankan export engine bersama.
+- Mempertahankan satu jalur engine Rekap:
+  `getRekapFinal() → mergeDataRekap() → getDataRekap() → hitungRekap()`.
+
+Hasil
+
+✅ Backend Rekap dipisahkan ke `Rekap.js`
+
+✅ Frontend Rekap dipisahkan ke `js_rekap.html`
+
+✅ Loader Rekap ditambahkan ke `index.html`
+
+✅ State/filter frontend Rekap ikut dimodularisasi
+
+✅ `updateFilterGuruRekap()` dipindahkan ke `js_rekap.html`
+
+✅ Shared utilities tetap pada boundary masing-masing
+
+✅ Export engine bersama tidak diubah
+
+✅ Endpoint dan signature tetap sama
+
+✅ Database dan authorization tetap sama
+
+✅ Deploy Uji LOLOS
+
+✅ Testing Rekap LOLOS
+
+✅ Regression lintas modul LOLOS
+
+Catatan
+
+Refactoring ini hanya memindahkan boundary modul dan tidak mengubah business logic Rekap.
+
+Modul Rekap tetap berstatus FROZEN setelah extraction.

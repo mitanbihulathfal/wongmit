@@ -183,17 +183,15 @@ Kondisi:
 - Proses absensi berjalan.
 - Mendukung revisi absensi.
 - Menjadi sumber data utama rekap.
-
-Status Refactoring Modulasi ### Absensi Harian — SELESAI
-
-- Backend: `Code.js` → `Absensi.js`
-- Frontend: `index.html` → `js_absensi.html`
-- Loader: `<?!= getPage("js_absensi") ?>` ditempatkan di `index.html`
+- Refactoring modularisasi Absensi Harian telah selesai.
+- Backend Absensi dipisahkan ke `Absensi.js`.
+- Frontend logic Absensi dipisahkan ke `js_absensi.html`.
+- Loader `<?!= getPage("js_absensi") ?>` ditambahkan ke `index.html`.
 - Extraction dilakukan sebagai satu atomic change: backend + frontend + loader.
 - Shared/global utilities tetap berada di `Code.js`.
 - Dependency lintas modul tetap menggunakan fungsi top-level Apps Script.
-- Status: **SELESAI**
-- Deploy Uji: **LOLOS**
+- Endpoint, authorization, database, dan behavior runtime tetap kompatibel.
+- Deploy Uji dan Deploy Production setelah refactoring telah LOLOS.
 - QA:
   - Halaman Absensi: LOLOS
   - Absensi Baru: LOLOS
@@ -203,6 +201,8 @@ Status Refactoring Modulasi ### Absensi Harian — SELESAI
   - Responsive: LOLOS
   - Regression: LOLOS
   - Console: LOLOS
+
+Pengembangan fitur Absensi berikutnya tetap diperlakukan sebagai sprint terpisah.
 
 ---
 
@@ -251,6 +251,27 @@ Kondisi saat ini:
 - `mergeDataRekap()` menggunakan lookup berbasis `Map` (kompleksitas O(n+m)).
 - `renderRekapTable()` menggunakan `join("")` tanpa `innerHTML +=` di dalam loop.
 - `getDataRekap` tetap dipertahankan — terbukti masih dibutuhkan di runtime (Sprint Code Cleanup Phase 1).
+- Refactoring modularisasi Rekap Absensi telah selesai.
+- Backend Rekap dipisahkan ke `Rekap.js`.
+- Frontend logic Rekap dipisahkan ke `js_rekap.html`.
+- Loader `<?!= getPage("js_rekap") ?>` ditambahkan ke `index.html`.
+- State dan logic frontend khusus Rekap, termasuk `rekapFilterRequestId`, `rekapTableData`, `rekapSortKey`, `rekapSortDirection`, dan `updateFilterGuruRekap()`, telah menjadi bagian dari `js_rekap.html`.
+- Shared utilities lintas modul tetap berada pada boundary masing-masing.
+- Export engine bersama tetap dipertahankan dan tidak menjadi bagian extraction lintas modul.
+- Endpoint, authorization, database, dan behavior runtime tetap kompatibel.
+- Deploy Uji setelah refactoring: LOLOS.
+- QA Rekap:
+  - Halaman Rekap: LOLOS
+  - Filter: LOLOS
+  - Kombinasi Filter: LOLOS
+  - Reset Filter: LOLOS
+  - Sorting: LOLOS
+  - Empty State: LOLOS
+  - Request/Filter State: LOLOS
+  - Navigasi/Reload: LOLOS
+  - Role: LOLOS
+  - Regression lintas modul: LOLOS
+  - Console: LOLOS
 
 Sprint berikutnya:
 
