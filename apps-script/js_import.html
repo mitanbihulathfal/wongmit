@@ -1,0 +1,280 @@
+<script>
+
+    /* =========================
+       SHARED IMPORT ENGINE
+    ========================= */
+
+    /* IMPORT PREVIEW ENGINE */
+
+    function buildPreviewSummary(totalData, totalValid, totalError) {
+
+        return (
+
+            '<div class="mt-3">' +
+
+            '<div class="alert ' +
+
+            (totalError > 0 ? "alert-warning" : "alert-success") +
+
+            '">' +
+
+            '<strong>Total Data :</strong> ' + totalData +
+
+            '<br>' +
+
+            '<strong>Valid :</strong> ' + totalValid +
+
+            '<br>' +
+
+            '<strong>Error :</strong> ' + totalError +
+
+            '</div>' +
+
+            '</div>'
+
+        );
+
+    }
+
+    /*  IMPORT DRAG & DROP ENGINE */
+
+    function initImportDragDrop(config) {
+
+        const dropArea =
+
+            document.getElementById(
+                config.dropArea
+            );
+
+        if (!dropArea) {
+            return;
+        }
+
+        dropArea.onclick = function () {
+
+            document
+                .getElementById(
+                    config.fileInput
+                )
+                .click();
+
+        };
+
+        dropArea.ondragover = function (e) {
+
+            e.preventDefault();
+
+            dropArea.classList.add(
+                "border-primary"
+            );
+
+            dropArea.style.background =
+                "#eef5ff";
+
+        };
+
+        dropArea.ondragleave = function () {
+
+            dropArea.classList.remove(
+                "border-primary"
+            );
+
+            dropArea.style.background =
+                "#fafafa";
+
+        };
+
+        dropArea.ondrop = function (e) {
+
+            e.preventDefault();
+
+            dropArea.classList.remove(
+                "border-primary"
+            );
+
+            dropArea.style.background =
+                "#fafafa";
+
+            if (
+                e.dataTransfer.files.length === 0
+            ) {
+                return;
+            }
+
+            config.setFile(
+
+                e.dataTransfer.files[0]
+
+            );
+
+            document
+                .getElementById(
+                    config.fileLabel
+                )
+                .innerHTML =
+
+                "<strong>"
+
+                +
+
+                e.dataTransfer.files[0].name
+
+                +
+
+                "</strong>";
+
+            config.preview();
+
+        };
+
+    }
+
+    /* IMPORT EXCEL ENGINE */
+
+    function readExcelFile(file, callback) {
+
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            const workbook =
+
+                XLSX.read(
+
+                    e.target.result,
+
+                    {
+
+                        type: "binary"
+
+                    }
+
+                );
+
+            const sheet =
+
+                workbook.Sheets[
+                workbook.SheetNames[0]
+                ];
+
+            const data =
+
+                XLSX.utils.sheet_to_json(
+
+                    sheet,
+
+                    {
+
+                        header: 1,
+
+                        blankrows: false,
+
+                        raw: false,
+
+                        dateNF: "yyyy-mm-dd"
+
+                    }
+
+                );
+
+            callback(
+
+                workbook,
+
+                data
+
+            );
+
+        };
+
+        reader.readAsBinaryString(file);
+
+    }
+
+    /* IMPORT UPLOAD ENGINE */
+
+    function uploadImportEngine(config) {
+
+        if (!config.file) {
+
+            showToast(
+
+                "Pilih file terlebih dahulu.",
+
+                "warning"
+
+            );
+
+            return;
+
+        }
+
+        const btn =
+
+            document.getElementById(
+
+                config.button
+
+            );
+
+        startButtonLoading(
+
+            btn,
+
+            "Mengupload..."
+
+        );
+
+        readExcelFile(
+
+            config.file,
+
+            function (workbook, data) {
+
+                config.onRead(
+
+                    workbook,
+
+                    data,
+
+                    btn
+
+                );
+
+            }
+
+        );
+
+    }
+
+    /* IMPORT MODAL ENGINE */
+
+    function resetImportModal(config) {
+
+        document.getElementById(
+
+            config.fileName
+
+        ).innerHTML =
+
+            "Belum ada file dipilih.";
+
+        document.getElementById(
+
+            config.preview
+
+        ).innerHTML =
+
+            '<div class="text-muted text-center py-4">' +
+
+            'Preview data akan muncul di sini.' +
+
+            '</div>';
+
+    }
+
+</script>

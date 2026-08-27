@@ -1,3 +1,154 @@
+/* ============================================
+   REKAP LOOKUP / FILTER HELPERS / GURU DROPDOWN REKAP (UTILITY)
+============================================ */
+
+function getGuruDropdownRekap(sessionId) {
+
+  const role =
+    getRoleBySession(sessionId);
+
+  if (!role) {
+
+    throw new Error(
+      "Akses ditolak"
+    );
+
+  }
+
+  const roles =
+    role.split(",");
+
+  const sheet =
+    SS.getSheetByName(
+      "Guru"
+    );
+
+  const data =
+    getMasterSheetData("Guru");
+
+  const hasil = [];
+
+  hasil.push([
+    "ID Guru",
+    "Nama Guru"
+  ]);
+
+  for (
+    let i = 1;
+    i < data.length;
+    i++
+  ) {
+
+    if (
+
+      String(
+        data[i][5]
+      ) !== "Aktif"
+
+    ) {
+
+      continue;
+
+    }
+
+    hasil.push([
+
+      data[i][0],
+
+      data[i][1]
+
+    ]);
+
+  }
+
+  return JSON.stringify(
+    hasil
+  );
+
+}
+
+function getAllClassesRekap(sessionId) {
+
+  const role = getRoleBySession(sessionId);
+
+  if (!role) {
+
+    throw new Error(
+      "Session tidak valid"
+    );
+
+  }
+
+  const data =
+    getMasterSheetData("Kelas");
+
+  const hasil = [];
+
+  hasil.push([
+    "ID Kelas",
+    "Nama Kelas"
+  ]);
+
+  for (
+    let i = 1;
+    i < data.length;
+    i++
+  ) {
+
+    if (
+      String(data[i][3]).trim() !==
+      "Aktif"
+    ) {
+
+      continue;
+
+    }
+
+    hasil.push([
+      data[i][0],
+      data[i][1]
+    ]);
+
+  }
+
+  return JSON.stringify(
+    hasil
+  );
+
+}
+
+function splitMapelRekapValue(value) {
+
+  return String(
+    value || ""
+  )
+    .split("|")
+    .map(function (item) {
+      return String(item).trim();
+    })
+    .filter(function (item) {
+      return item !== "";
+    });
+
+}
+
+function matchesMapelRekap(
+  sourceValue,
+  selectedMapel
+) {
+
+  if (!selectedMapel) {
+    return true;
+  }
+
+  return splitMapelRekapValue(
+    sourceValue
+  ).includes(
+    String(selectedMapel).trim()
+  );
+
+}
+
 function getMapelRekap(
   sessionId,
   guru = "",

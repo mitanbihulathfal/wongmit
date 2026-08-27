@@ -1,5 +1,86 @@
 <script>
 
+    /* =========================
+            DATA SISWA
+    ========================= */
+
+    /* === STATE SISWA === */
+
+    let allStudents = [];
+    let currentSortColumn = null;
+    let currentSortDirection = "asc";
+
+    /* === SISWA TABLE HELPERS === */
+
+    function updateSortIcons() {
+
+        const icons = document.querySelectorAll(".sort-icon");
+
+        icons.forEach(function (icon) {
+
+            const column = Number(icon.dataset.column);
+
+            icon.textContent = getSortIcon(column);
+
+        });
+
+    }
+
+    function formatTanggal(value) {
+
+        if (!value) return "";
+
+        const tgl = new Date(value);
+
+        if (isNaN(tgl)) return value;
+
+        return tgl.toLocaleDateString("id-ID", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+
+    }
+
+    function isiFilterKelas(data) {
+
+        const select =
+            document.getElementById('filterKelas');
+
+        if (!select) return;
+
+        const kelasUnik = [];
+
+        data.slice(1).forEach(function (row) {
+
+            const kelas = row[6];
+
+            if (
+                kelas &&
+                !kelasUnik.includes(kelas)
+            ) {
+                kelasUnik.push(kelas);
+            }
+
+        });
+
+        kelasUnik.sort();
+
+        select.innerHTML =
+            '<option value="">Semua Kelas</option>';
+
+        kelasUnik.forEach(function (kelas) {
+
+            select.innerHTML += `
+      <option value="${kelas}">
+        ${kelas}
+      </option>
+    `;
+
+        });
+
+    }
+
     function loadStudents() {
 
         google.script.run
@@ -74,9 +155,7 @@
 
     }
 
-    /* =========================
-        START APP
-    ========================= */
+    /* === START APP ==== */
 
     function showTambahSiswa() {
 
@@ -196,9 +275,7 @@
 
                 }
 
-                /* =========================
-                    DATA SISWA
-                ========================= */
+                /* === DATA SISWA FROM SPREADSHEET === */
 
                 document.getElementById(
                     "idSiswa"
@@ -927,7 +1004,7 @@
 
     }
 
-    /* === TEMPLATE SISWA === */
+    /* === TEMPLATE SISWA - IMPORT MASSAL SISWA === */
 
     function downloadTemplateSiswa() {
 
@@ -1640,5 +1717,582 @@
         }
 
     );
+
+    /* === EXPORT SISWA === */
+
+    function showModalDownloadSiswa() {
+
+        const select =
+            document.getElementById('kelasDownloadSiswa');
+
+        const kelasUnik = [];
+
+        allStudents.forEach(function (row) {
+
+            const kelas = row[6];
+
+            if (
+                kelas &&
+                !kelasUnik.includes(kelas)
+            ) {
+                kelasUnik.push(kelas);
+            }
+
+        });
+
+        kelasUnik.sort();
+
+        select.innerHTML =
+            '<option value="">Semua Kelas</option>';
+
+        kelasUnik.forEach(function (kelas) {
+
+            select.innerHTML += `
+            <option value="${kelas}">
+              ${kelas}
+            </option>
+          `;
+
+        });
+
+        new bootstrap.Modal(
+            document.getElementById('modalDownloadSiswa')
+        ).show();
+
+    }
+
+    function siapkanDataExportSiswa(kelas) {
+
+        const baris = [];
+
+        allStudents.forEach(function (row) {
+
+            const kelasSiswa = row[6];
+
+            if (
+                kelas &&
+                kelas !== "" &&
+                String(kelasSiswa) !== String(kelas)
+            ) {
+
+                return;
+
+            }
+
+            baris.push([
+
+                baris.length + 1,
+                row[1],
+                row[2],
+                row[4],
+                formatTanggal(row[5]),
+                row[3],
+                row[6],
+                row[7]
+
+            ]);
+
+        });
+
+        return baris;
+
+    }
+
+    function downloadSiswaExcel() {
+
+        const kelas =
+            document.getElementById('kelasDownloadSiswa').value;
+
+        const btn =
+            document.getElementById('btnDownloadSiswaExcel');
+
+        setButtonLoading(
+            btn,
+            "Memproses..."
+        );
+
+        try {
+
+            const baris =
+                siapkanDataExportSiswa(kelas);
+
+            const kelasText =
+                kelas || "Semua Kelas";
+
+            const tanggalExport =
+                new Date().toLocaleString(
+                    "id-ID",
+                    {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                ).replace(" pukul ", ", ") + " WIB";
+
+            const namaPengunduh =
+                localStorage.getItem("wongmit_nama") || "-";
+
+            google.script.run
+
+                .withSuccessHandler(function (settings) {
+
+                    const tahunAjaran =
+                        settings.tahunAjaran || "-";
+
+                    const wsData = [
+
+                        ["DATA SISWA"],
+                        ["MIS TANBIHUL ATHFAL"],
+                        ["TAHUN AJARAN " + tahunAjaran],
+                        [],
+                        ["Kelas", "", kelasText, "", "Tanggal Export", tanggalExport, "", ""],
+                        ["Jumlah", "", baris.length + " siswa", "", "Didownload oleh", namaPengunduh, "", ""],
+                        [],
+                        ["No", "NISN", "Nama", "Tempat Lahir", "Tanggal Lahir", "JK", "Kelas", "Status"]
+
+                    ];
+
+                    baris.forEach(function (row) {
+                        wsData.push(row);
+                    });
+
+                    const ws =
+                        XLSX.utils.aoa_to_sheet(wsData);
+
+                    ws['!views'] = [
+                        {showGridLines: false}
+                    ];
+
+                    ws['!merges'] = [
+
+                        {s: {r: 0, c: 0}, e: {r: 0, c: 7}},
+                        {s: {r: 1, c: 0}, e: {r: 1, c: 7}},
+                        {s: {r: 2, c: 0}, e: {r: 2, c: 7}},
+                        {s: {r: 4, c: 0}, e: {r: 4, c: 1}},
+                        {s: {r: 4, c: 5}, e: {r: 4, c: 7}},
+                        {s: {r: 5, c: 0}, e: {r: 5, c: 1}},
+                        {s: {r: 5, c: 5}, e: {r: 5, c: 7}}
+
+                    ];
+
+                    ws['!cols'] = [
+
+                        {wch: 4},   // No
+                        {wch: 13},  // NISN
+                        {wch: 43},  // Nama
+                        {wch: 15},  // Tempat Lahir
+                        {wch: 18},  // Tanggal Lahir
+                        {wch: 6},   // JK
+                        {wch: 10},  // Kelas
+                        {wch: 10}   // Status
+
+                    ];
+
+                    for (let r = 0; r <= 2; r++) {
+
+                        const addr =
+                            XLSX.utils.encode_cell({r: r, c: 0});
+
+                        if (ws[addr]) {
+
+                            ws[addr].s = {
+
+                                font: {
+                                    name: "Cambria",
+                                    bold: true,
+                                    sz: (r === 0) ? 14 : (r === 1 ? 14 : 12)
+                                },
+
+                                alignment: {
+                                    horizontal: "center",
+                                    vertical: "center"
+                                }
+
+                            };
+
+                        }
+
+                    }
+
+                    const labelCells = ["A5", "A6", "E5", "E6"];
+
+                    labelCells.forEach(function (addr) {
+
+                        if (ws[addr]) {
+
+                            ws[addr].s = {
+                                font: {
+                                    name: "Cambria",
+                                    bold: true,
+                                    sz: 11
+                                }
+                            };
+
+                        }
+
+                    });
+
+                    const valueCells = ["C5", "C6", "F5", "F6"];
+
+                    valueCells.forEach(function (addr) {
+
+                        if (ws[addr]) {
+
+                            ws[addr].s = {
+                                font: {
+                                    name: "Cambria",
+                                    sz: 11
+                                }
+                            };
+
+                        }
+
+                    });
+
+                    const headerRowIdx = 7;
+
+                    for (let c = 0; c < 8; c++) {
+
+                        const addr =
+                            XLSX.utils.encode_cell({r: headerRowIdx, c: c});
+
+                        if (ws[addr]) {
+
+                            ws[addr].s = {
+
+                                font: {
+                                    name: "Cambria",
+                                    bold: true,
+                                    color: {rgb: "FFFFFF"},
+                                    sz: 12
+                                },
+
+                                fill: {
+                                    fgColor: {rgb: "4A90D9"}
+                                }
+
+                            };
+
+                        }
+
+                    }
+
+                    for (let i = 0; i < baris.length; i++) {
+
+                        const warna =
+                            (i % 2 === 0) ? "FFFFFF" : "F2F6FC";
+
+                        for (let c = 0; c < 8; c++) {
+
+                            const addr =
+                                XLSX.utils.encode_cell({r: headerRowIdx + 1 + i, c: c});
+
+                            if (ws[addr]) {
+
+                                ws[addr].s = {
+                                    font: {
+                                        name: "Cambria",
+                                        sz: 12
+                                    },
+
+                                    fill: {
+                                        fgColor: {rgb: warna}
+                                    },
+
+                                    border: {
+                                        top: {
+                                            style: "thin",
+                                            color: {rgb: "B7B7B7"}
+                                        },
+                                        bottom: {
+                                            style: "thin",
+                                            color: {rgb: "B7B7B7"}
+                                        },
+                                        left: {
+                                            style: "thin",
+                                            color: {rgb: "B7B7B7"}
+                                        },
+                                        right: {
+                                            style: "thin",
+                                            color: {rgb: "B7B7B7"}
+                                        }
+                                    }
+                                };
+
+                            }
+
+                        }
+
+                    }
+
+                    const wb =
+                        XLSX.utils.book_new();
+
+                    XLSX.utils.book_append_sheet(
+                        wb,
+                        ws,
+                        "Data Siswa"
+                    );
+
+                    XLSX.writeFile(
+                        wb,
+                        "Data_Siswa_" + (kelas || "SemuaKelas") + ".xlsx"
+                    );
+
+                    resetButtonLoading(btn);
+
+                    bootstrap.Modal.getInstance(
+                        document.getElementById('modalDownloadSiswa')
+                    ).hide();
+
+                })
+
+                .withFailureHandler(function (error) {
+
+                    console.error(error);
+
+                    resetButtonLoading(btn);
+
+                    showToast(
+                        "Gagal mengambil pengaturan tahun ajaran",
+                        "error"
+                    );
+
+                })
+
+                .getAcademicSettings(
+                    localStorage.getItem(
+                        "wongmit_session"
+                    )
+                );
+
+        } catch (error) {
+
+            console.error(error);
+
+            resetButtonLoading(btn);
+
+            showToast(
+                "Gagal membuat file Excel",
+                "error"
+            );
+
+        }
+
+    }
+
+    function downloadSiswaPdf() {
+
+        const kelas =
+            document.getElementById('kelasDownloadSiswa').value;
+
+        const btn =
+            document.getElementById('btnDownloadSiswaPdf');
+
+        setButtonLoading(
+            btn,
+            "Memproses..."
+        );
+
+        try {
+
+            const baris =
+                siapkanDataExportSiswa(kelas);
+
+            const kelasText =
+                kelas || "Semua Kelas";
+
+            const tanggalExport =
+                new Date().toLocaleString(
+                    "id-ID",
+                    {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                ).replace(" pukul ", ", ") + " WIB";
+
+            const namaPengunduh =
+                localStorage.getItem("wongmit_nama") || "-";
+
+            google.script.run
+
+                .withSuccessHandler(function (settings) {
+
+                    const tahunAjaran =
+                        settings.tahunAjaran || "-";
+
+                    const {jsPDF} = window.jspdf;
+
+                    const doc =
+                        new jsPDF(
+                            "p",
+                            "mm",
+                            "a4"
+                        );
+
+                    const pageWidth =
+                        doc.internal.pageSize.getWidth();
+
+                    doc.setFont(
+                        "helvetica",
+                        "bold"
+                    );
+
+                    doc.setFontSize(16);
+
+                    doc.text(
+                        "DATA SISWA",
+                        pageWidth / 2,
+                        15,
+                        {align: "center"}
+                    );
+
+                    doc.setFontSize(12);
+
+                    doc.text(
+                        "MIS TANBIHUL ATHFAL",
+                        pageWidth / 2,
+                        22,
+                        {align: "center"}
+                    );
+
+                    doc.text(
+                        "TAHUN AJARAN " + tahunAjaran,
+                        pageWidth / 2,
+                        28,
+                        {align: "center"}
+                    );
+
+                    doc.setFont(
+                        "helvetica",
+                        "normal"
+                    );
+
+                    doc.setFontSize(10);
+
+                    doc.setFont(
+                        "helvetica",
+                        "bold"
+                    );
+
+                    doc.text("Kelas", 14, 38);
+                    doc.text("Jumlah", 14, 44);
+
+                    doc.setFont(
+                        "helvetica",
+                        "normal"
+                    );
+
+                    doc.text(": " + kelasText, 30, 38);
+                    doc.text(": " + baris.length + " siswa", 30, 44);
+
+                    doc.setFont(
+                        "helvetica",
+                        "bold"
+                    );
+
+                    doc.text("Tanggal Export", 110, 38);
+                    doc.text("Didownload oleh", 110, 44);
+
+                    doc.setFont(
+                        "helvetica",
+                        "normal"
+                    );
+
+                    doc.text(": " + tanggalExport, 145, 38);
+                    doc.text(": " + namaPengunduh, 145, 44);
+
+                    doc.autoTable({
+
+                        startY: 50,
+
+                        head: [[
+                            "No", "NISN", "Nama", "Tempat Lahir",
+                            "Tanggal Lahir", "JK", "Kelas", "Status"
+                        ]],
+
+                        body: baris,
+
+                        theme: "grid",
+
+                        headStyles: {
+                            fillColor: [74, 144, 217],
+                            textColor: [255, 255, 255],
+                            fontStyle: "bold"
+                        },
+
+                        alternateRowStyles: {
+                            fillColor: [242, 246, 252]
+                        },
+
+                        columnStyles: {
+                            0: {cellWidth: 10},
+                            1: {cellWidth: 25},
+                            2: {cellWidth: 45},
+                            3: {cellWidth: 30},
+                            4: {cellWidth: 25},
+                            5: {cellWidth: 12},
+                            6: {cellWidth: 18},
+                            7: {cellWidth: 20}
+                        },
+
+                        styles: {
+                            fontSize: 9,
+                            lineColor: [0, 0, 0],
+                            lineWidth: 0.1
+                        }
+
+                    });
+
+                    doc.save(
+                        "Data_Siswa_" + (kelas || "SemuaKelas") + ".pdf"
+                    );
+
+                    resetButtonLoading(btn);
+
+                    bootstrap.Modal.getInstance(
+                        document.getElementById('modalDownloadSiswa')
+                    ).hide();
+
+                })
+
+                .withFailureHandler(function (error) {
+
+                    console.error(error);
+
+                    resetButtonLoading(btn);
+
+                    showToast(
+                        "Gagal mengambil pengaturan tahun ajaran",
+                        "error"
+                    );
+
+                })
+
+                .getAcademicSettings(
+                    localStorage.getItem(
+                        "wongmit_session"
+                    )
+                );
+
+        } catch (error) {
+
+            console.error(error);
+
+            resetButtonLoading(btn);
+
+            showToast(
+                "Gagal membuat file PDF",
+                "error"
+            );
+
+        }
+
+    }
 
 </script>

@@ -1,5 +1,30 @@
 <script>
 
+    /* STATE GURU MENGAJAR */
+
+    let modeGuruMengajar =
+        "tambah";
+
+    let editGuruMengajarRow =
+        null;
+
+    let fileImportGuruMengajar =
+        null;
+
+    let workbookGuruMengajar =
+        null;
+
+    /* MASTER DATA IMPORT GURU MENGAJAR */
+
+    let masterGuruImport =
+        [];
+
+    let masterKelasImport =
+        [];
+
+    let masterMapelImport =
+        [];
+
     /* GURU MENGAJAR */
 
     function filterGuruMengajar() {
@@ -12,6 +37,35 @@
             row.style.display = text.indexOf(keyword) !== -1 ? '' : 'none';
         }
     }
+
+    function filterMapel() {
+        var keyword = (document.getElementById('guruSearchMapel').value || '').toLowerCase();
+        var rows = document.querySelectorAll('#tableMapel tr');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            if (row.cells.length === 1) continue;
+            var text = row.textContent.toLowerCase();
+            row.style.display = text.indexOf(keyword) !== -1 ? '' : 'none';
+        }
+    }
+
+    // Rotasi icon collapse (Guru Mengajar) /* COLLAPSE UI */
+    document.addEventListener('shown.bs.collapse', function (e) {
+        var toggle = document.querySelector('.guru-collapse-toggle[data-bs-target="#' + e.target.id + '"]');
+        if (toggle) {
+            var icon = toggle.querySelector('.guru-collapse-icon');
+            if (icon) icon.classList.remove('guru-collapse-icon-rotate');
+        }
+    });
+    document.addEventListener('hidden.bs.collapse', function (e) {
+        var toggle = document.querySelector('.guru-collapse-toggle[data-bs-target="#' + e.target.id + '"]');
+        if (toggle) {
+            var icon = toggle.querySelector('.guru-collapse-icon');
+            if (icon) icon.classList.add('guru-collapse-icon-rotate');
+        }
+    });
+
+    /* DATA / MODAL */
 
     function loadHariMengajar(callback) {
 
