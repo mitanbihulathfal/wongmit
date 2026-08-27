@@ -31,6 +31,35 @@ Catatan
 
 # RIWAYAT
 
+---
+
+## 2026-08-27
+
+### Final Cleanup / Dead Code Audit
+
+Judul
+
+Final Cleanup unused legacy functions
+
+Perubahan
+
+- Menghapus `openImportModal()` dari `index.html`.
+- Menghapus `getGuruOptions()`, `getKelasOptions()`, dan `getMapelOptions()` dari `Code.js`.
+- Penghapusan dilakukan setelah audit caller, dependency, dynamic reference, dan loader.
+- `getMasterSiswa()`, `getStudentsByClass()`, dan `getWaliKelasOptions()` dipertahankan karena masih digunakan.
+- `getAppInfo()`, `invalidateFrontendMasterData()`, dan fungsi export siswa yang masih diperlukan roadmap tetap dipertahankan.
+- Loader `js_import.html` tetap dipertahankan.
+- Dokumentasi stale mengenai `getMapelOptions` diperbarui.
+- Tidak ada perubahan database atau behavior fitur yang disengaja.
+
+Status
+
+SELESAI
+
+Commit
+
+Final cleanup unused legacy functions
+
 ## 2026-08-26
 
 ### Refactoring Shared Infrastructure — Master Data, Export, Auth & Calendar

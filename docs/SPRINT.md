@@ -1285,3 +1285,48 @@ Catatan
 Refactoring ini hanya memindahkan boundary modul dan tidak mengubah business logic Rekap.
 
 Modul Rekap tetap berstatus FROZEN setelah extraction.
+
+---
+
+# Sprint Final Cleanup / Dead Code Audit
+
+Status
+
+DONE
+
+Target
+
+Menutup fase Refactoring Modulasi dengan menghapus legacy/dead code yang telah terbukti tidak memiliki caller atau reference aktif.
+
+Fokus
+
+- Audit caller dan reference seluruh repository.
+- Verifikasi direct call, `google.script.run`, internal backend caller, dynamic reference, dependency, dan loader.
+- Tidak menghapus fungsi yang masih digunakan atau belum terbukti aman.
+- Mempertahankan shared utility dan fungsi roadmap.
+
+Hasil
+
+✅ `openImportModal()` dihapus dari `index.html`.
+
+✅ `getGuruOptions()` dihapus dari `Code.js`.
+
+✅ `getKelasOptions()` dihapus dari `Code.js`.
+
+✅ `getMapelOptions()` dihapus dari `Code.js`.
+
+✅ `getMasterSiswa()` dipertahankan karena masih digunakan oleh Rekap.
+
+✅ `getStudentsByClass()` dipertahankan karena masih digunakan oleh Absensi.
+
+✅ `getWaliKelasOptions()` dipertahankan karena masih digunakan oleh Kelas.
+
+✅ `getAppInfo()`, `invalidateFrontendMasterData()`, dan fungsi export siswa yang masih diperlukan roadmap dipertahankan.
+
+✅ `js_import.html` tetap aktif melalui loader `index.html`.
+
+✅ Tidak ada perubahan database atau behavior fitur yang disengaja.
+
+Status akhir
+
+FASE REFACTORING MODULASI + CLEANUP FINAL SELESAI

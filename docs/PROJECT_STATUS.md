@@ -163,7 +163,8 @@ Kondisi:
 * Backend Mapel dipisahkan ke `Mapel.js`.
 * Frontend logic Mapel dipisahkan ke `js_mapel.html`.
 * Loader `<?!= getPage("js_mapel") ?>` ditambahkan ke `index.html`.
-* Dependency shared seperti `getMapelOptions`, `getMasterSheetData`, `checkRole`, dan cache invalidation tetap dipertahankan sesuai boundary masing-masing.
+* Dependency shared seperti `getMasterSheetData`, `checkRole`, dan cache invalidation tetap dipertahankan sesuai boundary masing-masing.
+* Legacy helper `getMapelOptions` telah dihapus setelah audit caller/dependency membuktikan tidak memiliki penggunaan aktif.
 * Endpoint `google.script.run`, authorization, database, dan behavior runtime tetap kompatibel.
 * Dependency Mapel terhadap Guru Mengajar tetap berjalan setelah extraction.
 * Deploy Uji dan Deploy Production setelah modularisasi telah LOLOS.
@@ -485,3 +486,20 @@ Dokumentasi:
 Sedang Disempurnakan
 
 Project siap melanjutkan sprint berikutnya.
+
+---
+
+## Final Cleanup / Dead Code Audit
+
+Status:
+SELESAI
+
+Kondisi:
+
+* Audit final dilakukan terhadap `Code.js`, `index.html`, seluruh backend `.js`, frontend `js_*.html`, `page_*.html`, loader, caller, dependency, state, dan reference dinamis.
+* `openImportModal`, `getGuruOptions`, `getKelasOptions`, dan `getMapelOptions` terbukti tidak memiliki caller/reference aktif dan telah dihapus.
+* `getMasterSiswa`, `getStudentsByClass`, dan `getWaliKelasOptions` dipertahankan karena masih memiliki caller aktif.
+* `getAppInfo`, `invalidateFrontendMasterData`, serta fungsi export siswa yang masih menjadi bagian roadmap dipertahankan.
+* `js_import.html` tetap dipertahankan dan tetap dimuat melalui loader `<?!= getPage("js_import") ?>`.
+* Tidak ada perubahan database atau behavior fitur yang disengaja.
+* Tahap Cleanup / Dead Code Audit Final menutup fase Refactoring Modulasi.
