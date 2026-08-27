@@ -1269,6 +1269,18 @@
 
                 if (
 
+                    j === 5 &&
+
+                    !normalizeTanggalImportSiswa(value)
+
+                ) {
+
+                    barisError = true;
+
+                }
+
+                if (
+
                     j === 7 &&
 
                     !["Aktif", "Lulus", "Mutasi"].includes(value)
@@ -1353,9 +1365,13 @@
 
                 ) {
 
+                    const textValue =
+
+                        String(value).trim();
+
                     if (
 
-                        String(value).trim() === ""
+                        textValue === ""
 
                     ) {
 
@@ -1371,25 +1387,7 @@
 
                         !["L", "P"].includes(
 
-                            String(value).trim()
-
-                        )
-
-                    ) {
-
-                        style =
-
-                            ' class="table-danger"';
-
-                    }
-
-                    if (
-
-                        j === 7 &&
-
-                        !["Aktif", "Lulus", "Mutasi"].includes(
-
-                            String(value).trim()
+                            textValue
 
                         )
 
@@ -1405,19 +1403,53 @@
 
                         j === 5 &&
 
-                        typeof value === "number"
+                        !normalizeTanggalImportSiswa(value)
 
                     ) {
 
-                        value =
+                        style =
 
-                            XLSX.SSF.format(
+                            ' class="table-danger"';
 
-                                "yyyy-mm-dd",
+                    }
+
+                    if (
+
+                        j === 7 &&
+
+                        !["Aktif", "Lulus", "Mutasi"].includes(
+
+                            textValue
+
+                        )
+
+                    ) {
+
+                        style =
+
+                            ' class="table-danger"';
+
+                    }
+
+                    if (
+
+                        j === 5
+
+                    ) {
+
+                        const tanggal =
+
+                            normalizeTanggalImportSiswa(
 
                                 value
 
                             );
+
+                        value =
+
+                            tanggal ||
+
+                            String(value);
 
                     }
 
@@ -1491,6 +1523,65 @@
 
     }
 
+    function normalizeTanggalImportSiswa(value) {
+
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+        const text =
+            String(value).trim();
+
+        if (!text) {
+            return "";
+        }
+
+        /* DD/MM/YYYY */
+        const match =
+            text.match(
+                /^(\d{2})\/(\d{2})\/(\d{4})$/
+            );
+
+        if (match) {
+
+            const day = match[1];
+            const month = match[2];
+            const year = match[3];
+
+            const date =
+                new Date(
+                    Number(year),
+                    Number(month) - 1,
+                    Number(day)
+                );
+
+            if (
+                date.getFullYear() === Number(year) &&
+                date.getMonth() === Number(month) - 1 &&
+                date.getDate() === Number(day)
+            ) {
+                return (
+                    year +
+                    "-" +
+                    month +
+                    "-" +
+                    day
+                );
+            }
+
+            return "";
+        }
+
+        /* YYYY-MM-DD */
+        if (
+            /^\d{4}-\d{2}-\d{2}$/.test(text)
+        ) {
+            return text;
+        }
+
+        return "";
+    }
+
     let fileImportSiswa =
         null;
 
@@ -1521,6 +1612,15 @@
                 ) {
 
                     data.shift();
+
+                    data.forEach(function (row) {
+
+                        row[5] =
+                            normalizeTanggalImportSiswa(
+                                row[5]
+                            );
+
+                    });
 
                     google.script.run
 

@@ -251,6 +251,20 @@ function downloadTemplateSiswa() {
 
     template.sheet;
 
+    spreadsheet.setSpreadsheetLocale("id_ID");
+    spreadsheet.setSpreadsheetTimeZone("Asia/Jakarta");
+
+    sheetImport
+      .getRange("F2:F1000")
+      .setNumberFormat("@");
+
+    sheetImport
+      .getRange("F1")
+      .setNote(
+        "PETUNJUK: Isi Tanggal Lahir dengan format DD/MM/YYYY.\n" +
+        "Contoh: 02/01/2020 = 2 Januari 2020."
+      );
+
   const sheetReferensi =
 
     spreadsheet.insertSheet(
