@@ -596,6 +596,32 @@ function importSiswa(
 
     }
 
+    const tanggalLahirText =
+      String(
+        row[5] || ""
+      ).trim();
+
+    let tanggalLahir =
+      "";
+
+    if (
+      /^\d{4}-\d{2}-\d{2}$/.test(
+        tanggalLahirText
+      )
+    ) {
+
+      const bagian =
+        tanggalLahirText.split("-");
+
+      tanggalLahir =
+        new Date(
+          Number(bagian[0]),
+          Number(bagian[1]) - 1,
+          Number(bagian[2])
+        );
+
+    }
+
     sheet.appendRow([
 
       id,
@@ -608,13 +634,25 @@ function importSiswa(
 
       row[4],
 
-      row[5],
+      tanggalLahir,
 
       row[6],
 
       row[7]
 
     ]);
+
+    const barisTerakhir =
+      sheet.getLastRow();
+
+    sheet
+      .getRange(
+        barisTerakhir,
+        6
+      )
+      .setNumberFormat(
+        "dd/MM/yyyy"
+      );
 
     idExist.add(id);
 
