@@ -277,7 +277,7 @@
             );
 
         /* =========================
-            TANGGAL HARI INI
+          TANGGAL HARI INI
         ========================= */
 
         const tanggalSekarang =
@@ -342,35 +342,35 @@
         }
 
         /* =========================
-            LAZY-LOAD LOADING
+          LAZY-LOAD LOADING
         ========================= */
 
         body.innerHTML = `
 
-    <div class="dashboard-attendance-loading">
+          <div class="dashboard-attendance-loading">
 
-    <div class="dashboard-tadpole"></div>
+            <div class="dashboard-tadpole"></div>
 
-    <div class="dashboard-attendance-loading-text">
+            <div class="dashboard-attendance-loading-text">
 
-        Memuat data kehadiran...
+              Memuat data kehadiran...
 
-    </div>
+            </div>
 
-    </div>
+          </div>
 
-`;
+        `;
 
         /*
-            Modal dibuka segera.
-            Data detail baru diminta setelah
-            pengguna benar-benar membuka Card.
+          Modal dibuka segera.
+          Data detail baru diminta setelah
+          pengguna benar-benar membuka Card.
         */
 
         modal.show();
 
         /* =========================
-            LAZY-LOAD DATA DETAIL
+          LAZY-LOAD DATA DETAIL
         ========================= */
 
         google.script.run
@@ -396,13 +396,13 @@
 
                         html = `
 
-            <div class="text-center text-muted py-4">
+                  <div class="text-center text-muted py-4">
 
-            Tidak ada data kelas.
+                    Tidak ada data kelas.
 
-            </div>
+                  </div>
 
-        `;
+                `;
 
                     }
 
@@ -412,7 +412,7 @@
                             function (item) {
 
                                 /* =========================
-                                    BELUM DIABSEN
+                                  BELUM DIABSEN
                                 ========================= */
 
                                 if (
@@ -421,105 +421,105 @@
 
                                     html += `
 
-                <div class="dashboard-summary-card">
+                        <div class="dashboard-summary-card">
 
-                    <div class="d-flex align-items-center">
+                          <div class="d-flex align-items-center">
 
-                    <strong class="flex-shrink-0">
-                        Kelas ${item.kelas}
-                    </strong>
+                            <strong class="flex-shrink-0">
+                              Kelas ${item.kelas}
+                            </strong>
 
-                    <small
-                        class="dashboard-attendance-guru"
-                        title="${item.guruMengajar || "-"}">
+                            <small
+                              class="dashboard-attendance-guru"
+                              title="${item.guruMengajar || "-"}">
 
-                        ${item.guruMengajar || "-"}
+                              ${item.guruMengajar || "-"}
 
-                    </small>
+                            </small>
 
-                    <span class="badge bg-danger flex-shrink-0">
+                            <span class="badge bg-danger flex-shrink-0">
 
-                        Belum Diabsen
+                              Belum Diabsen
 
-                    </span>
+                            </span>
 
-                    </div>
+                          </div>
 
-                    <small class="text-muted d-block mt-2">
+                          <small class="text-muted d-block mt-2">
 
-                    Menunggu guru melakukan absensi.
+                            Menunggu guru melakukan absensi.
 
-                    </small>
+                          </small>
 
-                </div>
+                        </div>
 
-                `;
+                      `;
 
                                     return;
 
                                 }
 
                                 /* =========================
-                                    SUDAH DIABSEN
+                                  SUDAH DIABSEN
                                 ========================= */
 
                                 html += `
 
-                <div class="dashboard-summary-card">
+                      <div class="dashboard-summary-card">
 
-                <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center">
 
-                    <strong class="flex-shrink-0">
-                    Kelas ${item.kelas}
-                    </strong>
+                          <strong class="flex-shrink-0">
+                            Kelas ${item.kelas}
+                          </strong>
 
-                    <small
-                    class="dashboard-attendance-guru"
-                    title="${item.guruMengajar || "-"}">
+                          <small
+                            class="dashboard-attendance-guru"
+                            title="${item.guruMengajar || "-"}">
 
-                    ${item.guruMengajar || "-"}
+                            ${item.guruMengajar || "-"}
 
-                    </small>
+                          </small>
 
-                    <span class="badge bg-light text-dark flex-shrink-0">
+                          <span class="badge bg-light text-dark flex-shrink-0">
 
-                    ${item.total} siswa
+                            ${item.total} siswa
 
-                    </span>
+                          </span>
 
-                </div>
+                        </div>
 
-                <div class="d-flex flex-wrap gap-2 mt-2">
+                        <div class="d-flex flex-wrap gap-2 mt-2">
 
-                    <span class="badge bg-success">
+                          <span class="badge bg-success">
 
-                    ${item.hadir} hadir
+                            ${item.hadir} hadir
 
-                    </span>
+                          </span>
 
-                    <span class="badge bg-warning text-dark">
+                          <span class="badge bg-warning text-dark">
 
-                    ${item.sakit} sakit
+                            ${item.sakit} sakit
 
-                    </span>
+                          </span>
 
-                    <span class="badge bg-info text-dark">
+                          <span class="badge bg-info text-dark">
 
-                    ${item.izin} izin
+                            ${item.izin} izin
 
-                    </span>
+                          </span>
 
-                    <span class="badge bg-danger">
+                          <span class="badge bg-danger">
 
-                    ${item.alpa} alpa
+                            ${item.alpa} alpa
 
-                    </span>
+                          </span>
 
-                </div>
+                        </div>
 
-                </div>
+                      </div>
 
-            `;
+                    `;
 
                             }
                         );
@@ -549,23 +549,23 @@
 
                     body.innerHTML = `
 
-        <div class="dashboard-attendance-loading">
+                <div class="dashboard-attendance-loading">
 
-            <div class="dashboard-attendance-loading-text">
+                  <div class="dashboard-attendance-loading-text">
 
-            Gagal memuat data kehadiran.
+                    Gagal memuat data kehadiran.
 
-            </div>
+                  </div>
 
-            <small class="text-muted">
+                  <small class="text-muted">
 
-            Silakan coba lagi.
+                    Silakan coba lagi.
 
-            </small>
+                  </small>
 
-        </div>
+                </div>
 
-        `;
+              `;
 
                     card.dataset.loading =
                         "false";
