@@ -6,9 +6,11 @@
 
   function bukaPengaturanAkademik() {
 
-    showToast(
-      "Pengaturan Akademik akan tersedia pada sprint berikutnya"
-    );
+    if (document.getElementById("editTahunAjaran")) {
+      return;
+    }
+
+    aktifkanEditAkademik();
 
   }
 
