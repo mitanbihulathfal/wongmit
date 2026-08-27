@@ -4452,30 +4452,6 @@
 
       }
 
-      function openImportModal(config) {
-
-        resetImportModal(config);
-
-        const modal =
-
-          new bootstrap.Modal(
-
-            document.getElementById(
-              config.modal
-            )
-
-          );
-
-        modal.show();
-
-        if (config.dragDrop) {
-
-          config.dragDrop();
-
-        }
-
-      }
-
       document.addEventListener("click", function (e) {
 
         if (!isMobileLayout()) {
