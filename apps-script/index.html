@@ -4452,47 +4452,6 @@
 
       }
 
-      /* =========================
-         IMPORT ENGINE
-      ========================= */
-
-      function resetImportModal(config) {
-
-        config.file = null;
-
-        if (config.fileInput) {
-
-          document.getElementById(
-            config.fileInput
-          ).value = "";
-
-        }
-
-        if (config.fileLabel) {
-
-          document.getElementById(
-            config.fileLabel
-          ).innerHTML =
-            "Belum ada file dipilih.";
-
-        }
-
-        if (config.preview) {
-
-          document.getElementById(
-            config.preview
-          ).innerHTML =
-
-            '<div class="text-muted text-center py-4">' +
-
-            'Preview data akan muncul di sini.' +
-
-            '</div>';
-
-        }
-
-      }
-
       function openImportModal(config) {
 
         resetImportModal(config);
