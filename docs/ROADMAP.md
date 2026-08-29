@@ -22,7 +22,6 @@ Meliputi
 - Data Guru
 - Data Siswa
 - Data Kelas
-- Relasi Guru Kelas
 - Guru Mengajar
 - Pengaturan
 
@@ -140,7 +139,7 @@ Seluruh Sprint Rekap telah selesai dan di-freeze.
 
 Modul Rekap tidak lagi dikembangkan kecuali ditemukan bug nyata.
 
-Roadmap aktif berikutnya:
+Roadmap aktif:
 
 1. Pengaturan
 2. Dashboard
