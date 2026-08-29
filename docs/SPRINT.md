@@ -1330,3 +1330,78 @@ Hasil
 Status akhir
 
 FASE REFACTORING MODULASI + CLEANUP FINAL SELESAI
+
+---
+
+# Sprint Pengaturan — UX Preview → Detail → Edit
+
+Status
+
+DONE
+
+Target
+
+Menyempurnakan fondasi UX halaman Pengaturan agar seluruh card bersifat read-only pada keadaan awal dan aksi Edit hanya tersedia melalui tampilan Detail.
+
+Fokus
+
+- Mengubah interaksi card Pengaturan dari direct edit menjadi Preview → Detail → Edit.
+- Menghilangkan tombol Edit dari card preview.
+- Menghilangkan placeholder toast pada Pengaturan Sekolah, Sistem, dan Tahun Ajaran.
+- Menyiapkan detail view terpusat untuk seluruh card Pengaturan.
+- Mempertahankan kontrak backend Pengaturan Akademik.
+- Mempertahankan role check, validasi, cache invalidation, dan behavior backend existing.
+- Menggunakan event delegation untuk aksi card dan action button.
+- Menjaga responsive layout dan desain visual WONG MIT.
+
+Hasil
+
+✅ Card Pengaturan tidak lagi menggunakan `onclick` inline.
+
+✅ Empat card Pengaturan menggunakan state preview/read-only.
+
+✅ Tombol `Edit` tidak lagi tampil pada card preview.
+
+✅ Klik card membuka Detail dan tidak langsung membuka mode Edit.
+
+✅ Detail Akademik menampilkan Tahun Ajaran, Semester, dan Hari Libur.
+
+✅ Edit Akademik hanya tersedia dari Detail Akademik.
+
+✅ Save Akademik tetap menggunakan `saveAcademicSettings()` tanpa perubahan kontrak backend.
+
+✅ Cancel dari form Edit kembali ke Detail Akademik.
+
+✅ Detail dapat kembali ke preview empat card.
+
+✅ Pengaturan Sekolah, Sistem, dan Tahun Ajaran tidak lagi menampilkan placeholder toast lama.
+
+✅ Pengaturan Sekolah, Sistem, dan Tahun Ajaran memiliki detail view informatif sebagai fondasi sprint berikutnya.
+
+✅ Aksi Edit, Simpan, Batal, dan Kembali menggunakan event delegation.
+
+✅ Keyboard Enter/Space pada card tetap didukung.
+
+✅ `Pengaturan.js` tidak diubah.
+
+✅ Role check, validasi backend, dan cache invalidation tetap dipertahankan.
+
+✅ `git diff --check` LOLOS.
+
+✅ Deploy Uji LOLOS.
+
+✅ Testing runtime Pengaturan LOLOS.
+
+✅ Testing event handling LOLOS.
+
+✅ Regression test lintas modul LOLOS.
+
+✅ Testing role LOLOS.
+
+Commit
+
+`2ecfbcd` — `feat(pengaturan): perbaiki flow preview-detail-edit`
+
+Catatan
+
+Sprint ini hanya menyempurnakan fondasi UX Pengaturan. Implementasi backend dan fungsi operasional Pengaturan Sekolah, Pengaturan Sistem, dan Pengaturan Tahun Ajaran tetap menjadi sprint berikutnya sesuai roadmap.

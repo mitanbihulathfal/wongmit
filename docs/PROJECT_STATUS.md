@@ -391,10 +391,22 @@ Kondisi:
 - Backend Pengaturan Akademik dipisahkan ke `Pengaturan.js`.
 - Frontend Pengaturan Akademik dipisahkan ke `js_pengaturan.html`.
 - Endpoint dan perilaku runtime Pengaturan Akademik tetap kompatibel.
-- `getAppInfo` tetap dipertahankan untuk kebutuhan Pengaturan Sistem pada tahap berikutnya.
-- Pengaturan Sekolah masih dalam tahap penyempurnaan dan belum difungsikan.
-- Pengaturan Sistem masih dalam tahap penyempurnaan dan belum difungsikan.
-- Pengaturan Tahun Ajaran masih dalam tahap penyempurnaan dan belum difungsikan.
+- Fondasi UX halaman Pengaturan telah disempurnakan dengan alur Preview → Detail → Edit.
+- Keempat card Pengaturan (`Akademik`, `Sekolah`, `Sistem`, dan `Tahun Ajaran`) pada keadaan awal bersifat read-only.
+- Tombol `Edit` tidak lagi tampil pada card preview.
+- Klik card tidak lagi langsung masuk ke mode edit.
+- Detail Pengaturan dibuka terlebih dahulu sebelum aksi Edit.
+- Pengaturan Akademik tetap menggunakan `getAcademicSettings()` dan `saveAcademicSettings()` tanpa perubahan kontrak backend.
+- Aksi Edit, Simpan, dan Batal Pengaturan Akademik menggunakan event delegation.
+- Placeholder toast pada Pengaturan Sekolah, Sistem, dan Tahun Ajaran telah dihapus.
+- Pengaturan Sekolah, Sistem, dan Tahun Ajaran kini memiliki detail view sebagai fondasi UI dan belum memiliki fungsi backend pengelolaan data.
+- Tidak ada perubahan pada `Pengaturan.js`, role check, validasi backend, atau cache invalidation pada penyempurnaan UX ini.
+- Commit UX Pengaturan: `2ecfbcd` — `feat(pengaturan): perbaiki flow preview-detail-edit`.
+- Deploy Uji setelah penyempurnaan UX LOLOS.
+- Pengujian runtime, regression, event handling, dan role Pengaturan LOLOS.
+- Pengaturan Sekolah masih belum difungsikan.
+- Pengaturan Sistem masih belum difungsikan.
+- Pengaturan Tahun Ajaran masih belum difungsikan.
 - Sprint Pengaturan secara keseluruhan tetap ACTIVE sampai seluruh bagian Pengaturan selesai dan telah melalui testing serta deploy production.
 
 ---

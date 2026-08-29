@@ -31,7 +31,52 @@ Catatan
 
 # RIWAYAT
 
----
+## 2026-08-29
+
+### Sprint Pengaturan — UX Preview → Detail → Edit
+
+**Judul**
+
+Penyempurnaan UX Halaman Pengaturan
+
+**Perubahan**
+
+- Mengubah alur interaksi card Pengaturan dari direct edit menjadi Preview → Detail → Edit.
+- Menghilangkan tombol `Edit` dari card preview.
+- Klik card kini membuka Detail dan tidak langsung masuk ke mode Edit.
+- Menambahkan detail view terpusat untuk Akademik, Sekolah, Sistem, dan Tahun Ajaran.
+- Pengaturan Akademik tetap menggunakan `getAcademicSettings()` dan `saveAcademicSettings()` tanpa perubahan kontrak backend.
+- Mengubah aksi Edit, Simpan, Batal, dan Kembali menjadi event delegation.
+- Menghapus placeholder toast pada Pengaturan Sekolah, Sistem, dan Tahun Ajaran.
+- Pengaturan Sekolah, Sistem, dan Tahun Ajaran belum memiliki backend pengelolaan data dan hanya memiliki detail view sebagai fondasi sprint berikutnya.
+- Tidak mengubah `Pengaturan.js`, role check, validasi backend, atau cache invalidation.
+- Menjaga responsive layout dan desain existing halaman Pengaturan.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+`2ecfbcd`
+
+**Validasi**
+
+- Deploy Uji LOLOS.
+- Pengujian keadaan default card LOLOS.
+- Pengujian Preview → Detail → Edit LOLOS.
+- Pengujian Save dan Cancel Akademik LOLOS.
+- Pengujian event handling LOLOS.
+- Pengujian Detail Sekolah LOLOS.
+- Pengujian Detail Sistem LOLOS.
+- Pengujian Detail Tahun Ajaran LOLOS.
+- Pengujian keyboard interaction LOLOS.
+- Regression lintas modul LOLOS.
+- Pengujian role LOLOS.
+
+**Catatan**
+
+Penyempurnaan ini hanya mencakup fondasi UX halaman Pengaturan. Implementasi fungsi backend Pengaturan Sekolah, Pengaturan Sistem, dan Pengaturan Tahun Ajaran tetap mengikuti sprint masing-masing.
 
 ## 2026-08-27
 
