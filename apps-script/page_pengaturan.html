@@ -40,6 +40,8 @@
 
   <!-- MENU -->
 
+  <div id="pengaturanPreviewView">
+
   <div class="row g-3 mt-1">
 
 
@@ -47,7 +49,7 @@
 
     <div class="col-12 col-md-6">
 
-      <div class="pengaturan-card" onclick="bukaPengaturanAkademik()">
+      <div class="pengaturan-card" data-pengaturan-card="akademik" role="button" tabindex="0" aria-label="Buka detail Pengaturan Akademik">
 
         <div class="pengaturan-icon
                  pengaturan-icon-akademik">
@@ -116,20 +118,6 @@
 
           </div>
 
-          <div class="mt-3" id="academicButtonArea">
-
-            <button class="btn btn-primary btn-sm" onclick="
-                event.stopPropagation();
-                aktifkanEditAkademik();
-              ">
-
-              <i class="fa-solid fa-pen"></i>
-
-              Edit
-
-            </button>
-
-          </div>
 
         </div>
 
@@ -149,7 +137,7 @@
 
     <div class="col-12 col-md-6">
 
-      <div class="pengaturan-card" onclick="bukaPengaturanSekolah()">
+      <div class="pengaturan-card" data-pengaturan-card="sekolah" role="button" tabindex="0" aria-label="Buka detail Pengaturan Sekolah">
 
         <div class="pengaturan-icon
                  pengaturan-icon-sekolah">
@@ -188,7 +176,7 @@
 
     <div class="col-12 col-md-6">
 
-      <div class="pengaturan-card" onclick="bukaPengaturanSistem()">
+      <div class="pengaturan-card" data-pengaturan-card="sistem" role="button" tabindex="0" aria-label="Buka detail Pengaturan Sistem">
 
         <div class="pengaturan-icon
                  pengaturan-icon-sistem">
@@ -227,7 +215,7 @@
 
     <div class="col-12 col-md-6">
 
-      <div class="pengaturan-card" onclick="bukaPengaturanTahunAjaran()">
+      <div class="pengaturan-card" data-pengaturan-card="tahun-ajaran" role="button" tabindex="0" aria-label="Buka detail Pengaturan Tahun Ajaran">
 
         <div class="pengaturan-icon
                  pengaturan-icon-tahun">
@@ -263,5 +251,40 @@
 
 
   </div>
+
+  </div>
+
+  <section id="pengaturanDetailView" class="d-none" aria-live="polite">
+
+    <div class="pengaturan-detail">
+
+      <div class="pengaturan-detail-header">
+
+        <button type="button" class="btn btn-outline-secondary btn-sm"
+          data-pengaturan-action="back">
+
+          <i class="fa-solid fa-arrow-left"></i>
+
+          Kembali
+
+        </button>
+
+        <div>
+
+          <h4 id="pengaturanDetailTitle" class="mb-1"></h4>
+
+          <p id="pengaturanDetailDescription" class="text-muted mb-0"></p>
+
+        </div>
+
+      </div>
+
+      <div id="pengaturanDetailContent" class="pengaturan-detail-content"></div>
+
+      <div id="pengaturanDetailActions" class="pengaturan-detail-actions"></div>
+
+    </div>
+
+  </section>
 
 </div>

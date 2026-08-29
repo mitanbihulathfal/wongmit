@@ -1293,6 +1293,62 @@
     }
 
     /* =========================
+      DETAIL PENGATURAN
+    ========================= */
+
+    .pengaturan-detail {
+      padding: 24px;
+      background: #fff;
+      border: 1px solid #edf1f5;
+      border-radius: 22px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .06);
+    }
+
+    .pengaturan-detail-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .pengaturan-detail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pengaturan-detail-list div {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      background: #f8fafc;
+      border-radius: 14px;
+    }
+
+    .pengaturan-detail-list span {
+      color: #0f172a;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .pengaturan-detail-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .pengaturan-empty-state {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      color: #64748b;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 14px;
+    }
+
+    /* =========================
       HARI LIBUR AKADEMIK
     ========================= */
 
@@ -3183,27 +3239,21 @@
 
       function bukaPengaturanSekolah() {
 
-        showToast(
-          "Pengaturan Sekolah akan tersedia pada sprint berikutnya"
-        );
+        bukaPengaturanDetail("sekolah");
 
       }
 
 
       function bukaPengaturanSistem() {
 
-        showToast(
-          "Pengaturan Sistem akan tersedia pada sprint berikutnya"
-        );
+        bukaPengaturanDetail("sistem");
 
       }
 
 
       function bukaPengaturanTahunAjaran() {
 
-        showToast(
-          "Pengaturan Tahun Ajaran akan tersedia pada sprint berikutnya"
-        );
+        bukaPengaturanDetail("tahun-ajaran");
 
       }
 

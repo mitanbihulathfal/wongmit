@@ -4,15 +4,170 @@
      MENU PENGATURAN AKADEMIK
   ========================= */
 
+  let pengaturanDetailType = "";
+
+  const pengaturanDetailMeta = {
+    akademik: {title: "Pengaturan Akademik", description: "Tahun ajaran, semester, dan hari libur sekolah."},
+    sekolah: {title: "Pengaturan Sekolah", description: "Identitas sekolah akan dikelola pada sprint berikutnya."},
+    sistem: {title: "Pengaturan Sistem", description: "Konfigurasi sistem akan tersedia pada sprint berikutnya."},
+    "tahun-ajaran": {title: "Pengaturan Tahun Ajaran", description: "Proses naik kelas, kelulusan, dan arsip akan tersedia pada sprint berikutnya."}
+  };
+
   function bukaPengaturanAkademik() {
 
-    if (document.getElementById("editTahunAjaran")) {
+    bukaPengaturanDetail("akademik");
+
+  }
+
+  function bukaPengaturanDetail(type) {
+
+    const meta = pengaturanDetailMeta[type];
+    const previewView = document.getElementById("pengaturanPreviewView");
+    const detailView = document.getElementById("pengaturanDetailView");
+
+    if (!meta || !previewView || !detailView) {
       return;
     }
 
-    aktifkanEditAkademik();
+    pengaturanDetailType = type;
+    document.getElementById("pengaturanDetailTitle").innerText = meta.title;
+    document.getElementById("pengaturanDetailDescription").innerText = meta.description;
+    previewView.classList.add("d-none");
+    detailView.classList.remove("d-none");
+
+    if (type === "akademik") {
+      tampilkanDetailAkademik();
+      return;
+    }
+
+    tampilkanDetailBelumTersedia(type);
 
   }
+
+  function kembaliKePreviewPengaturan() {
+
+    const previewView = document.getElementById("pengaturanPreviewView");
+    const detailView = document.getElementById("pengaturanDetailView");
+
+    if (!previewView || !detailView) {
+      return;
+    }
+
+    pengaturanDetailType = "";
+    detailView.classList.add("d-none");
+    previewView.classList.remove("d-none");
+
+  }
+
+  function tampilkanDetailAkademik() {
+
+    const content = document.getElementById("pengaturanDetailContent");
+    const actions = document.getElementById("pengaturanDetailActions");
+
+    content.className = "pengaturan-detail-content";
+    content.innerHTML = `
+      <div class="pengaturan-detail-list">
+        <div><strong>Tahun Ajaran</strong><span id="detailTahunAjaran">-</span></div>
+        <div><strong>Semester</strong><span id="detailSemester">-</span></div>
+        <div><strong>Hari Libur</strong><span id="detailHariLibur">-</span></div>
+      </div>
+    `;
+    actions.innerHTML = `
+      <button type="button" class="btn btn-primary" data-pengaturan-action="edit-akademik">
+        <i class="fa-solid fa-pen"></i> Edit
+      </button>
+    `;
+    perbaruiDetailAkademik();
+
+  }
+
+  function perbaruiDetailAkademik() {
+
+    [["detailTahunAjaran", "previewTahunAjaran"], ["detailSemester", "previewSemester"], ["detailHariLibur", "previewHariLibur"]]
+      .forEach(function (field) {
+        const detail = document.getElementById(field[0]);
+        const preview = document.getElementById(field[1]);
+
+        if (detail && preview) {
+          detail.innerText = preview.innerText;
+        }
+      });
+
+  }
+
+  function tampilkanDetailBelumTersedia(type) {
+
+    const content = document.getElementById("pengaturanDetailContent");
+    const actions = document.getElementById("pengaturanDetailActions");
+    const meta = pengaturanDetailMeta[type];
+
+    content.className = "pengaturan-detail-content";
+    content.innerHTML = `
+      <div class="pengaturan-empty-state">
+        <i class="fa-solid fa-circle-info"></i>
+        <p class="mb-0">${meta.title} belum memiliki data atau fungsi backend yang dapat dikelola. Detail ini disiapkan sebagai fondasi UI untuk sprint berikutnya.</p>
+      </div>
+    `;
+    actions.innerHTML = `
+      <button type="button" class="btn btn-secondary" disabled aria-disabled="true">
+        <i class="fa-solid fa-pen"></i> Edit belum tersedia
+      </button>
+    `;
+
+  }
+
+  document.addEventListener("click", function (event) {
+
+    const card = event.target.closest("[data-pengaturan-card]");
+
+    if (card) {
+      bukaPengaturanDetail(card.dataset.pengaturanCard);
+      return;
+    }
+
+    const action = event.target.closest("[data-pengaturan-action]");
+
+    if (!action) {
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "back") {
+      kembaliKePreviewPengaturan();
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "edit-akademik") {
+      aktifkanEditAkademik();
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "save-akademik") {
+      simpanAkademik();
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "cancel-akademik") {
+      batalEditAkademik();
+    }
+
+  });
+
+  document.addEventListener("keydown", function (event) {
+
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    const card = event.target.closest("[data-pengaturan-card]");
+
+    if (!card) {
+      return;
+    }
+
+    event.preventDefault();
+    bukaPengaturanDetail(card.dataset.pengaturanCard);
+
+  });
 
 
   /* =========================
@@ -62,6 +217,10 @@
           libur.innerText =
             data.hariLibur;
 
+        }
+
+        if (pengaturanDetailType === "akademik" && !document.getElementById("editTahunAjaran")) {
+          perbaruiDetailAkademik();
         }
 
       })
@@ -162,11 +321,11 @@
     const container =
 
       document.getElementById(
-        "academicContainer"
+        "pengaturanDetailContent"
       );
 
     container.className =
-      "pengaturan-edit";
+      "pengaturan-detail-content pengaturan-edit";
 
     container.innerHTML = `
 
@@ -384,7 +543,7 @@
 
     document.getElementById(
 
-      "academicButtonArea"
+      "pengaturanDetailActions"
 
     ).innerHTML = `
 
@@ -394,7 +553,7 @@
 
       class="btn btn-success"
 
-      onclick="simpanAkademik()">
+      data-pengaturan-action="save-akademik">
 
       <i class="fa-solid fa-floppy-disk"></i>
 
@@ -406,7 +565,7 @@
 
       class="btn btn-secondary btn-sm"
 
-      onclick="batalEditAkademik()">
+      data-pengaturan-action="cancel-akademik">
 
       Batal
 
@@ -423,9 +582,7 @@
 
   function batalEditAkademik() {
 
-    loadPage(
-      "page_pengaturan"
-    );
+    bukaPengaturanDetail("akademik");
 
   }
 
