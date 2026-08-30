@@ -31,6 +31,39 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-31
+
+### Sprint Pengaturan — 3A-3.1 Identity Reader Foundation
+
+**Judul**
+
+Integrasi Identitas Sekolah ke Dashboard
+
+**Perubahan**
+
+- Dashboard membaca `nama_sekolah` melalui `getSchoolIdentity()`.
+- Subtitle Dashboard menjadi dinamis berdasarkan identitas sekolah.
+- Format subtitle:
+  `Website ONline Guru [Nama Sekolah]`
+- Fallback branding lama dipertahankan.
+- Tidak mengubah kontrak `getDashboardData()`.
+- Tidak mengubah `getSchoolIdentity()`.
+- Tidak menyentuh modul Export/Rekap/Siswa yang masih frozen.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+`29266bd`
+
+**Validasi**
+
+- Syntax check LOLOS.
+- Regression Dashboard LOLOS.
+- Deploy Uji LOLOS.
+
 ## 2026-08-30
 
 ### Sprint Pengaturan — Sekolah / Identitas — Backend Identity Foundation

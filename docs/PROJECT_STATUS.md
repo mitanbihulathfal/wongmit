@@ -476,7 +476,45 @@ Checkpoint:
 
 * Sprint 3A-1 — Backend Identity Foundation: ✅ DONE
 * Sprint 3A-2 — UI Pengaturan Sekolah: ✅ DONE
-* Sprint 3A-3.1 — Identity Reader Foundation - Status: 🟡 NEXT - Target: Mengintegrasikan identitas sekolah ke consumer aplikasi secara bertahap.
+* Sprint 3A-3.1 — Identity Reader Foundation
+
+Status
+
+DONE
+
+Target
+
+Mengintegrasikan identitas sekolah ke consumer aplikasi secara bertahap.
+
+Hasil
+
+- Dashboard menggunakan `getSchoolIdentity(sessionId)` untuk membaca `nama_sekolah`.
+- Subtitle Dashboard menampilkan:
+  `Website ONline Guru [Nama Sekolah]`
+- Fallback branding lama tetap dipertahankan.
+- Kontrak `getSchoolIdentity()`, `getAcademicSettings()`, dan `getDashboardData()` tidak berubah.
+- Tidak ada perubahan pada login, sidebar, export, atau modul frozen.
+
+Commit
+
+`29266bd`
+
+Validasi
+
+✅ Deploy Uji LOLOS
+
+✅ Dashboard subtitle LOLOS
+
+✅ Data Dashboard tetap normal
+
+✅ Modal kehadiran tetap normal
+
+✅ Fallback identity LOLOS
+
+Status Sprint 3A-3.1
+
+DONE
+
 * Branding Separation Audit: ✅ SELESAI
 
 Keputusan arsitektur:

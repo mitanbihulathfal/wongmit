@@ -1522,7 +1522,7 @@ Commit
 
 Status
 
-NEXT
+DONE
 
 Target
 
@@ -1530,17 +1530,41 @@ Mengintegrasikan identitas sekolah ke consumer aplikasi secara bertahap.
 
 Fokus
 
-* Dashboard subtitle menggunakan `nama_sekolah`.
-* Mempertahankan fallback.
-* Tidak mengubah kontrak `getDashboardData()`.
-* Tidak mengubah `getAppInfo()`.
-* Tidak menyentuh Export/Rekap/Siswa.
-* Menjaga boundary pre-login dan post-login.
+- Dashboard subtitle menggunakan `nama_sekolah`.
+- Mempertahankan fallback.
+- Tidak mengubah kontrak `getDashboardData()`.
+- Tidak mengubah `getAppInfo()`.
+- Tidak menyentuh Export/Rekap/Siswa.
+- Menjaga boundary pre-login dan post-login.
 
-Catatan
+Hasil
 
-Sprint belum dimulai.
+✅ `page_dashboard.html` menggunakan identity-aware subtitle.
 
-Implementasi akan dilakukan setelah audit dokumentasi dinyatakan LOLOS.
+✅ `js_dashboard.html` menggunakan `getSchoolIdentity(sessionId)` sebagai reader terpisah.
 
-Sprint belum dianggap DONE sebelum seluruh tahapan tersebut LOLOS.
+✅ Subtitle menjadi `Website ONline Guru [Nama Sekolah]`.
+
+✅ Fallback branding lama tetap tersedia.
+
+✅ Penulisan identity menggunakan `innerText`.
+
+✅ Tidak ada perubahan backend.
+
+Validasi
+
+✅ Syntax check LOLOS
+
+✅ Scope file LOLOS
+
+✅ Regression Dashboard LOLOS
+
+✅ Deploy Uji LOLOS
+
+Commit
+
+`29266bd`
+
+Status
+
+DONE
