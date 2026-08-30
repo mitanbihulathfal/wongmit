@@ -62,6 +62,8 @@
             })
             .getDashboardData();
 
+        loadDashboardIdentity();
+
         const idGuru =
 
             localStorage.getItem(
@@ -240,6 +242,58 @@
                 );
 
         }
+
+    }
+
+    /* =========================
+        IDENTITY DASHBOARD
+    ========================= */
+
+    function loadDashboardIdentity() {
+
+        const subtitle =
+            document.getElementById(
+                "dashboardSubtitle"
+            );
+
+        if (!subtitle) {
+            return;
+        }
+
+        const sessionId =
+            localStorage.getItem(
+                "wongmit_session"
+            );
+
+        if (!sessionId) {
+            return;
+        }
+
+        google.script.run
+            .withSuccessHandler(function (identity) {
+
+                if (!identity || !identity.namaSekolah) {
+                    return;
+                }
+
+                subtitle.innerText =
+                    "Website ONline Guru " + identity.namaSekolah;
+
+            })
+            .withFailureHandler(function (error) {
+
+                /* Fallback tetap tampil jika
+                   identity gagal dimuat. */
+
+                console.warn(
+                    "loadDashboardIdentity:",
+                    error
+                );
+
+            })
+            .getSchoolIdentity(
+                sessionId
+            );
 
     }
 
