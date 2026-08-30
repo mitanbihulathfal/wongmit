@@ -34,16 +34,84 @@ function doGet() {
 }
 
 /*
- * DRAFT - dipersiapkan untuk fitur "Pengaturan Sistem" (menu bukaPengaturanSistem
- * di page_pengaturan.html, saat ini masih placeholder). Belum dipanggil di client.
+ * IDENTITY APLIKASI - single owner identity aplikasi.
+ *
+ * Pemilik kontrak: getAppInfo() (lihat ARCHITECTURE.md -
+ * IDENTITY & BRANDING ARCHITECTURE).
+ *
+ * - Berlaku pada level deployment/platform.
+ * - Dapat dipanggil TANPA session (pre-login), karena itu
+ *   tidak menggunakan checkRole().
+ * - Membaca Sheet Pengaturan (Key | Value) via cache layer
+ *   getMasterSheetData("Pengaturan").
+ * - TIDAK berisi identitas sekolah (nama_sekolah,
+ *   kepala_sekolah, logo_sekolah) - pemiliknya
+ *   getSchoolIdentity() di Pengaturan.js.
+ *
+ * Kontrak response (camelCase, konsisten dengan
+ * getSchoolIdentity):
+ * {
+ *   namaAplikasi  : dari key "nama_aplikasi",
+ *                   fallback "Administratif Guru"
+ *                   (default universal, bukan WONG MIT)
+ *   appLongName   : kepanjangan aplikasi, fallback
+ *                   universal tanpa nama sekolah
+ *   logoAplikasi  : dari key "logo_aplikasi",
+ *                   fallback "" (File ID, tanpa resolver URL)
+ *   favicon       : dari key "favicon", fallback ""
+ *   versiAplikasi : dari key "versi_aplikasi",
+ *                   fallback "" (tidak ada konstanta versi
+ *                   existing di kode)
+ * }
  */
 
 function getAppInfo() {
 
+  const data =
+    getMasterSheetData("Pengaturan");
+
+  const config = {};
+
+  for (let i = 1; i < data.length; i++) {
+
+    const key =
+      String(data[i][0]).trim();
+
+    if (key) {
+      config[key] = data[i][1];
+    }
+
+  }
+
   return {
-    appName: "WONG MIT",
-    appLongName: "Website ONline Guru MI Tanbihul Athfal",
-    logo: "https://iili.io/CU1QcrJ.png"
+
+    namaAplikasi:
+      config.nama_aplikasi ||
+      "Administratif Guru",
+
+    appLongName:
+      "Aplikasi Administratif Guru Online",
+
+    logoAplikasi:
+      config.logo_aplikasi || "",
+
+    favicon:
+      config.favicon || "",
+
+    versiAplikasi:
+      config.versi_aplikasi || "",
+
+    /* Alias legacy - dipertahankan untuk backward
+       compatibility kontrak lama. Canonical:
+       namaAplikasi & logoAplikasi. */
+
+    appName:
+      config.nama_aplikasi ||
+      "Administratif Guru",
+
+    logo:
+      config.logo_aplikasi || ""
+
   };
 
 }
