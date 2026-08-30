@@ -1522,7 +1522,7 @@ Commit
 
 Status
 
-IMPLEMENTED — PENDING COMMIT
+NEXT
 
 Target
 
@@ -1539,6 +1539,8 @@ Fokus
 
 Catatan
 
-Implementasi telah selesai secara lokal dan menunggu commit, push GitHub, CLASP push, Deploy Uji, dan testing.
+Sprint belum dimulai.
+
+Implementasi akan dilakukan setelah audit dokumentasi dinyatakan LOLOS.
 
 Sprint belum dianggap DONE sebelum seluruh tahapan tersebut LOLOS.

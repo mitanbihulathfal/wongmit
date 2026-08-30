@@ -476,7 +476,7 @@ Checkpoint:
 
 * Sprint 3A-1 — Backend Identity Foundation: ✅ DONE
 * Sprint 3A-2 — UI Pengaturan Sekolah: ✅ DONE
-* Sprint 3A-3.1 — Dashboard Identity Reader: 🟡 IMPLEMENTED LOKAL, BELUM COMMIT
+* Sprint 3A-3.1 — Identity Reader Foundation - Status: 🟡 NEXT - Target: Mengintegrasikan identitas sekolah ke consumer aplikasi secara bertahap.
 * Branding Separation Audit: ✅ SELESAI
 
 Keputusan arsitektur:
