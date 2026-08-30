@@ -174,6 +174,63 @@ Frontend tidak boleh menyimpan data permanen.
 
 ---
 
+# IDENTITY & BRANDING ARCHITECTURE
+
+Identitas aplikasi dan identitas sekolah merupakan dua boundary yang berbeda dan tidak boleh dicampurkan.
+
+## IDENTITAS APLIKASI
+
+Identitas aplikasi berlaku pada level deployment/platform.
+
+Data utama:
+
+* `nama_aplikasi`
+* `logo_aplikasi`
+* `favicon`
+* `versi_aplikasi`
+
+Pemilik kontrak baca:
+`getAppInfo()`
+
+Identity aplikasi harus dapat diakses sebelum login apabila diperlukan oleh halaman login.
+
+## IDENTITAS SEKOLAH
+
+Identitas sekolah merupakan konfigurasi sekolah pada deployment tersebut.
+
+Data utama:
+
+* `nama_sekolah`
+* `kepala_sekolah`
+* `logo_sekolah`
+
+Pemilik kontrak baca:
+`getSchoolIdentity(sessionId)`
+
+Identitas sekolah digunakan setelah autentikasi.
+
+## ATURAN PEMISAHAN
+
+* Nama sekolah tidak boleh menjadi bagian permanen dari metadata aplikasi.
+* Nama aplikasi tidak boleh dianggap sebagai nama sekolah.
+* `logo_aplikasi` dan `favicon` adalah identitas aplikasi.
+* `logo_sekolah` adalah identitas sekolah.
+* Kontrak lama yang masih membawa field lintas-boundary tidak boleh dihapus mendadak apabila masih digunakan; migrasi dilakukan bertahap dan backward compatible.
+
+## MODEL DEPLOYMENT
+
+Arsitektur yang ditargetkan adalah:
+
+1 deployment WONG MIT
++
+1 Spreadsheet sekolah
+
+untuk setiap sekolah.
+
+Dengan model ini data sekolah tetap terisolasi pada deployment/database masing-masing tanpa memerlukan tenant column pada database existing.
+
+---
+
 # ENGINE
 
 Satu fitur hanya memiliki satu engine utama.

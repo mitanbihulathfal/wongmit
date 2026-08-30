@@ -31,6 +31,78 @@ Catatan
 
 # RIWAYAT
 
+## 2026-08-30
+
+### Sprint Pengaturan — Sekolah / Identitas — Backend Identity Foundation
+
+**Judul**
+
+Implementasi Backend Identity Sekolah
+
+**Perubahan**
+
+* Menambahkan `getSchoolIdentity(sessionId)`.
+* Menambahkan `saveSchoolIdentity(sessionId, data)`.
+* Menambahkan dukungan key `logo_aplikasi` pada penyimpanan Pengaturan.
+* Mempertahankan `getAcademicSettings()` dan `saveAcademicSettings()` tanpa perubahan kontrak.
+* Menggunakan `getMasterSheetData("Pengaturan")` dan cache invalidation existing.
+* Menetapkan pemisahan awal antara identitas sekolah dan identitas aplikasi.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+`a717d1d`
+
+**Validasi**
+
+* Deploy Uji LOLOS.
+* Regression Pengaturan Akademik LOLOS.
+* Dashboard LOLOS.
+* Data Siswa LOLOS.
+* Guru Mengajar LOLOS.
+* Absensi LOLOS.
+* Rekap LOLOS.
+* Sheet Pengaturan tetap aman.
+
+## 2026-08-30
+
+### Sprint Pengaturan — Sekolah / Identitas — UI Detail + Edit
+
+**Judul**
+
+Implementasi UI Pengaturan Sekolah
+
+**Perubahan**
+
+* Card Sekolah menggunakan alur Preview → Detail → Edit.
+* Detail Sekolah menampilkan nama sekolah, kepala sekolah, logo sekolah, logo aplikasi, dan favicon.
+* Form Edit Sekolah terhubung ke `getSchoolIdentity()` dan `saveSchoolIdentity()`.
+* Tombol Edit tidak ditampilkan pada card preview.
+* Event menggunakan event delegation.
+* Validasi Nama Sekolah wajib diisi.
+* File ID Google Drive digunakan sebagai nilai asset; upload dan resolver URL belum menjadi bagian sprint ini.
+
+**Status**
+
+SELESAI
+
+**Validasi**
+
+* Deploy Uji LOLOS.
+* Preview → Detail → Edit LOLOS.
+* Save LOLOS.
+* Cancel LOLOS.
+* Validasi Nama Sekolah LOLOS.
+* Regression Pengaturan Akademik LOLOS.
+* Card Sistem dan Tahun Ajaran tetap aman.
+
+**Catatan**
+
+Integrasi identitas aplikasi, login, sidebar, export, dan resolver asset dilanjutkan pada sprint berikutnya.
+
 ## 2026-08-29
 
 ### Sprint Pengaturan — UX Preview → Detail → Edit

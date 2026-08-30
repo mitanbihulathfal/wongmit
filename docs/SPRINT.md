@@ -1405,3 +1405,140 @@ Commit
 Catatan
 
 Sprint ini hanya menyempurnakan fondasi UX Pengaturan. Implementasi backend dan fungsi operasional Pengaturan Sekolah, Pengaturan Sistem, dan Pengaturan Tahun Ajaran tetap menjadi sprint berikutnya sesuai roadmap.
+
+# Sprint 3A-1 — Backend Identity Foundation
+
+Status
+
+DONE
+
+Target
+
+Membangun fondasi backend identitas sekolah tanpa mengubah kontrak Pengaturan Akademik.
+
+Fokus
+
+* `getSchoolIdentity(sessionId)`
+* `saveSchoolIdentity(sessionId, data)`
+* Role check
+* Master Data cache
+* Cache invalidation
+* Dukungan key `logo_aplikasi`
+* File ID Google Drive sebagai nilai asset
+
+Hasil
+
+✅ Backend Identity Foundation selesai
+
+✅ `getAcademicSettings()` tidak berubah
+
+✅ `saveAcademicSettings()` tidak berubah
+
+✅ Role check sesuai pola existing
+
+✅ Cache invalidation diterapkan
+
+✅ Tidak ada perubahan frontend
+
+Commit
+
+`a717d1d`
+
+Validasi
+
+✅ Deploy Uji LOLOS
+
+✅ Regression Pengaturan Akademik LOLOS
+
+✅ Dashboard LOLOS
+
+✅ Data Siswa LOLOS
+
+✅ Guru Mengajar LOLOS
+
+✅ Absensi LOLOS
+
+✅ Rekap LOLOS
+
+# Sprint 3A-2 — UI Pengaturan Sekolah
+
+Status
+
+DONE
+
+Target
+
+Membangun UI Pengaturan Sekolah dengan pola Preview → Detail → Edit.
+
+Fokus
+
+* Preview card
+* Detail Sekolah
+* Edit
+* Save
+* Cancel
+* Validasi Nama Sekolah
+* Integrasi `getSchoolIdentity()`
+* Integrasi `saveSchoolIdentity()`
+* File ID Google Drive
+
+Hasil
+
+✅ Preview card tanpa tombol Edit
+
+✅ Detail Sekolah
+
+✅ Form Edit Sekolah
+
+✅ Save + confirmation
+
+✅ Cancel
+
+✅ Refresh data setelah save
+
+✅ Event delegation
+
+✅ Tidak ada perubahan backend
+
+Validasi
+
+✅ Deploy Uji LOLOS
+
+✅ Preview → Detail → Edit LOLOS
+
+✅ Save LOLOS
+
+✅ Cancel LOLOS
+
+✅ Validasi Nama Sekolah LOLOS
+
+✅ Regression Pengaturan Akademik LOLOS
+
+Commit
+
+`feat(pengaturan): add school identity UI`
+
+# Sprint 3A-3.1 — Identity Reader Foundation
+
+Status
+
+IMPLEMENTED — PENDING COMMIT
+
+Target
+
+Mengintegrasikan identitas sekolah ke consumer aplikasi secara bertahap.
+
+Fokus
+
+* Dashboard subtitle menggunakan `nama_sekolah`.
+* Mempertahankan fallback.
+* Tidak mengubah kontrak `getDashboardData()`.
+* Tidak mengubah `getAppInfo()`.
+* Tidak menyentuh Export/Rekap/Siswa.
+* Menjaga boundary pre-login dan post-login.
+
+Catatan
+
+Implementasi telah selesai secara lokal dan menunggu commit, push GitHub, CLASP push, Deploy Uji, dan testing.
+
+Sprint belum dianggap DONE sebelum seluruh tahapan tersebut LOLOS.

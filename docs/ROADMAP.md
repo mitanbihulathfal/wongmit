@@ -226,6 +226,214 @@ Siap digunakan sebagai aplikasi operasional sekolah.
 
 ---
 
+# ROADMAP GLOBAL — WONG MIT
+
+## VISI
+
+WONG MIT dikembangkan sebagai platform pendukung aktivitas guru dan operasional sekolah.
+
+WONG MIT saat ini merupakan branding khusus MIS Tanbihul Athfal.
+
+WONG = Website ONline Guru.
+
+WONG MIT = Website ONline MI Tanbihul Athfal.
+
+WONG MIT bukan nama universal yang harus digunakan sekolah lain. Deployment sekolah lain dapat menggunakan nama aplikasi dan branding mereka sendiri.
+
+Arsitektur aplikasi diarahkan agar identitas aplikasi dan identitas sekolah dapat dikonfigurasi secara terpisah.
+
+---
+
+## PROGRAM A — IDENTITY & BRANDING
+
+### A1 — Backend Identity Foundation
+
+Status: ✅ DONE
+
+* `getSchoolIdentity()`
+* `saveSchoolIdentity()`
+* Identitas sekolah dasar
+* File ID Google Drive untuk asset
+
+### A2 — UI Pengaturan Sekolah
+
+Status: ✅ DONE
+
+* Preview
+* Detail
+* Edit
+* Save
+* Cancel
+* Validasi
+
+### A3 — Identity Reader Foundation
+
+Status: 🔄 ACTIVE
+
+Target:
+
+* Konsumsi identitas sekolah pada consumer aplikasi.
+* Menghilangkan hardcode identitas sekolah secara bertahap.
+* Menjaga fallback dan backward compatibility.
+
+### A4 — Application Branding
+
+Status: ⏳ PLANNED
+
+Target:
+
+* `nama_aplikasi`
+* `logo_aplikasi`
+* `favicon`
+* `versi_aplikasi`
+* `getAppInfo()`
+* Branding pre-login
+* Branding sidebar
+* Branding halaman utama
+
+Catatan:
+
+`nama_aplikasi` harus memiliki default yang universal dan tidak mengikat sekolah lain pada nama "WONG MIT".
+
+---
+
+## PROGRAM B — ADMINISTRASI GURU & SEKOLAH
+
+Status: FOUNDATION
+
+Meliputi:
+
+* Dashboard
+* Data Guru
+* Data Siswa
+* Data Kelas
+* Mata Pelajaran
+* Guru Mengajar
+* Absensi
+* Revisi Absensi
+* Rekap
+* Export
+
+---
+
+## PROGRAM C — E-BOOK MATA PELAJARAN
+
+Status: ⏳ FUTURE
+
+Target:
+
+* Admin mengelola e-book PDF.
+* File disimpan pada Google Drive.
+* Metadata e-book dikelola aplikasi.
+* Guru dapat membuka dan membaca e-book berdasarkan kebutuhan pembelajaran.
+
+---
+
+## PROGRAM D — PR & REMINDER GURU
+
+Status: ⏳ FUTURE
+
+Target:
+
+* Guru membuat dan menyiapkan PR.
+* PR dikaitkan dengan kelas, mapel, tanggal, dan jadwal mengajar.
+* Sistem mengingatkan guru berdasarkan jadwal Guru Mengajar.
+* Pengingat sekitar satu jam sebelum pelajaran.
+* Pengingat saat pelajaran dimulai.
+* Guru dapat memperbarui status PR.
+
+Status PR yang direncanakan:
+
+* Belum selesai
+* Sedang berlangsung
+* Selesai
+* Ada lanjutan PR
+
+Implementasi notifikasi akan ditentukan melalui audit teknis tersendiri.
+
+---
+
+## PROGRAM E — NOTIFIKASI GURU
+
+Status: ⏳ FUTURE
+
+Target:
+
+* Notifikasi pengingat jadwal.
+* Notifikasi terkait PR.
+* Dukungan perangkat mobile.
+
+Mekanisme teknis belum dikunci dan harus diaudit sebelum implementasi.
+
+---
+
+## PROGRAM F — SISTEM
+
+Status: ⏳ PLANNED
+
+Target:
+
+* Backup
+* Restore
+* Log Aktivitas
+* Maintenance Mode
+
+---
+
+## PROGRAM G — PROSES AKADEMIK
+
+Status: ⏳ PLANNED
+
+Nama card "Tahun Ajaran" direncanakan menjadi "Proses Akademik".
+
+Target:
+
+* Naik Kelas
+* Kelulusan
+* Arsip Tahun Ajaran
+
+Penyimpanan arsip akan ditentukan setelah audit kebutuhan.
+
+---
+
+## TIDAK TERMASUK ROADMAP
+
+### Penilaian Siswa
+
+Tidak direncanakan menjadi modul WONG MIT.
+
+Alasan:
+
+Penilaian telah menggunakan RDM.
+
+WONG MIT tidak bertujuan menduplikasi sistem penilaian yang sudah tersedia.
+
+---
+
+## PRINSIP ROADMAP GLOBAL
+
+Roadmap global merupakan arah jangka panjang.
+
+Setiap fitur tetap harus dipecah menjadi Sprint kecil melalui:
+
+Audit
+↓
+Desain
+↓
+Implementasi
+↓
+Testing
+↓
+LOLOS
+↓
+Dokumentasi
+
+Roadmap global tidak memberikan izin otomatis untuk mengimplementasikan seluruh fitur.
+
+Setiap sprint tetap membutuhkan audit, scope, dan persetujuan sebelum implementasi.
+
+---
+
 # Sprint Kelas — Refactoring & Modularisasi
 
 Status

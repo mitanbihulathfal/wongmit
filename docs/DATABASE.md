@@ -54,6 +54,61 @@ Apabila di masa depan terdapat penambahan Sheet baru, dokumen ini harus diperbar
 
 ---
 
+# SHEET PENGATURAN
+
+Sheet `Pengaturan` menggunakan struktur:
+
+`Key | Value`
+
+Sheet ini merupakan konfigurasi utama aplikasi dan sekolah pada deployment masing-masing.
+
+## IDENTITAS SEKOLAH
+
+Key:
+
+* `nama_sekolah`
+* `kepala_sekolah`
+* `logo_sekolah`
+
+## IDENTITAS APLIKASI
+
+Key:
+
+* `nama_aplikasi`
+* `logo_aplikasi`
+* `favicon`
+* `versi_aplikasi`
+
+`nama_aplikasi` merupakan key yang direncanakan untuk mendukung nama aplikasi yang dapat dikonfigurasi.
+
+## SISTEM
+
+Key:
+
+* `mode_maintenance`
+
+Key ini tersedia pada database tetapi belum menjadi consumer aktif sampai Sprint Pengaturan Sistem selesai.
+
+## AKADEMIK
+
+Key:
+
+* `tahun_ajaran`
+* `semester`
+* `hari_libur`
+
+## ATURAN IDENTITY
+
+`logo_aplikasi` dan `favicon` adalah identitas aplikasi.
+
+`logo_sekolah` adalah identitas sekolah.
+
+Jangan mencampurkan ownership key antar-kontrak backend.
+
+Penambahan key baru harus tetap menggunakan struktur `Key | Value` dan tidak mengubah header atau struktur kolom.
+
+---
+
 # ATURAN SHEET
 
 AI tidak boleh:

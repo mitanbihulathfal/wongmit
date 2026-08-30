@@ -8,17 +8,27 @@ Terakhir diperbarui : Agustus 2026
 
 # GAMBARAN UMUM
 
-WONG MIT adalah singkatan dari:
+WONG adalah singkatan dari:
 
-Website ONline Guru MI Tanbihul Athfal
+Website ONline Guru.
 
-Aplikasi ini dibangun menggunakan:
+WONG MIT adalah branding khusus deployment MIS Tanbihul Athfal:
 
-- Google Apps Script
-- HTML
-- Bootstrap 5
-- Google Spreadsheet
-- JavaScript Vanilla
+Website ONline MI Tanbihul Athfal.
+
+MIT merupakan identitas sekolah, bukan bagian dari kepanjangan WONG.
+
+WONG MIT tidak ditetapkan sebagai nama universal untuk sekolah lain. Deployment sekolah lain dapat menggunakan nama aplikasi dan branding yang mereka pilih sendiri.
+
+Secara arsitektur, WONG MIT dikembangkan agar fondasi aplikasinya dapat dikonfigurasi untuk berbagai sekolah.
+
+Aplikasi dibangun menggunakan:
+
+* Google Apps Script
+* HTML
+* Bootstrap 5
+* Google Spreadsheet
+* JavaScript Vanilla
 
 Workflow pengembangan:
 
@@ -28,9 +38,9 @@ CLASP
 ↓
 Git
 ↓
-TRAE
+AI Agent / Editor
 ↓
-Apps Script Production
+Apps Script
 
 ---
 
@@ -39,6 +49,28 @@ Apps Script Production
 Project ini dibuat untuk menjadi pusat aktivitas guru dalam satu aplikasi.
 
 Target akhirnya adalah seluruh kebutuhan administrasi guru dapat dilakukan melalui WONG MIT tanpa harus membuka banyak Spreadsheet.
+
+---
+
+# VISI GLOBAL
+
+WONG MIT dikembangkan bukan hanya sebagai aplikasi absensi.
+
+Visi jangka panjangnya adalah menjadi platform pendukung aktivitas guru dan operasional sekolah yang ringan, stabil, dan dapat dikonfigurasi untuk deployment sekolah lain.
+
+Ruang pengembangan global meliputi:
+
+* Administrasi akademik
+* Absensi
+* Guru Mengajar
+* Rekap dan Export
+* Identitas dan Branding
+* E-book mata pelajaran berbasis file PDF
+* Pengelolaan dan pengingat PR
+* Notifikasi guru
+* Fitur pendukung operasional sekolah lainnya
+
+Modul penilaian tidak direncanakan masuk ke WONG MIT karena kebutuhan penilaian telah ditangani oleh RDM.
 
 ---
 

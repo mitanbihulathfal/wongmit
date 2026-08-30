@@ -12,6 +12,21 @@ WONG MIT (Website ONline Guru MI Tanbihul Athfal) sedang berada pada tahap penge
 
 Fokus pengembangan saat ini adalah menyelesaikan seluruh modul inti dengan arsitektur yang stabil, konsisten, dan mudah dipelihara.
 
+## VISI PROJECT TERKINI
+
+WONG MIT saat ini dikembangkan sebagai platform pendukung aktivitas guru dan operasional sekolah, bukan hanya aplikasi absensi.
+
+WONG MIT merupakan branding khusus MIS Tanbihul Athfal. Fondasi aplikasi dirancang agar dapat dikonfigurasi untuk sekolah lain dengan nama aplikasi dan identitas sekolah masing-masing.
+
+Pemisahan identitas menjadi prinsip arsitektur:
+
+* Identitas Aplikasi: nama aplikasi, logo aplikasi, favicon, versi aplikasi.
+* Identitas Sekolah: nama sekolah, kepala sekolah, logo sekolah.
+
+Roadmap global juga mencakup rencana e-book mata pelajaran, pengelolaan/pengingat PR, dan notifikasi guru.
+
+Modul penilaian tidak direncanakan masuk WONG MIT karena menggunakan RDM.
+
 ---
 
 # STATUS MODUL
@@ -379,35 +394,103 @@ Calendar Infrastructure resmi menjadi shared calendar/context layer aplikasi.
 
 ---
 
-## Pengaturan
+# Sprint Pengaturan
 
-Status:
+Status
+
 ACTIVE
 
-Kondisi:
+Target
 
-- Digunakan sebagai pusat konfigurasi aplikasi.
-- Pengaturan Akademik telah selesai dimodularisasi dan telah lolos Deploy Uji serta Deploy Production.
-- Backend Pengaturan Akademik dipisahkan ke `Pengaturan.js`.
-- Frontend Pengaturan Akademik dipisahkan ke `js_pengaturan.html`.
-- Endpoint dan perilaku runtime Pengaturan Akademik tetap kompatibel.
-- Fondasi UX halaman Pengaturan telah disempurnakan dengan alur Preview → Detail → Edit.
-- Keempat card Pengaturan (`Akademik`, `Sekolah`, `Sistem`, dan `Tahun Ajaran`) pada keadaan awal bersifat read-only.
-- Tombol `Edit` tidak lagi tampil pada card preview.
-- Klik card tidak lagi langsung masuk ke mode edit.
-- Detail Pengaturan dibuka terlebih dahulu sebelum aksi Edit.
-- Pengaturan Akademik tetap menggunakan `getAcademicSettings()` dan `saveAcademicSettings()` tanpa perubahan kontrak backend.
-- Aksi Edit, Simpan, dan Batal Pengaturan Akademik menggunakan event delegation.
-- Placeholder toast pada Pengaturan Sekolah, Sistem, dan Tahun Ajaran telah dihapus.
-- Pengaturan Sekolah, Sistem, dan Tahun Ajaran kini memiliki detail view sebagai fondasi UI dan belum memiliki fungsi backend pengelolaan data.
-- Tidak ada perubahan pada `Pengaturan.js`, role check, validasi backend, atau cache invalidation pada penyempurnaan UX ini.
-- Commit UX Pengaturan: `2ecfbcd` — `feat(pengaturan): perbaiki flow preview-detail-edit`.
-- Deploy Uji setelah penyempurnaan UX LOLOS.
-- Pengujian runtime, regression, event handling, dan role Pengaturan LOLOS.
-- Pengaturan Sekolah masih belum difungsikan.
-- Pengaturan Sistem masih belum difungsikan.
-- Pengaturan Tahun Ajaran masih belum difungsikan.
-- Sprint Pengaturan secara keseluruhan tetap ACTIVE sampai seluruh bagian Pengaturan selesai dan telah melalui testing serta deploy production.
+Penyempurnaan halaman Pengaturan secara bertahap dengan menjaga kompatibilitas production.
+
+Progress
+
+### Akademik
+
+✅ Selesai
+
+* Preview → Detail → Edit
+* `getAcademicSettings()`
+* `saveAcademicSettings()`
+* Validation
+* Confirmation
+* Cache synchronization
+* Security / role check
+
+### Sekolah / Identitas
+
+✅ Backend Identity Foundation selesai
+
+Commit:
+`a717d1d`
+
+✅ UI Detail + Edit selesai
+
+Deploy Uji:
+LOLOS
+
+Fitur:
+
+* Nama Sekolah
+* Kepala Sekolah
+* Logo Sekolah
+* Logo Aplikasi
+* Favicon
+* Penyimpanan asset menggunakan File ID Google Drive
+
+### Sistem
+
+⏳ Belum dimulai
+
+Rencana:
+
+* Backup
+* Restore
+* Log Aktivitas
+* Maintenance configuration
+
+### Proses Akademik
+
+⏳ Belum dimulai
+
+Nama card "Tahun Ajaran" direncanakan diubah menjadi "Proses Akademik".
+
+Rencana:
+
+* Naik Kelas
+* Kelulusan
+* Arsip Tahun Ajaran
+
+Status Sprint Pengaturan keseluruhan tetap ACTIVE sampai seluruh bagian Pengaturan yang direncanakan selesai dan telah melalui testing serta deploy sesuai standar proyek.
+
+---
+
+# Identity & Branding Checkpoint
+
+Status
+
+🟢 AUDIT SELESAI — IMPLEMENTASI BERTAHAP
+
+Checkpoint:
+
+* Sprint 3A-1 — Backend Identity Foundation: ✅ DONE
+* Sprint 3A-2 — UI Pengaturan Sekolah: ✅ DONE
+* Sprint 3A-3.1 — Dashboard Identity Reader: 🟡 IMPLEMENTED LOKAL, BELUM COMMIT
+* Branding Separation Audit: ✅ SELESAI
+
+Keputusan arsitektur:
+
+* Identitas Aplikasi dan Identitas Sekolah dipisahkan.
+* `getAppInfo()` menjadi pemilik kontrak Identitas Aplikasi.
+* `getSchoolIdentity()` menjadi pemilik kontrak Identitas Sekolah.
+* `logo_aplikasi` dan `favicon` secara arsitektur adalah Identitas Aplikasi.
+* `nama_aplikasi` menjadi key konfigurasi yang direncanakan.
+* WONG MIT tetap menjadi branding khusus MIS Tanbihul Athfal.
+* Deployment sekolah lain dapat menggunakan nama aplikasi dan branding mereka sendiri.
+
+Catatan:
+Sprint 3A-3.1 belum dicatat sebagai sprint selesai sampai perubahan lokal tersebut di-commit dan diuji.
 
 ---
 

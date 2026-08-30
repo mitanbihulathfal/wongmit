@@ -8,23 +8,55 @@ Last Update : Agustus 2026
 
 # IDENTITAS PROJECT
 
-Nama Aplikasi
+Nama aplikasi/branding saat ini:
 
 WONG MIT
 
-Website ONline Guru MI Tanbihul Athfal
+WONG = Website ONline Guru.
+
+MIT adalah identitas sekolah:
+MI/MIS Tanbihul Athfal.
+
+Dengan demikian:
+
+WONG MIT
+= Website ONline MI Tanbihul Athfal.
+
+"WONG" bukan singkatan dari "WONG MIT".
+
+WONG MIT merupakan branding khusus untuk deployment MIS Tanbihul Athfal. WONG MIT tidak ditetapkan sebagai nama universal untuk sekolah lain.
+
+Project ini dirancang agar fondasi aplikasinya dapat digunakan oleh sekolah lain. Setiap deployment sekolah lain dapat memiliki identitas dan nama aplikasi sendiri melalui konfigurasi identitas aplikasi dan identitas sekolah.
+
+Identitas aplikasi dan identitas sekolah harus selalu dipisahkan.
+
+Identitas aplikasi:
+
+* nama aplikasi
+* logo aplikasi
+* favicon
+* versi aplikasi
+
+Identitas sekolah:
+
+* nama sekolah
+* kepala sekolah
+* logo sekolah
 
 Platform:
-- Google Apps Script
-- HTML
-- Bootstrap 5
-- Google Spreadsheet
-- CLASP
-- Git
 
-Project ini merupakan aplikasi produksi milik MIS TANBIHUL ATHFAL dan digunakan oleh guru dalam kegiatan operasional sekolah.
+* Google Apps Script
+* HTML
+* Bootstrap 5
+* Google Spreadsheet
+* CLASP
+* Git
 
-Seluruh perubahan harus menjaga stabilitas aplikasi.
+Project saat ini merupakan aplikasi produksi untuk MIS TANBIHUL ATHFAL dan dikembangkan dengan prinsip stabilitas, backward compatibility, dan kesiapan penggunaan jangka panjang.
+
+WONG MIT bukan hanya aplikasi absensi. Roadmap global mencakup dukungan terhadap aktivitas dan administrasi guru/sekolah, termasuk absensi, e-book mata pelajaran, pengelolaan/pengingat PR, dan notifikasi guru.
+
+Modul penilaian tidak menjadi target WONG MIT karena kebutuhan penilaian telah ditangani melalui RDM.
 
 ---
 
@@ -222,6 +254,32 @@ page_absensi.html
 kecuali memang dibutuhkan.
 
 Semakin sedikit file yang berubah semakin baik.
+
+---
+
+# VISI GLOBAL
+
+WONG MIT dikembangkan sebagai platform pendukung aktivitas guru dan operasional sekolah.
+
+Target jangka panjang:
+
+* dapat dikonfigurasi untuk sekolah lain;
+* identitas aplikasi dan sekolah terpisah;
+* tetap ringan, stabil, dan mudah dirawat;
+* dapat berkembang secara modular tanpa mengorbankan fitur produksi.
+
+Roadmap global mencakup:
+
+* administrasi akademik;
+* absensi dan rekap;
+* Guru Mengajar;
+* identitas dan branding;
+* e-book mata pelajaran;
+* pengelolaan dan pengingat PR;
+* notifikasi guru;
+* fitur pendukung sekolah lainnya yang disetujui melalui roadmap.
+
+Penilaian siswa tidak menjadi bagian roadmap WONG MIT karena telah menggunakan RDM.
 
 ---
 
