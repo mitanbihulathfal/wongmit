@@ -6,9 +6,11 @@
 
   let pengaturanDetailType = "";
 
+  let pengaturanSekolahData = null;
+
   const pengaturanDetailMeta = {
     akademik: {title: "Pengaturan Akademik", description: "Tahun ajaran, semester, dan hari libur sekolah."},
-    sekolah: {title: "Pengaturan Sekolah", description: "Identitas sekolah akan dikelola pada sprint berikutnya."},
+    sekolah: {title: "Pengaturan Sekolah", description: "Nama sekolah, kepala sekolah, dan asset logo aplikasi."},
     sistem: {title: "Pengaturan Sistem", description: "Konfigurasi sistem akan tersedia pada sprint berikutnya."},
     "tahun-ajaran": {title: "Pengaturan Tahun Ajaran", description: "Proses naik kelas, kelulusan, dan arsip akan tersedia pada sprint berikutnya."}
   };
@@ -37,6 +39,11 @@
 
     if (type === "akademik") {
       tampilkanDetailAkademik();
+      return;
+    }
+
+    if (type === "sekolah") {
+      tampilkanDetailSekolah();
       return;
     }
 
@@ -148,6 +155,21 @@
 
     if (action.dataset.pengaturanAction === "cancel-akademik") {
       batalEditAkademik();
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "edit-sekolah") {
+      aktifkanEditSekolah();
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "save-sekolah") {
+      simpanSekolah();
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "cancel-sekolah") {
+      batalEditSekolah();
     }
 
   });
@@ -175,6 +197,14 @@
   ========================= */
 
   function loadAcademicSettings() {
+
+    /*
+     * Caller loadPage() pada index.html memanggil
+     * fungsi ini saat halaman Pengaturan dibuka.
+     * Identitas sekolah dimuat melalui jalur yang
+     * sama tanpa mengubah index.html.
+     */
+    loadSchoolIdentity();
 
     google.script.run
 
@@ -583,6 +613,402 @@
   function batalEditAkademik() {
 
     bukaPengaturanDetail("akademik");
+
+  }
+
+
+  /* =========================
+     DETAIL SEKOLAH
+  ========================= */
+
+  function tampilkanDetailSekolah() {
+
+    const content =
+      document.getElementById("pengaturanDetailContent");
+    const actions =
+      document.getElementById("pengaturanDetailActions");
+
+    content.className = "pengaturan-detail-content";
+    content.innerHTML = `
+      <div class="pengaturan-detail-list">
+        <div><strong>Nama Sekolah</strong><span id="detailNamaSekolah">-</span></div>
+        <div><strong>Kepala Sekolah</strong><span id="detailKepalaSekolah">-</span></div>
+        <div><strong>Logo Sekolah (File ID)</strong><span id="detailLogoSekolah">-</span></div>
+        <div><strong>Logo Aplikasi (File ID)</strong><span id="detailLogoAplikasi">-</span></div>
+        <div><strong>Favicon (File ID)</strong><span id="detailFavicon">-</span></div>
+      </div>
+    `;
+    actions.innerHTML = `
+      <button type="button" class="btn btn-primary" data-pengaturan-action="edit-sekolah">
+        <i class="fa-solid fa-pen"></i> Edit
+      </button>
+    `;
+    perbaruiDetailSekolah();
+
+  }
+
+  function perbaruiDetailSekolah() {
+
+    if (!pengaturanSekolahData) {
+      return;
+    }
+
+    [
+      ["detailNamaSekolah", pengaturanSekolahData.namaSekolah],
+      ["detailKepalaSekolah", pengaturanSekolahData.kepalaSekolah],
+      ["detailLogoSekolah", pengaturanSekolahData.logoSekolah],
+      ["detailLogoAplikasi", pengaturanSekolahData.logoAplikasi],
+      ["detailFavicon", pengaturanSekolahData.favicon]
+    ]
+      .forEach(function (field) {
+        const detail =
+          document.getElementById(field[0]);
+
+        if (detail) {
+          detail.innerText = field[1] || "-";
+        }
+      });
+
+  }
+
+  /* =========================
+     MODE EDIT SEKOLAH
+  ========================= */
+
+  function aktifkanEditSekolah() {
+
+    const data =
+      pengaturanSekolahData || {};
+
+    const container =
+      document.getElementById(
+        "pengaturanDetailContent"
+      );
+
+    container.className =
+      "pengaturan-detail-content pengaturan-edit";
+
+    container.innerHTML = `
+
+    <div class="mb-2">
+
+      <strong>
+
+        Nama Sekolah
+
+      </strong>
+
+      <input
+
+        id="editNamaSekolah"
+
+        class="form-control mt-1"
+
+        value="${data.namaSekolah || ""}">
+
+    </div>
+
+    <div class="mb-2">
+
+      <strong>
+
+        Kepala Sekolah
+
+      </strong>
+
+      <input
+
+        id="editKepalaSekolah"
+
+        class="form-control mt-1"
+
+        value="${data.kepalaSekolah || ""}">
+
+    </div>
+
+    <div class="mb-2">
+
+      <strong>
+
+        Logo Sekolah (File ID)
+
+      </strong>
+
+      <input
+
+        id="editLogoSekolah"
+
+        class="form-control mt-1"
+
+        placeholder="File ID Google Drive"
+
+        value="${data.logoSekolah || ""}">
+
+    </div>
+
+    <div class="mb-2">
+
+      <strong>
+
+        Logo Aplikasi (File ID)
+
+      </strong>
+
+      <input
+
+        id="editLogoAplikasi"
+
+        class="form-control mt-1"
+
+        placeholder="File ID Google Drive"
+
+        value="${data.logoAplikasi || ""}">
+
+    </div>
+
+    <div class="mb-2">
+
+      <strong>
+
+        Favicon (File ID)
+
+      </strong>
+
+      <input
+
+        id="editFavicon"
+
+        class="form-control mt-1"
+
+        placeholder="File ID Google Drive"
+
+        value="${data.favicon || ""}">
+
+    </div>
+
+  `;
+
+    tampilkanButtonSekolah();
+
+  }
+
+  /* =========================
+     SIMPAN SEKOLAH
+  ========================= */
+
+  function simpanSekolah() {
+
+    const btn =
+      document.getElementById(
+        "btnSimpanSekolah"
+      );
+
+    const namaSekolah =
+      document.getElementById(
+        "editNamaSekolah"
+      ).value.trim();
+
+    const kepalaSekolah =
+      document.getElementById(
+        "editKepalaSekolah"
+      ).value.trim();
+
+    const logoSekolah =
+      document.getElementById(
+        "editLogoSekolah"
+      ).value.trim();
+
+    const logoAplikasi =
+      document.getElementById(
+        "editLogoAplikasi"
+      ).value.trim();
+
+    const favicon =
+      document.getElementById(
+        "editFavicon"
+      ).value.trim();
+
+    if (!namaSekolah) {
+
+      showToast(
+        "Nama Sekolah wajib diisi",
+        "warning"
+      );
+
+      return;
+
+    }
+
+    showConfirmModal(
+
+      "Simpan Pengaturan",
+
+      "Yakin ingin menyimpan perubahan Pengaturan Sekolah?",
+
+      function () {
+
+        setButtonLoading(
+
+          btn,
+
+          "Menyimpan..."
+
+        );
+
+        google.script.run
+
+          .withSuccessHandler(function () {
+
+            resetButtonLoading(btn);
+
+            showToast(
+              "Pengaturan Sekolah berhasil disimpan"
+            );
+
+            batalEditSekolah();
+
+            loadSchoolIdentity();
+
+          })
+
+          .withFailureHandler(function () {
+
+            resetButtonLoading(btn);
+
+            showToast(
+              "Gagal menyimpan",
+              "error"
+            );
+
+          })
+
+          .saveSchoolIdentity(
+
+            localStorage.getItem(
+              "wongmit_session"
+            ),
+
+            {
+
+              namaSekolah: namaSekolah,
+
+              kepalaSekolah: kepalaSekolah,
+
+              logoSekolah: logoSekolah,
+
+              logoAplikasi: logoAplikasi,
+
+              favicon: favicon
+
+            }
+
+          );
+
+      }
+
+    );
+
+  }
+
+  /* =========================
+     BUTTON EDIT SEKOLAH
+  ========================= */
+
+  function tampilkanButtonSekolah() {
+
+    document.getElementById(
+
+      "pengaturanDetailActions"
+
+    ).innerHTML = `
+
+    <button
+
+      id="btnSimpanSekolah"
+
+      class="btn btn-success"
+
+      data-pengaturan-action="save-sekolah">
+
+      <i class="fa-solid fa-floppy-disk"></i>
+
+      Simpan
+
+    </button>
+
+    <button
+
+      class="btn btn-secondary btn-sm"
+
+      data-pengaturan-action="cancel-sekolah">
+
+      Batal
+
+    </button>
+
+  `;
+
+  }
+
+
+  /* =========================
+     BATAL EDIT SEKOLAH
+  ========================= */
+
+  function batalEditSekolah() {
+
+    bukaPengaturanDetail("sekolah");
+
+  }
+
+
+  /* =========================
+     LOAD SEKOLAH
+  ========================= */
+
+  function loadSchoolIdentity() {
+
+    google.script.run
+
+      .withSuccessHandler(function (data) {
+
+        pengaturanSekolahData = data;
+
+        const nama =
+          document.getElementById(
+            "previewNamaSekolah"
+          );
+
+        const kepala =
+          document.getElementById(
+            "previewKepalaSekolah"
+          );
+
+        if (nama) {
+
+          nama.innerText =
+            data.namaSekolah || "-";
+
+        }
+
+        if (kepala) {
+
+          kepala.innerText =
+            data.kepalaSekolah || "-";
+
+        }
+
+        if (pengaturanDetailType === "sekolah" && !document.getElementById("editNamaSekolah")) {
+          perbaruiDetailSekolah();
+        }
+
+      })
+
+      .getSchoolIdentity(
+        localStorage.getItem(
+          "wongmit_session"
+        )
+      );
 
   }
 
