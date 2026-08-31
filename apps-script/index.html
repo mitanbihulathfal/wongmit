@@ -3373,6 +3373,7 @@
 
             if (pageName === "page_login") {
               loadLoginUsernameHistory();
+              loadLoginAppInfo();
             }
 
             if (
@@ -3833,6 +3834,80 @@
           box.appendChild(item);
 
         });
+
+      }
+
+      /* =========================
+         IDENTITY APLIKASI (LOGIN)
+         Consumer pre-login getAppInfo().
+         Tanpa session/checkRole.
+         Fallback: branding lama di
+         page_login.html tetap tampil.
+      ========================= */
+
+      function loadLoginAppInfo() {
+
+        const appName =
+          document.getElementById(
+            "loginAppName"
+          );
+
+        const appLogo =
+          document.getElementById(
+            "loginAppLogo"
+          );
+
+        if (!appName && !appLogo) {
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (info) {
+
+            if (!info) {
+              return;
+            }
+
+            if (appName && info.namaAplikasi) {
+
+              appName.innerText =
+                info.namaAplikasi;
+
+            }
+
+            /* Tagline login tidak diisi dari
+               appLongName - mempertahankan
+               branding statis existing di
+               page_login.html. */
+
+            /* Hanya terapkan jika nilai sudah
+               berupa URL yang dapat dipakai
+               langsung. Bukan resolver URL Drive. */
+
+            if (
+              appLogo
+              && info.logoAplikasi
+              && String(info.logoAplikasi).indexOf("http") === 0
+            ) {
+
+              appLogo.src =
+                info.logoAplikasi;
+
+            }
+
+          })
+          .withFailureHandler(function (error) {
+
+            /* Fallback branding lama tetap
+               tampil jika getAppInfo() gagal. */
+
+            console.warn(
+              "loadLoginAppInfo:",
+              error
+            );
+
+          })
+          .getAppInfo();
 
       }
 
