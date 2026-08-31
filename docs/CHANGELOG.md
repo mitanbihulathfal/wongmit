@@ -33,6 +33,46 @@ Catatan
 
 ## 2026-08-31
 
+### Sprint 3A-3.4 — Configurable Application Branding
+
+**Judul**
+
+Menjadikan Tagline Aplikasi Configurable
+
+**Perubahan**
+
+- Menambahkan key `tagline_aplikasi` pada Sheet `Pengaturan` sebagai sumber `appLongName` di `getAppInfo()`.
+- Fallback `appLongName` tetap `Aplikasi Administratif Guru Online` (universal, bukan "Website ONline Guru", bukan nama sekolah).
+- Mengaktifkan kembali tagline Login dari `appLongName`.
+- Fallback branding statis Login tetap dipertahankan.
+- Anti-flash branding Login tetap dipertahankan.
+- Kontrak `getAppInfo()` tidak berubah.
+- Key `tagline_aplikasi` didokumentasikan pada DATABASE.md.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+`9b18dc3`
+
+**Validasi**
+
+- Syntax check LOLOS.
+- clasp push LOLOS.
+- Deploy Uji LOLOS.
+- Tagline configurable LOLOS.
+- Freshness tagline LOLOS.
+- Fallback LOLOS.
+
+**Catatan**
+
+Consumer branding lainnya (Sidebar, Title) masih menjadi pekerjaan sprint berikutnya.
+
+
+## 2026-08-31
+
 ### Sprint 3A-3.3 — Application Identity Consumer Integration
 
 **Judul**

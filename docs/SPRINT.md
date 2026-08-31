@@ -1727,3 +1727,66 @@ Commit
 Catatan
 
 Micro-fix ini tidak mengubah `getSchoolIdentity()`, Master Data cache layer secara global, consumer lain, maupun kontrak `getAppInfo()`.
+
+
+# Sprint 3A-3.4 — Configurable Application Branding
+
+Status
+
+DONE
+
+Target
+
+Menjadikan tagline/deskripsi aplikasi configurable melalui Sheet Pengaturan tanpa mengubah kontrak `getAppInfo()` dan tanpa menjadikan branding WONG sebagai default universal.
+
+Fokus
+
+- Menambahkan key `tagline_aplikasi` sebagai sumber `appLongName`.
+- Fallback `appLongName` tetap `Aplikasi Administratif Guru Online` (universal).
+- Mengaktifkan tagline Login dari `appLongName`.
+- Mempertahankan fallback branding statis Login.
+- Mempertahankan anti-flash branding Login yang sudah LOLOS.
+- Tidak mengubah kontrak `getAppInfo()`.
+- Tidak menyentuh consumer lain maupun modul frozen.
+
+Hasil
+
+✅ `tagline_aplikasi` menjadi sumber `appLongName` pada `getAppInfo()`
+
+✅ Tagline Login kini configurable per deployment
+
+✅ Fallback universal tetap dipertahankan, bukan "Website ONline Guru"
+
+✅ Anti-flash branding Login tetap bekerja
+
+✅ Freshness tagline terbaca langsung tanpa TTL cache
+
+✅ Kontrak `getAppInfo()` tidak berubah
+
+✅ `getSchoolIdentity()` dan identity sekolah tidak tersentuh
+
+Validasi
+
+✅ Syntax check LOLOS
+
+✅ git diff --check LOLOS
+
+✅ clasp push ke GAS Uji LOLOS
+
+✅ Deploy Uji LOLOS
+
+✅ Tagline configurable LOLOS
+
+✅ Fallback tagline LOLOS
+
+✅ Anti-flash LOLOS
+
+✅ Login dan Dashboard tetap normal
+
+Commit
+
+`9b18dc3` — `feat(identity): make app tagline configurable`
+
+Catatan
+
+Key `tagline_aplikasi` ditambahkan manual pada Sheet Pengaturan per deployment. Consumer branding lainnya (Sidebar, Title) masih menjadi pekerjaan sprint berikutnya.

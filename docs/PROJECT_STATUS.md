@@ -30,7 +30,14 @@ Fondasi identity aplikasi telah selesai pada Sprint 3A-3.2:
 * `nama_aplikasi` telah menjadi sumber nama aplikasi yang dapat dikonfigurasi.
 * Default universal aplikasi adalah `Administratif Guru`.
 * Identity aplikasi tidak menggunakan nama sekolah sebagai metadata aplikasi.
-* Integrasi identity aplikasi ke consumer frontend belum selesai dan dilanjutkan pada sprint berikutnya.
+
+Integrasi identity aplikasi ke consumer telah berjalan bertahap:
+
+* Sprint 3A-3.3: nama aplikasi terintegrasi ke halaman Login.
+* Micro-fix: freshness pembacaan identity aplikasi dan anti-flash branding Login.
+* Sprint 3A-3.4: tagline aplikasi menjadi configurable melalui key `tagline_aplikasi` (sumber `appLongName`), dengan fallback universal tetap dipertahankan.
+
+Consumer branding lainnya (Sidebar, Title) masih menjadi pekerjaan sprint berikutnya.
 
 Roadmap global juga mencakup rencana e-book mata pelajaran, pengelolaan/pengingat PR, dan notifikasi guru.
 
