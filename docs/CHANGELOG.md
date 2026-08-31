@@ -33,6 +33,79 @@ Catatan
 
 ## 2026-08-31
 
+### Sprint 3A-3.3 — Application Identity Consumer Integration
+
+**Judul**
+
+Integrasi Identity Aplikasi ke Login
+
+**Perubahan**
+
+- Mengintegrasikan `nama_aplikasi` dari `getAppInfo()` ke halaman Login.
+- Nama aplikasi Login kini configurable per deployment melalui key `nama_aplikasi`.
+- Mempertahankan tagline Login existing tanpa menggunakan `appLongName`.
+- Mempertahankan fallback branding Login.
+- Tidak menggunakan `getSchoolIdentity()` pada Login.
+- Tidak mengubah kontrak `getAppInfo()`.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+`dc07d64`
+
+**Validasi**
+
+- Syntax check LOLOS.
+- Login branding LOLOS.
+- Deploy Uji LOLOS.
+
+**Catatan**
+
+Integrasi Sidebar, Title, dan consumer branding lainnya belum dilakukan.
+
+
+## 2026-08-31
+
+### Micro-Fix — Application Identity Freshness & Login Anti-Flash
+
+**Judul**
+
+Perbaikan Freshness Identity Aplikasi dan Login Anti-Flash
+
+**Perubahan**
+
+- `getAppInfo()` membaca Sheet `Pengaturan` secara langsung untuk menghindari stale value dari Master Data cache.
+- Perubahan manual `nama_aplikasi` kini terbaca tanpa menunggu TTL cache.
+- Kontrak return `getAppInfo()` tetap dipertahankan.
+- Branding flash pada Login dihilangkan dengan menyembunyikan branding hingga identity selesai dibaca.
+- Fallback branding tetap dipertahankan.
+- `appLongName` tidak digunakan sebagai tagline Login.
+- Micro-test `testGetAppInfo()` dihapus setelah pengujian selesai.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+`6ee9aeb`
+
+**Validasi**
+
+- Freshness `nama_aplikasi` LOLOS.
+- Deploy Uji LOLOS.
+- Login anti-flash LOLOS.
+- Fallback branding LOLOS.
+
+**Catatan**
+
+Perubahan dibatasi pada `Code.js` dan `index.html`. Master Data cache global, `getSchoolIdentity()`, consumer lain, dan kontrak `getAppInfo()` tidak diubah.
+
+## 2026-08-31
+
 ### Sprint Pengaturan — 3A-3.2 Application Identity Foundation
 
 **Judul**

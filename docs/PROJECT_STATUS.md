@@ -467,7 +467,34 @@ Commit:
 * `getAppInfo()` dapat dipanggil tanpa session.
 * `nama_aplikasi`, `logo_aplikasi`, `favicon`, dan `versi_aplikasi` menjadi sumber identity aplikasi.
 * Alias legacy `appName` dan `logo` dipertahankan untuk backward compatibility.
-* Consumer identity aplikasi belum diintegrasikan ke login, sidebar, title, dan consumer branding lainnya.
+* Consumer identity aplikasi telah diintegrasikan ke Login.
+* Consumer identity aplikasi lainnya seperti Sidebar, Title, dan branding frontend lainnya masih menunggu sprint berikutnya.
+
+✅ Application Identity Consumer Integration — Tahap 1: Login selesai
+
+Commit:
+`dc07d64`
+
+* `nama_aplikasi` telah diintegrasikan ke halaman Login melalui `getAppInfo()`.
+* Nama aplikasi pada Login sekarang configurable per deployment melalui key `nama_aplikasi`.
+* Tagline Login tetap menggunakan branding statis existing dan tidak mengambil `appLongName`.
+* Identity aplikasi dan tagline tidak dicampurkan.
+* Fallback branding Login tetap dipertahankan.
+* `getAppInfo()` tidak diubah sebagai bagian integrasi consumer.
+* Integrasi consumer lainnya seperti Sidebar, Title, dan branding frontend lainnya masih menunggu sprint berikutnya.
+
+✅ Micro-Fix Application Identity Freshness + Login Anti-Flash selesai
+
+Commit:
+`6ee9aeb`
+
+* `getAppInfo()` membaca Sheet `Pengaturan` secara langsung untuk memastikan perubahan `nama_aplikasi` manual tidak tertahan oleh Master Data cache.
+* Kontrak dan return object `getAppInfo()` tetap dipertahankan.
+* Login tidak lagi menampilkan branding lama sebelum identity aplikasi selesai dimuat.
+* Fallback branding tetap dipertahankan apabila pembacaan identity gagal.
+* `appLongName` belum digunakan sebagai tagline Login.
+* `testGetAppInfo()` merupakan micro-test sementara dan telah dihapus setelah pengujian selesai.
+* Deploy Uji dan pengujian freshness serta anti-flash LOLOS.
 
 ### Sistem
 

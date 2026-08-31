@@ -1623,3 +1623,107 @@ Commit
 Catatan
 
 Sprint ini hanya membangun fondasi reader identity aplikasi. Integrasi identity aplikasi ke login, sidebar, title, dan consumer branding lainnya dilakukan pada sprint berikutnya.
+
+# Sprint 3A-3.3 — Application Identity Consumer Integration
+
+Status
+
+DONE
+
+Target
+
+Mengintegrasikan identity aplikasi ke consumer frontend secara bertahap tanpa mencampurkan identity aplikasi dengan identity sekolah.
+
+Fokus
+
+- Mengintegrasikan `nama_aplikasi` ke halaman Login.
+- Menggunakan `getAppInfo()` sebagai reader identity aplikasi pre-login.
+- Mempertahankan fallback branding existing.
+- Tidak menggunakan `appLongName` sebagai tagline Login.
+- Tidak mengubah kontrak `getAppInfo()`.
+
+Hasil
+
+✅ `nama_aplikasi` berhasil digunakan sebagai nama aplikasi pada Login
+
+✅ Identity aplikasi tetap configurable per deployment
+
+✅ Tagline Login tetap menggunakan branding statis existing
+
+✅ Identity aplikasi dan tagline tidak tercampur
+
+✅ Fallback branding tetap dipertahankan
+
+✅ `getSchoolIdentity()` tidak digunakan pada Login
+
+✅ `getAppInfo()` tetap dapat digunakan tanpa session
+
+Validasi
+
+✅ Syntax check LOLOS
+
+✅ Deploy Uji LOLOS
+
+✅ Login branding LOLOS
+
+Commit
+
+`dc07d64` — `feat(identity): integrate application name on login`
+
+Catatan
+
+Integrasi consumer lainnya seperti Sidebar, Title, dan branding frontend lainnya belum dilakukan dan tetap menjadi pekerjaan sprint berikutnya.
+
+
+# Micro-Fix — Application Identity Freshness & Login Anti-Flash
+
+Status
+
+DONE
+
+Target
+
+Memastikan perubahan identity aplikasi terbaca secara fresh pada Login dan menghilangkan branding flash tanpa mengubah kontrak identity aplikasi.
+
+Fokus
+
+- Memastikan `getAppInfo()` tidak menggunakan Master Data cache untuk pembacaan identity aplikasi.
+- Mempertahankan kontrak dan return object `getAppInfo()`.
+- Menghilangkan flash branding lama pada Login.
+- Mempertahankan fallback branding.
+- Tidak mengubah consumer lain.
+- Menghapus micro-test sementara setelah pengujian selesai.
+
+Hasil
+
+✅ `getAppInfo()` membaca Sheet `Pengaturan` secara langsung untuk kebutuhan freshness
+
+✅ Perubahan manual `nama_aplikasi` terbaca tanpa menunggu TTL Master Data cache
+
+✅ Kontrak `getAppInfo()` tetap dipertahankan
+
+✅ Branding flash Login berhasil dihilangkan
+
+✅ Fallback branding tetap dipertahankan
+
+✅ `appLongName` tidak digunakan sebagai tagline Login
+
+✅ `testGetAppInfo()` telah dihapus setelah pengujian
+
+Validasi
+
+✅ Deploy Uji LOLOS
+
+✅ Freshness `nama_aplikasi` LOLOS
+
+✅ Anti-flash Login LOLOS
+
+✅ Fallback branding LOLOS
+
+Commit
+
+`6ee9aeb` — `fix(identity): refresh application branding`
+
+Catatan
+
+Micro-fix ini tidak mengubah `getSchoolIdentity()`, Master Data cache layer secara global, consumer lain, maupun kontrak `getAppInfo()`.
