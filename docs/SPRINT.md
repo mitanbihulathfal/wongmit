@@ -1568,3 +1568,58 @@ Commit
 Status
 
 DONE
+
+---
+
+# Sprint Pengaturan — 3A-3.2 Application Identity Foundation
+
+Status
+
+DONE
+
+Target
+
+Membangun fondasi identity aplikasi yang terpisah dari identity sekolah dan dapat digunakan sebelum login.
+
+Fokus
+
+- Menetapkan `getAppInfo()` sebagai single owner identity aplikasi.
+- Membaca identity aplikasi dari Sheet `Pengaturan`.
+- Mendukung akses tanpa session untuk kebutuhan pre-login.
+- Menetapkan `nama_aplikasi` sebagai sumber nama aplikasi.
+- Mempertahankan alias legacy `appName` dan `logo`.
+- Menjaga pemisahan identity aplikasi dan identity sekolah.
+
+Hasil
+
+✅ `getAppInfo()` membaca konfigurasi melalui `getMasterSheetData("Pengaturan")`
+
+✅ `namaAplikasi` membaca key `nama_aplikasi`
+
+✅ Default `namaAplikasi` = `Administratif Guru`
+
+✅ `appLongName` menggunakan nama universal tanpa nama sekolah
+
+✅ `logoAplikasi`, `favicon`, dan `versiAplikasi` tersedia
+
+✅ Alias legacy `appName` dan `logo` dipertahankan
+
+✅ `getAppInfo()` dapat dipanggil tanpa session
+
+✅ `getSchoolIdentity()` tidak diubah
+
+✅ Consumer frontend belum diubah
+
+✅ Micro-test `getAppInfo()` LOLOS
+
+✅ Deploy Uji LOLOS
+
+✅ Deploy Production LOLOS
+
+Commit
+
+`486eea4`
+
+Catatan
+
+Sprint ini hanya membangun fondasi reader identity aplikasi. Integrasi identity aplikasi ke login, sidebar, title, dan consumer branding lainnya dilakukan pada sprint berikutnya.

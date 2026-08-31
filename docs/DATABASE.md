@@ -70,16 +70,22 @@ Key:
 * `kepala_sekolah`
 * `logo_sekolah`
 
-## IDENTITAS APLIKASI
+## STATUS IDENTITY APLIKASI
+
+Identity aplikasi saat ini dibaca oleh `getAppInfo()`.
 
 Key:
 
-* `nama_aplikasi`
-* `logo_aplikasi`
-* `favicon`
-* `versi_aplikasi`
+* `nama_aplikasi` → `namaAplikasi`
+* `logo_aplikasi` → `logoAplikasi`
+* `favicon` → `favicon`
+* `versi_aplikasi` → `versiAplikasi`
 
-`nama_aplikasi` merupakan key yang direncanakan untuk mendukung nama aplikasi yang dapat dikonfigurasi.
+`getAppInfo()` dapat dipanggil tanpa session karena identity aplikasi diperlukan untuk kebutuhan pre-login.
+
+Alias legacy `appName` dan `logo` masih dipertahankan pada response `getAppInfo()` untuk backward compatibility.
+
+`nama_aplikasi` merupakan key aktif untuk menyimpan nama aplikasi yang dapat dikonfigurasi pada deployment masing-masing.
 
 ## SISTEM
 

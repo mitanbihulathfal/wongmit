@@ -23,6 +23,15 @@ Pemisahan identitas menjadi prinsip arsitektur:
 * Identitas Aplikasi: nama aplikasi, logo aplikasi, favicon, versi aplikasi.
 * Identitas Sekolah: nama sekolah, kepala sekolah, logo sekolah.
 
+Fondasi identity aplikasi telah selesai pada Sprint 3A-3.2:
+
+* `getAppInfo()` menjadi single owner identity aplikasi.
+* Identity aplikasi dapat dibaca tanpa session.
+* `nama_aplikasi` telah menjadi sumber nama aplikasi yang dapat dikonfigurasi.
+* Default universal aplikasi adalah `Administratif Guru`.
+* Identity aplikasi tidak menggunakan nama sekolah sebagai metadata aplikasi.
+* Integrasi identity aplikasi ke consumer frontend belum selesai dan dilanjutkan pada sprint berikutnya.
+
 Roadmap global juga mencakup rencana e-book mata pelajaran, pengelolaan/pengingat PR, dan notifikasi guru.
 
 Modul penilaian tidak direncanakan masuk WONG MIT karena menggunakan RDM.
@@ -438,6 +447,27 @@ Fitur:
 * Logo Aplikasi
 * Favicon
 * Penyimpanan asset menggunakan File ID Google Drive
+
+✅ Dashboard menggunakan Identity Sekolah
+
+Commit:
+`29266bd`
+
+* `nama_sekolah` digunakan sebagai sumber subtitle Dashboard.
+* Kontrak `getSchoolIdentity()` tetap dipertahankan.
+* Fallback branding lama tetap dipertahankan.
+
+✅ Application Identity Foundation selesai
+
+Commit:
+`486eea4`
+
+* `getAppInfo()` menjadi single owner identity aplikasi.
+* Identity aplikasi dibaca dari Sheet `Pengaturan`.
+* `getAppInfo()` dapat dipanggil tanpa session.
+* `nama_aplikasi`, `logo_aplikasi`, `favicon`, dan `versi_aplikasi` menjadi sumber identity aplikasi.
+* Alias legacy `appName` dan `logo` dipertahankan untuk backward compatibility.
+* Consumer identity aplikasi belum diintegrasikan ke login, sidebar, title, dan consumer branding lainnya.
 
 ### Sistem
 

@@ -33,6 +33,49 @@ Catatan
 
 ## 2026-08-31
 
+### Sprint Pengaturan — 3A-3.2 Application Identity Foundation
+
+**Judul**
+
+Implementasi Application Identity Reader
+
+**Perubahan**
+
+- `getAppInfo()` ditetapkan sebagai single owner identity aplikasi.
+- `getAppInfo()` dapat dipanggil tanpa session untuk kebutuhan pre-login.
+- Identity aplikasi dibaca dari Sheet `Pengaturan` melalui `getMasterSheetData("Pengaturan")`.
+- `nama_aplikasi` menjadi sumber `namaAplikasi`.
+- `logo_aplikasi`, `favicon`, dan `versi_aplikasi` menjadi bagian identity aplikasi.
+- Default `namaAplikasi` ditetapkan sebagai `Administratif Guru`, bukan branding WONG MIT dan bukan nama sekolah.
+- `appLongName` menggunakan nilai universal `Aplikasi Administratif Guru Online`.
+- Alias legacy `appName` dan `logo` dipertahankan untuk backward compatibility.
+- Identitas sekolah (`nama_sekolah`, `kepala_sekolah`, `logo_sekolah`) tidak dimasukkan ke dalam kontrak identity aplikasi.
+- Tidak mengubah consumer frontend pada sprint ini.
+
+**Status**
+
+SELESAI
+
+**Commit**
+
+`486eea4`
+
+**Validasi**
+
+- Syntax check LOLOS.
+- Micro-test `getAppInfo()` LOLOS.
+- Pembacaan `nama_aplikasi` dari Sheet LOLOS.
+- Alias `appName` dan `namaAplikasi` konsisten.
+- `versiAplikasi` terbaca dari Sheet.
+- Deploy Uji LOLOS.
+- Deploy Production LOLOS.
+
+**Catatan**
+
+Consumer identity aplikasi seperti login, sidebar, title, dan branding aplikasi akan diintegrasikan pada sprint berikutnya.
+
+## 2026-08-31
+
 ### Sprint Pengaturan — 3A-3.1 Identity Reader Foundation
 
 **Judul**
