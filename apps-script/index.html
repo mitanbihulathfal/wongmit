@@ -3857,7 +3857,58 @@
             "loginAppLogo"
           );
 
-        if (!appName && !appLogo) {
+        const appTagline =
+          document.getElementById(
+            "loginAppTagline"
+          );
+
+        /* =========================
+           ANTI-FLASH BRANDING
+           Fungsi ini dipanggil sinkron
+           pada handler yang sama dengan
+           injeksi innerHTML, sehingga
+           fallback statis "WONG MIT"
+           tidak sempat ter-paint sebelum
+           identity dimuat. Visibility
+           (bukan display) dipakai agar
+           layout tidak melompat.
+        ========================= */
+
+        function sembunyikanBrandingLogin() {
+
+          if (appName) {
+            appName.style.visibility = "hidden";
+          }
+
+          if (appLogo) {
+            appLogo.style.visibility = "hidden";
+          }
+
+          if (appTagline) {
+            appTagline.style.visibility = "hidden";
+          }
+
+        }
+
+        function tampilkanBrandingLogin() {
+
+          if (appName) {
+            appName.style.visibility = "visible";
+          }
+
+          if (appLogo) {
+            appLogo.style.visibility = "visible";
+          }
+
+          if (appTagline) {
+            appTagline.style.visibility = "visible";
+          }
+
+        }
+
+        sembunyikanBrandingLogin();
+
+        if (!appName && !appLogo && !appTagline) {
           return;
         }
 
@@ -3865,7 +3916,11 @@
           .withSuccessHandler(function (info) {
 
             if (!info) {
+
+              tampilkanBrandingLogin();
+
               return;
+
             }
 
             if (appName && info.namaAplikasi) {
@@ -3895,16 +3950,20 @@
 
             }
 
+            tampilkanBrandingLogin();
+
           })
           .withFailureHandler(function (error) {
 
-            /* Fallback branding lama tetap
-               tampil jika getAppInfo() gagal. */
+            /* RPC gagal - fallback branding
+               statis lama ditampilkan kembali. */
 
             console.warn(
               "loadLoginAppInfo:",
               error
             );
+
+            tampilkanBrandingLogin();
 
           })
           .getAppInfo();

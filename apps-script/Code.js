@@ -42,8 +42,11 @@ function doGet() {
  * - Berlaku pada level deployment/platform.
  * - Dapat dipanggil TANPA session (pre-login), karena itu
  *   tidak menggunakan checkRole().
- * - Membaca Sheet Pengaturan (Key | Value) via cache layer
- *   getMasterSheetData("Pengaturan").
+ * - Membaca Sheet Pengaturan (Key | Value) LANGSUNG dari
+ *   Sheet (tanpa cache master) agar perubahan manual pada
+ *   key identity aplikasi terbaca segera, tanpa menunggu
+ *   TTL cache 6 jam. Pola baca langsung ini mengikuti
+ *   preseden Dashboard.js/Rekap.js untuk Sheet Pengaturan.
  * - TIDAK berisi identitas sekolah (nama_sekolah,
  *   kepala_sekolah, logo_sekolah) - pemiliknya
  *   getSchoolIdentity() di Pengaturan.js.
@@ -67,18 +70,35 @@ function doGet() {
 
 function getAppInfo() {
 
-  const data =
-    getMasterSheetData("Pengaturan");
+  /* Baca langsung dari Sheet, bukan lewat
+     getMasterSheetData(), agar identity aplikasi
+     selalu fresh. Cache master (TTL 6 jam) hanya
+     di-invalidate oleh fungsi save, sedangkan
+     perubahan manual pada Sheet Pengaturan tidak
+     menghapus cache. Baca ini hanya terjadi saat
+     halaman login dirender, jadi biayanya kecil. */
+
+  const sheet =
+    SS.getSheetByName("Pengaturan");
 
   const config = {};
 
-  for (let i = 1; i < data.length; i++) {
+  if (sheet) {
 
-    const key =
-      String(data[i][0]).trim();
+    const data =
+      sheet
+        .getDataRange()
+        .getValues();
 
-    if (key) {
-      config[key] = data[i][1];
+    for (let i = 1; i < data.length; i++) {
+
+      const key =
+        String(data[i][0]).trim();
+
+      if (key) {
+        config[key] = data[i][1];
+      }
+
     }
 
   }
