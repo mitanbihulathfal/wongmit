@@ -3930,10 +3930,20 @@
 
             }
 
-            /* Tagline login tidak diisi dari
-               appLongName - mempertahankan
-               branding statis existing di
-               page_login.html. */
+            /* Tagline login diisi dari appLongName
+               (key "tagline_aplikasi") hanya bila
+               terisi - fallback branding statis
+               existing di page_login.html tetap. */
+
+            if (
+              appTagline
+              && info.appLongName
+            ) {
+
+              appTagline.innerText =
+                info.appLongName;
+
+            }
 
             /* Hanya terapkan jika nilai sudah
                berupa URL yang dapat dipakai

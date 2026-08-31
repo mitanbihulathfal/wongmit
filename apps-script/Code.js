@@ -57,8 +57,11 @@ function doGet() {
  *   namaAplikasi  : dari key "nama_aplikasi",
  *                   fallback "Administratif Guru"
  *                   (default universal, bukan WONG MIT)
- *   appLongName   : kepanjangan aplikasi, fallback
- *                   universal tanpa nama sekolah
+ *   appLongName   : dari key "tagline_aplikasi",
+ *                   fallback "Aplikasi Administratif
+ *                   Guru Online" (universal, bukan
+ *                   "Website ONline Guru", bukan
+ *                   nama sekolah)
  *   logoAplikasi  : dari key "logo_aplikasi",
  *                   fallback "" (File ID, tanpa resolver URL)
  *   favicon       : dari key "favicon", fallback ""
@@ -110,6 +113,7 @@ function getAppInfo() {
       "Administratif Guru",
 
     appLongName:
+      config.tagline_aplikasi ||
       "Aplikasi Administratif Guru Online",
 
     logoAplikasi:

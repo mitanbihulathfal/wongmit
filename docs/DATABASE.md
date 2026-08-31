@@ -77,6 +77,7 @@ Identity aplikasi saat ini dibaca oleh `getAppInfo()`.
 Key:
 
 * `nama_aplikasi` → `namaAplikasi`
+* `tagline_aplikasi` → `appLongName`
 * `logo_aplikasi` → `logoAplikasi`
 * `favicon` → `favicon`
 * `versi_aplikasi` → `versiAplikasi`
