@@ -1,321 +1,369 @@
 <div class="pengaturan-page">
 
   <!-- HEADER -->
-
   <div class="pengaturan-header">
-
     <div class="pengaturan-header-icon">
-
       <i class="fa-solid fa-gear"></i>
-
     </div>
-
     <div>
-
-      <h3 class="fw-bold mb-1">
-        Pengaturan
-      </h3>
-
-      <div class="text-muted">
-        Kelola konfigurasi WONG MIT
-      </div>
-
+      <h3 class="fw-bold mb-1">Pengaturan</h3>
+      <div class="text-muted">Kelola konfigurasi WONG MIT</div>
     </div>
-
   </div>
-
 
   <!-- INFO -->
-
   <div class="pengaturan-info">
-
     <i class="fa-solid fa-sliders"></i>
-
-    <span>
-      4 Menu Pengaturan
-    </span>
-
+    <span>4 Menu Pengaturan</span>
   </div>
-
 
   <!-- MENU -->
-
   <div id="pengaturanPreviewView">
+    <div class="row g-3 mt-1">
 
-  <div class="row g-3 mt-1">
-
-
-    <!-- AKADEMIK -->
-
-    <div class="col-12 col-md-6">
-
-      <div class="pengaturan-card" data-pengaturan-card="akademik" role="button" tabindex="0" aria-label="Buka detail Pengaturan Akademik">
-
-        <div class="pengaturan-icon
-                 pengaturan-icon-akademik">
-
-          <i class="fa-solid fa-book-open"></i>
-
-        </div>
-
-        <div class="pengaturan-card-content">
-
-          <h5>
-
-            Akademik
-
-          </h5>
-
-          <div id="academicContainer" class="pengaturan-preview">
-
-            <div>
-
-              <strong>
-
-                Tahun Ajaran
-
-              </strong>
-
-              <span id="previewTahunAjaran">
-
-                -
-
-              </span>
-
-            </div>
-
-            <div>
-
-              <strong>
-
-                Semester
-
-              </strong>
-
-              <span id="previewSemester">
-
-                -
-
-              </span>
-
-            </div>
-
-            <div>
-
-              <strong>
-
-                Hari Libur
-
-              </strong>
-
-              <span id="previewHariLibur">
-
-                -
-
-              </span>
-
-            </div>
-
+      <!-- AKADEMIK -->
+      <div class="col-12 col-md-6">
+        <div class="pengaturan-card" data-pengaturan-card="akademik" role="button" tabindex="0" aria-label="Buka detail Pengaturan Akademik">
+          <div class="pengaturan-icon pengaturan-icon-akademik">
+            <i class="fa-solid fa-book-open"></i>
           </div>
-
-
-        </div>
-
-
-        <div class="pengaturan-arrow">
-
-          <i class="fa-solid fa-chevron-right"></i>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- SEKOLAH -->
-
-    <div class="col-12 col-md-6">
-
-      <div class="pengaturan-card" data-pengaturan-card="sekolah" role="button" tabindex="0" aria-label="Buka detail Pengaturan Sekolah">
-
-        <div class="pengaturan-icon
-                 pengaturan-icon-sekolah">
-
-          <i class="fa-solid fa-school"></i>
-
-        </div>
-
-
-        <div class="pengaturan-card-content">
-
-          <h5>
-            Sekolah
-          </h5>
-
-          <div id="schoolContainer" class="pengaturan-preview">
-
-            <div>
-
-              <strong>
-
-                Nama Sekolah
-
-              </strong>
-
-              <span id="previewNamaSekolah">
-
-                -
-
-              </span>
-
+          <div class="pengaturan-card-content">
+            <h5>Akademik</h5>
+            <div id="academicContainer" class="pengaturan-preview">
+              <div><strong>Tahun Ajaran</strong><span id="previewTahunAjaran">-</span></div>
+              <div><strong>Semester</strong><span id="previewSemester">-</span></div>
+              <div><strong>Hari Libur</strong><span id="previewHariLibur">-</span></div>
             </div>
-
-            <div>
-
-              <strong>
-
-                Kepala Sekolah
-
-              </strong>
-
-              <span id="previewKepalaSekolah">
-
-                -
-
-              </span>
-
-            </div>
-
           </div>
-
+          <div class="pengaturan-arrow"><i class="fa-solid fa-chevron-right"></i></div>
         </div>
+      </div>
 
-
-        <div class="pengaturan-arrow">
-
-          <i class="fa-solid fa-chevron-right"></i>
-
+      <!-- SEKOLAH -->
+      <div class="col-12 col-md-6">
+        <div class="pengaturan-card" data-pengaturan-card="sekolah" role="button" tabindex="0" aria-label="Buka detail Pengaturan Sekolah">
+          <div class="pengaturan-icon pengaturan-icon-sekolah">
+            <i class="fa-solid fa-school"></i>
+          </div>
+          <div class="pengaturan-card-content">
+            <h5>Sekolah</h5>
+            <div id="schoolContainer" class="pengaturan-preview">
+              <div><strong>Nama Sekolah</strong><span id="previewNamaSekolah">-</span></div>
+              <div><strong>Kepala Sekolah</strong><span id="previewKepalaSekolah">-</span></div>
+            </div>
+          </div>
+          <div class="pengaturan-arrow"><i class="fa-solid fa-chevron-right"></i></div>
         </div>
+      </div>
 
+      <!-- SISTEM -->
+      <div class="col-12 col-md-6">
+        <div class="pengaturan-card" data-pengaturan-card="sistem" role="button" tabindex="0" aria-label="Buka detail Pengaturan Sistem">
+          <div class="pengaturan-icon pengaturan-icon-sistem">
+            <i class="fa-solid fa-database"></i>
+          </div>
+          <div class="pengaturan-card-content">
+            <h5>Sistem</h5>
+            <div id="systemContainer" class="pengaturan-preview">
+              <div><strong>Aplikasi</strong><span id="previewNamaAplikasi">-</span></div>
+              <div><strong>Versi</strong><span id="previewVersiAplikasi">-</span></div>
+              <div><strong>Status</strong><span id="previewModeMaintenance">-</span></div>
+            </div>
+          </div>
+          <div class="pengaturan-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+      </div>
+
+      <!-- TAHUN AJARAN -->
+      <div class="col-12 col-md-6">
+        <div class="pengaturan-card" data-pengaturan-card="tahun-ajaran" role="button" tabindex="0" aria-label="Buka detail Pengaturan Tahun Ajaran">
+          <div class="pengaturan-icon pengaturan-icon-tahun">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div class="pengaturan-card-content">
+            <h5>Tahun Ajaran</h5>
+            <p>Naik Kelas, Kelulusan, dan Arsip Data</p>
+          </div>
+          <div class="pengaturan-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
       </div>
 
     </div>
-
-
-    <!-- SISTEM -->
-
-    <div class="col-12 col-md-6">
-
-      <div class="pengaturan-card" data-pengaturan-card="sistem" role="button" tabindex="0" aria-label="Buka detail Pengaturan Sistem">
-
-        <div class="pengaturan-icon
-                 pengaturan-icon-sistem">
-
-          <i class="fa-solid fa-database"></i>
-
-        </div>
-
-
-        <div class="pengaturan-card-content">
-
-          <h5>
-            Sistem
-          </h5>
-
-          <p>
-            Backup, Restore,
-            dan Log Aktivitas
-          </p>
-
-        </div>
-
-
-        <div class="pengaturan-arrow">
-
-          <i class="fa-solid fa-chevron-right"></i>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- TAHUN AJARAN -->
-
-    <div class="col-12 col-md-6">
-
-      <div class="pengaturan-card" data-pengaturan-card="tahun-ajaran" role="button" tabindex="0" aria-label="Buka detail Pengaturan Tahun Ajaran">
-
-        <div class="pengaturan-icon
-                 pengaturan-icon-tahun">
-
-          <i class="fa-solid fa-graduation-cap"></i>
-
-        </div>
-
-
-        <div class="pengaturan-card-content">
-
-          <h5>
-            Tahun Ajaran
-          </h5>
-
-          <p>
-            Naik Kelas, Kelulusan,
-            dan Arsip Data
-          </p>
-
-        </div>
-
-
-        <div class="pengaturan-arrow">
-
-          <i class="fa-solid fa-chevron-right"></i>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-  </div>
-
   </div>
 
   <section id="pengaturanDetailView" class="d-none" aria-live="polite">
-
     <div class="pengaturan-detail">
-
       <div class="pengaturan-detail-header">
-
-        <button type="button" class="btn btn-outline-secondary btn-sm"
-          data-pengaturan-action="back">
-
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-pengaturan-action="back">
           <i class="fa-solid fa-arrow-left"></i>
-
           Kembali
-
         </button>
-
         <div>
-
           <h4 id="pengaturanDetailTitle" class="mb-1"></h4>
-
           <p id="pengaturanDetailDescription" class="text-muted mb-0"></p>
-
         </div>
-
       </div>
-
       <div id="pengaturanDetailContent" class="pengaturan-detail-content"></div>
-
       <div id="pengaturanDetailActions" class="pengaturan-detail-actions"></div>
-
     </div>
-
   </section>
 
 </div>
+
+<!--
+  SPRINT 4B — CARD SISTEM UI FOUNDATION
+  Scope 4B:
+  - Preview + Detail + Edit untuk identity aplikasi.
+  - Nama Aplikasi dan Tagline Aplikasi editable.
+  - Versi, Mode Maintenance, Logo Aplikasi, Favicon ditampilkan sebagai status/read-only.
+  - Upload/delete asset belum dilakukan di 4B; menjadi scope 4C Asset Management.
+  - Maintenance action, Backup, Restore, dan Log Aktivitas tetap di sprint berikutnya.
+
+  Script ini memakai event delegation fase capture agar tidak mengubah
+  js_pengaturan.html yang sudah stabil pada Sprint 3. Tidak mengubah
+  kontrak Pengaturan Sekolah/Akademik.
+-->
+<script>
+(function () {
+  "use strict";
+
+  var systemData = null;
+  var systemDetailActive = false;
+
+  function sessionId() {
+    return localStorage.getItem("wongmit_session");
+  }
+
+  function setSystemPreview(data) {
+    var nama = document.getElementById("previewNamaAplikasi");
+    var versi = document.getElementById("previewVersiAplikasi");
+    var status = document.getElementById("previewModeMaintenance");
+
+    if (!data) {
+      if (nama) nama.innerText = "Khusus Admin";
+      if (versi) versi.innerText = "-";
+      if (status) status.innerText = "-";
+      return;
+    }
+
+    if (nama) nama.innerText = data.namaAplikasi || "-";
+    if (versi) versi.innerText = data.versiAplikasi || "-";
+    if (status) status.innerText = data.modeMaintenance ? "Maintenance" : "Normal";
+  }
+
+  function loadSystemPreview() {
+    var sid = sessionId();
+    if (!sid) {
+      setSystemPreview(null);
+      return;
+    }
+
+    google.script.run
+      .withSuccessHandler(function (data) {
+        systemData = data || {};
+        setSystemPreview(systemData);
+      })
+      .withFailureHandler(function () {
+        setSystemPreview(null);
+      })
+      .getSystemSettings(sid);
+  }
+
+  function renderSystemDetail() {
+    if (!systemData) {
+      showToast("Pengaturan Sistem hanya dapat diakses Admin", "warning");
+      return;
+    }
+
+    var content = document.getElementById("pengaturanDetailContent");
+    var actions = document.getElementById("pengaturanDetailActions");
+    if (!content || !actions) return;
+
+    systemDetailActive = true;
+    document.getElementById("pengaturanPreviewView").classList.add("d-none");
+    document.getElementById("pengaturanDetailView").classList.remove("d-none");
+    document.getElementById("pengaturanDetailTitle").innerText = "Pengaturan Sistem";
+    document.getElementById("pengaturanDetailDescription").innerText = "Identitas aplikasi dan status sistem.";
+
+    content.className = "pengaturan-detail-content";
+    content.innerHTML = `
+      <div class="pengaturan-detail-list">
+        <div><strong>Nama Aplikasi</strong><span>${escapeHtml(systemData.namaAplikasi || "-")}</span></div>
+        <div><strong>Tagline Aplikasi</strong><span>${escapeHtml(systemData.taglineAplikasi || "-")}</span></div>
+        <div><strong>Versi Aplikasi</strong><span>${escapeHtml(systemData.versiAplikasi || "-")}</span></div>
+        <div><strong>Mode Maintenance</strong><span>${systemData.modeMaintenance ? "Aktif" : "Normal"}</span></div>
+        <div><strong>Logo Aplikasi (File ID)</strong><span>${escapeHtml(systemData.logoAplikasi || "-")}</span></div>
+        <div><strong>Favicon (File ID)</strong><span>${escapeHtml(systemData.favicon || "-")}</span></div>
+      </div>
+    `;
+
+    actions.innerHTML = `
+      <button type="button" class="btn btn-primary" data-pengaturan-action="edit-sistem">
+        <i class="fa-solid fa-pen"></i> Edit
+      </button>
+    `;
+  }
+
+  function renderSystemEdit() {
+    if (!systemData) return;
+
+    var content = document.getElementById("pengaturanDetailContent");
+    var actions = document.getElementById("pengaturanDetailActions");
+    if (!content || !actions) return;
+
+    content.className = "pengaturan-detail-content pengaturan-edit";
+    content.innerHTML = `
+      <div class="mb-3">
+        <strong>Nama Aplikasi</strong>
+        <input id="editNamaAplikasi" class="form-control mt-1" maxlength="100" value="${escapeHtml(systemData.namaAplikasi || "")}">
+      </div>
+
+      <div class="mb-3">
+        <strong>Tagline Aplikasi</strong>
+        <input id="editTaglineAplikasi" class="form-control mt-1" maxlength="150" value="${escapeHtml(systemData.taglineAplikasi || "")}">
+      </div>
+
+      <div class="mb-3">
+        <strong>Versi Aplikasi</strong>
+        <input class="form-control mt-1" value="${escapeHtml(systemData.versiAplikasi || "-")}" readonly>
+        <div class="form-text">Dikelola saat rilis aplikasi; bukan pengaturan harian.</div>
+      </div>
+
+      <div class="mb-3">
+        <strong>Mode Maintenance</strong>
+        <input class="form-control mt-1" value="${systemData.modeMaintenance ? "Aktif" : "Normal"}" readonly>
+        <div class="form-text">Kontrol Maintenance dikerjakan pada tahap berikutnya.</div>
+      </div>
+
+      <div class="mb-3">
+        <strong>Logo Aplikasi</strong>
+        <input class="form-control mt-1" value="${escapeHtml(systemData.logoAplikasi || "")}" readonly placeholder="Belum ada File ID">
+        <div class="form-text">Upload dan pengelolaan asset dikerjakan pada Sprint 4C.</div>
+      </div>
+
+      <div class="mb-3">
+        <strong>Favicon</strong>
+        <input class="form-control mt-1" value="${escapeHtml(systemData.favicon || "")}" readonly placeholder="Belum ada File ID">
+        <div class="form-text">Upload dan pengelolaan asset dikerjakan pada Sprint 4C.</div>
+      </div>
+    `;
+
+    actions.innerHTML = `
+      <button id="btnSimpanSistem" type="button" class="btn btn-success" data-pengaturan-action="save-sistem">
+        <i class="fa-solid fa-floppy-disk"></i> Simpan
+      </button>
+      <button type="button" class="btn btn-secondary btn-sm" data-pengaturan-action="cancel-sistem">
+        Batal
+      </button>
+    `;
+  }
+
+  function saveSystem() {
+    var btn = document.getElementById("btnSimpanSistem");
+    var nama = document.getElementById("editNamaAplikasi");
+    var tagline = document.getElementById("editTaglineAplikasi");
+    if (!nama || !tagline) return;
+
+    var namaValue = nama.value.trim();
+    var taglineValue = tagline.value.trim();
+
+    if (!namaValue) {
+      showToast("Nama Aplikasi wajib diisi", "warning");
+      return;
+    }
+
+    showConfirmModal(
+      "Simpan Pengaturan Sistem",
+      "Yakin ingin menyimpan perubahan Nama Aplikasi dan Tagline Aplikasi?",
+      function () {
+        setButtonLoading(btn, "Menyimpan...");
+
+        google.script.run
+          .withSuccessHandler(function () {
+            resetButtonLoading(btn);
+            showToast("Pengaturan Sistem berhasil disimpan");
+            loadSystemPreview();
+            google.script.run
+              .withSuccessHandler(function (data) {
+                systemData = data || {};
+                renderSystemDetail();
+              })
+              .withFailureHandler(function () {
+                systemData = null;
+                kembaliDariSistem();
+              })
+              .getSystemSettings(sessionId());
+          })
+          .withFailureHandler(function (error) {
+            resetButtonLoading(btn);
+            showToast(
+              error && error.message ? error.message : "Gagal menyimpan Pengaturan Sistem",
+              "error"
+            );
+          })
+          .saveSystemSettings(sessionId(), {
+            namaAplikasi: namaValue,
+            taglineAplikasi: taglineValue
+          });
+      }
+    );
+  }
+
+  function kembaliDariSistem() {
+    systemDetailActive = false;
+    var preview = document.getElementById("pengaturanPreviewView");
+    var detail = document.getElementById("pengaturanDetailView");
+    if (!preview || !detail) return;
+    detail.classList.add("d-none");
+    preview.classList.remove("d-none");
+    loadSystemPreview();
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  document.addEventListener("click", function (event) {
+    var card = event.target.closest('[data-pengaturan-card="sistem"]');
+    var action = event.target.closest("[data-pengaturan-action]");
+
+    if (card) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      renderSystemDetail();
+      return;
+    }
+
+    if (!action || !systemDetailActive) return;
+
+    var name = action.dataset.pengaturanAction;
+
+    if (name === "back" || name === "cancel-sistem") {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      kembaliDariSistem();
+      return;
+    }
+
+    if (name === "edit-sistem") {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      renderSystemEdit();
+      return;
+    }
+
+    if (name === "save-sistem") {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      saveSystem();
+    }
+  }, true);
+
+  loadSystemPreview();
+})();
+</script>
