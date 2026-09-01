@@ -8,6 +8,8 @@
 
   let pengaturanSekolahData = null;
 
+  let pengaturanSistemData = null;
+
   /* State asset logo sekolah -
      aktif hanya saat mode Edit.
      Upload BUKAN commit - [Simpan]
@@ -24,7 +26,7 @@
   const pengaturanDetailMeta = {
     akademik: {title: "Pengaturan Akademik", description: "Tahun ajaran, semester, dan hari libur sekolah."},
     sekolah: {title: "Pengaturan Sekolah", description: "Nama sekolah, kepala sekolah, dan logo sekolah."},
-    sistem: {title: "Pengaturan Sistem", description: "Konfigurasi sistem akan tersedia pada sprint berikutnya."},
+    sistem: {title: "Pengaturan Sistem", description: "Konfigurasi aplikasi, status sistem, dan backup/restore data."},
     "tahun-ajaran": {title: "Pengaturan Tahun Ajaran", description: "Proses naik kelas, kelulusan, dan arsip akan tersedia pada sprint berikutnya."}
   };
 
@@ -57,6 +59,11 @@
 
     if (type === "sekolah") {
       tampilkanDetailSekolah();
+      return;
+    }
+
+    if (type === "sistem") {
+      tampilkanDetailSistem();
       return;
     }
 
@@ -243,6 +250,8 @@
      * sama tanpa mengubah index.html.
      */
     loadSchoolIdentity();
+
+    loadSystemSettings();
 
     google.script.run
 
@@ -713,6 +722,58 @@
       "previewLogoSekolah",
       pengaturanSekolahData.logoSekolahUrl
     );
+
+  }
+
+  function tampilkanDetailSistem() {
+
+    const content =
+      document.getElementById("pengaturanDetailContent");
+    const actions =
+      document.getElementById("pengaturanDetailActions");
+
+    content.className = "pengaturan-detail-content";
+    content.innerHTML = `
+      <div class="pengaturan-detail-list">
+        <div><strong>Nama Aplikasi</strong><span id="detailNamaAplikasi">-</span></div>
+        <div><strong>Tagline Aplikasi</strong><span id="detailTaglineAplikasi">-</span></div>
+        <div><strong>Versi Aplikasi</strong><span id="detailVersiAplikasi">-</span></div>
+        <div><strong>Logo Aplikasi (File ID)</strong><span id="detailLogoAplikasi">-</span></div>
+        <div><strong>Favicon (File ID)</strong><span id="detailFavicon">-</span></div>
+        <div><strong>Mode Maintenance</strong><span id="detailModeMaintenance">-</span></div>
+      </div>
+    `;
+    actions.innerHTML = `
+      <button type="button" class="btn btn-secondary" disabled aria-disabled="true">
+        <i class="fa-solid fa-pen"></i> Edit belum tersedia
+      </button>
+    `;
+    perbaruiDetailSistem();
+
+  }
+
+  function perbaruiDetailSistem() {
+
+    if (!pengaturanSistemData) {
+      return;
+    }
+
+    [
+      ["detailNamaAplikasi", pengaturanSistemData.namaAplikasi],
+      ["detailTaglineAplikasi", pengaturanSistemData.taglineAplikasi],
+      ["detailVersiAplikasi", pengaturanSistemData.versiAplikasi],
+      ["detailLogoAplikasi", pengaturanSistemData.logoAplikasi],
+      ["detailFavicon", pengaturanSistemData.favicon],
+      ["detailModeMaintenance", pengaturanSistemData.modeMaintenance ? "Aktif" : "Nonaktif"]
+    ]
+      .forEach(function (field) {
+        const detail =
+          document.getElementById(field[0]);
+
+        if (detail) {
+          detail.innerText = field[1] || "-";
+        }
+      });
 
   }
 
@@ -1801,6 +1862,52 @@
       })
 
       .getSchoolIdentity(
+        localStorage.getItem(
+          "wongmit_session"
+        )
+      );
+
+  }
+
+  function loadSystemSettings() {
+
+    google.script.run
+
+      .withSuccessHandler(function (data) {
+
+        pengaturanSistemData = data;
+
+        const nama =
+          document.getElementById(
+            "previewNamaAplikasi"
+          );
+
+        const versi =
+          document.getElementById(
+            "previewVersiAplikasi"
+          );
+
+        if (nama) {
+
+          nama.innerText =
+            data.namaAplikasi || "-";
+
+        }
+
+        if (versi) {
+
+          versi.innerText =
+            data.versiAplikasi || "-";
+
+        }
+
+        if (pengaturanDetailType === "sistem" && !document.getElementById("detailNamaAplikasi")) {
+          perbaruiDetailSistem();
+        }
+
+      })
+
+      .getSystemSettings(
         localStorage.getItem(
           "wongmit_session"
         )

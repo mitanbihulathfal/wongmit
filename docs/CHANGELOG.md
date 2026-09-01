@@ -905,6 +905,85 @@ Belum dilakukan (belum di-commit).
 
 Catatan
 
+---
+
+## 2026-09-01
+
+### Sprint 4A — System Settings Backend Foundation
+
+**Judul**
+
+Backend Foundation untuk Card Sistem
+
+**Perubahan**
+
+- Menambahkan fungsi `getSystemSettings(sessionId)` pada `apps-script/Sistem.js`.
+- Fungsi membaca Sheet `Pengaturan` dan mengembalikan object dengan field: `namaAplikasi`, `taglineAplikasi`, `logoAplikasi`, `favicon`, `versiAplikasi`, `modeMaintenance`.
+- Authorization: Admin-only access via `checkRole(["Admin"])`.
+- Menambahkan fungsi `saveSystemSettings(sessionId, data)` untuk persiapan fase edit sprint berikutnya.
+- Menambahkan helper `updateSettingValue()` untuk update atomicity Sheet `Pengaturan`.
+- Cache invalidation: `invalidateMasterCache("Pengaturan")`.
+- Tidak ada perubahan frontend pada 4A.
+- Tidak ada perubahan database struktur Sheet.
+
+**Status**
+
+SELESAI
+
+**Validasi**
+
+- Syntax check LOLOS
+- Authorization check LOLOS
+- Backend contract LOLOS
+- Cache invalidation LOLOS
+
+**Catatan**
+
+Sprint 4A murni backend foundation tanpa UI. Integrasi UI Card Sistem dilakukan pada Sprint 4B. Field konfigurasi sudah tersedia dari backend namun edit/upload/toggle functionality dilakukan pada fase berikutnya.
+
+---
+
+### Sprint 4B — Card Sistem UI / Read-Only
+
+**Judul**
+
+Card Sistem dengan Display Read-Only dari Backend
+
+**Perubahan**
+
+- Mengubah `apps-script/page_pengaturan.html`: Card Sistem preview container ditambahkan dengan menampilkan Nama Aplikasi dan Versi Aplikasi.
+- Mengubah `apps-script/js_pengaturan.html`: Menambahkan fungsi load, detail, dan update untuk Card Sistem.
+  - Fungsi `loadSystemSettings()`: Call backend `getSystemSettings()`, isi `pengaturanSistemData`, update preview elements.
+  - Fungsi `tampilkanDetailSistem()`: Render detail view Card Sistem sebagai read-only display.
+  - Fungsi `perbaruiDetailSistem()`: Update detail view content dari `pengaturanSistemData`.
+  - Router update: `bukaPengaturanDetail()` handle tipe "sistem".
+- Menambahkan state variable `pengaturanSistemData` untuk menyimpan hasil backend.
+- Detail view menampilkan: Nama Aplikasi, Tagline Aplikasi, Versi Aplikasi, Logo Aplikasi (File ID), Favicon (File ID), Mode Maintenance (status).
+- Edit button tersedia namun disabled pada 4B (rencana aktivasi 4C).
+- Konsistensi UI dengan pola Card Akademik dan Card Sekolah (Preview → Detail → Edit flow).
+- Tidak ada upload asset pada 4B.
+- Tidak ada edit/save functionality pada 4B.
+
+**Status**
+
+SELESAI
+
+**Validasi**
+
+- Syntax check LOLOS
+- git diff --check LOLOS
+- Deploy Uji LOLOS
+- No regressions pada Card Akademik/Sekolah
+- Frozen modules tetap untouched
+
+**Commit**
+
+`docs: close Sprint 4B Card Sistem`
+
+**Catatan**
+
+Sprint 4B fokus HANYA pada display/read-only. Implementasi edit/save, upload asset, maintenance toggle, backup/restore, dan log aktivitas adalah scope sprint-sprint berikutnya (4C untuk Asset Management, POST-4C untuk Maintenance/Backup/Restore/Log).
+
 - Verifikasi: `git diff` menampilkan 451 deletions dan 11 insertions.
 - 11 insertions tersebut adalah 2 blok komentar DRAFT yang sudah dibuat sebelumnya oleh user untuk `getAppInfo` dan `getRelasiMengajar`, bukan bagian dari cleanup 10 fungsi.
 - `node --check Code.js` LOLOS.

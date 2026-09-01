@@ -92,9 +92,25 @@ Alias legacy `appName` dan `logo` masih dipertahankan pada response `getAppInfo(
 
 Key:
 
-* `mode_maintenance`
+* `mode_maintenance` → `modeMaintenance`
 
-Key ini tersedia pada database tetapi belum menjadi consumer aktif sampai Sprint Pengaturan Sistem selesai.
+Field identity aplikasi yang dikelola melalui Card Sistem:
+
+* `nama_aplikasi` → `namaAplikasi`
+* `tagline_aplikasi` → `taglineAplikasi`
+* `logo_aplikasi` → `logoAplikasi`
+* `favicon` → `favicon`
+* `versi_aplikasi` → `versiAplikasi`
+
+**Status konsumer:**
+
+* Sprint 4A: Backend `getSystemSettings(sessionId)` — Admin-only, membaca seluruh field Sistem.
+* Sprint 4B: Card Sistem UI — Display read-only field Sistem pada halaman Pengaturan.
+* Sprint 4C+: Edit/upload asset (rencana) — Upload logo aplikasi, upload favicon, toggle maintenance mode.
+
+**Catatan:**
+
+`mode_maintenance`, `logo_aplikasi`, dan `favicon` sudah menjadi bagian dari `getSystemSettings()` namun edit/upload/toggle functionality masih dalam roadmap sprint berikutnya.
 
 ## AKADEMIK
 

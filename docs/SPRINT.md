@@ -2032,3 +2032,149 @@ Catatan:
 `logo_aplikasi` dan `favicon` sudah didukung pada level konfigurasi/reader dan consumer logo aplikasi, tetapi pengelolaan UI-nya belum dikerjakan pada Sprint 3. Pengelolaan tersebut menjadi bagian Sprint 4 — Card Sistem.
 
 Sprint 3 ditutup pada level fitur dan audit. Dokumentasi Sprint 3 menjadi baseline untuk Sprint 4.
+
+---
+
+# Sprint 4A — System Settings Backend Foundation
+
+Status
+
+DONE
+
+Target
+
+Membangun backend foundation untuk Card Sistem yang menjadi pusat konfigurasi aplikasi (identity aplikasi, maintenance, backup, restore, log aktivitas).
+
+Fokus
+
+- Fungsi `getSystemSettings(sessionId)` membaca Sheet `Pengaturan` dan mengembalikan konfigurasi sistem
+- Membaca field identity aplikasi: `nama_aplikasi`, `tagline_aplikasi`, `logo_aplikasi`, `favicon`, `versi_aplikasi`
+- Membaca field sistem: `mode_maintenance`
+- Authorization: Admin-only access (`checkRole(["Admin"])`)
+- Fungsi `saveSystemSettings(sessionId, data)` untuk persiapan fase edit (diterapkan pada sprint berikutnya)
+- Helper `updateSettingValue()` untuk atomicity update Sheet Pengaturan
+- Cache invalidation: `invalidateMasterCache("Pengaturan")`
+
+Hasil
+
+✅ Backend `getSystemSettings()` selesai dan siap digunakan
+
+✅ Authorization dan role check diterapkan dengan aman
+
+✅ Kontrak return object jelas: `{namaAplikasi, taglineAplikasi, logoAplikasi, favicon, versiAplikasi, modeMaintenance}`
+
+✅ Fungsi `saveSystemSettings()` sudah tersedia untuk fase edit sprint berikutnya (belum digunakan 4A)
+
+✅ Helper update atomicity sudah disiapkan
+
+✅ Database struktur Sheet `Pengaturan` tidak berubah — tetap Key/Value
+
+✅ Tidak ada perubahan frontend pada 4A
+
+✅ Tidak ada perubahan consumer lain
+
+Validasi
+
+✅ Syntax check LOLOS
+
+✅ Authorization check LOLOS
+
+✅ Backend return contract LOLOS
+
+✅ Cache invalidation LOLOS
+
+Commit
+
+Bagian dari dokumentasi checkpoint 4A.
+
+Catatan
+
+Sprint 4A murni backend foundation tanpa UI. Integrasi UI Card Sistem dilakukan pada Sprint 4B. Field `mode_maintenance`, `logo_aplikasi`, dan `favicon` sudah tersedia dari backend 4A namun edit/upload/toggle functionality dilakukan pada fase berikutnya (4C untuk Asset Management, POST-4C untuk Maintenance Mode).
+
+---
+
+# Sprint 4B — Card Sistem UI / Read-Only
+
+Status
+
+DONE
+
+Target
+
+Menampilkan Card Sistem pada halaman Pengaturan dengan data read-only yang diambil dari backend `getSystemSettings()` yang sudah ada.
+
+Fokus
+
+- Card Sistem preview: menampilkan Nama Aplikasi dan Versi Aplikasi
+- Detail view: menampilkan seluruh field sistem (Nama Aplikasi, Tagline, Versi, Logo Aplikasi, Favicon, Mode Maintenance) sebagai read-only display
+- Edit button disabled pada 4B (rencana 4C untuk aktivasi Asset Management dan perubahan data)
+- Konsistensi UI dengan pola Card Akademik dan Card Sekolah yang sudah ada (Preview → Detail → Edit flow)
+- Tidak ada upload asset pada 4B
+- Tidak ada edit/save functionality pada 4B
+- Tidak ada backup/restore/log aktivitas pada 4B
+
+File yang Diubah
+
+- `apps-script/page_pengaturan.html`: Card Sistem preview container ditambahkan
+- `apps-script/js_pengaturan.html`: Fungsi load, detail, dan update ditambahkan
+
+Hasil
+
+✅ Card Sistem tampil di halaman Pengaturan bersama card lainnya
+
+✅ Preview menampilkan: Nama Aplikasi + Versi Aplikasi
+
+✅ Klik Card Sistem membuka Detail view
+
+✅ Detail view menampilkan: Nama Aplikasi, Tagline Aplikasi, Versi Aplikasi, Logo Aplikasi (File ID), Favicon (File ID), Mode Maintenance (status)
+
+✅ Edit button tersedia namun disabled (rencana aktivasi 4C)
+
+✅ Data dimuat otomatis saat halaman Pengaturan dibuka via `loadSystemSettings()`
+
+✅ Backend integration: `getSystemSettings()` dipanggil dengan authorization Admin-only
+
+✅ Navigation: klik back dari detail kembali ke preview
+
+✅ Tidak ada modul frozen yang tersentuh
+
+✅ Tidak ada regression pada Card Akademik/Sekolah
+
+✅ Syntax check LOLOS
+
+✅ git diff --check LOLOS
+
+✅ Deploy Uji LOLOS
+
+Fungsi-Fungsi Ditambahkan
+
+- `loadSystemSettings()`: Call `getSystemSettings()` backend, isi `pengaturanSistemData`, update preview elements
+- `tampilkanDetailSistem()`: Render detail view Card Sistem (read-only)
+- `perbaruiDetailSistem()`: Update detail view content dari `pengaturanSistemData`
+- Router update: `bukaPengaturanDetail()` handle tipe "sistem"
+
+State Variable Ditambahkan
+
+- `pengaturanSistemData`: Menyimpan object hasil `getSystemSettings()`
+
+Validasi
+
+✅ Preview container HTML sesuai pola existing
+
+✅ Element IDs konsisten dan terhubung dengan JS
+
+✅ RPC call aman dengan authorization existing
+
+✅ Read-only display tanpa input form
+
+✅ Edit button disabled (tidak ada handler untuk 4B)
+
+✅ Navigation flow konsisten dengan card lain
+
+Commit
+
+`docs: close Sprint 4B Card Sistem`
+
+Catatan
+
+Sprint 4B fokus HANYA pada display/read-only. Implementasi edit/save, upload asset, maintenance toggle, backup/restore, dan log aktivitas adalah scope sprint-sprint berikutnya. Field `mode_maintenance`, `logo_aplikasi`, `favicon` sudah ditampilkan statusnya namun belum editable pada 4B.

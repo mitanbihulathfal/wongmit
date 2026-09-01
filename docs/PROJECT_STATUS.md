@@ -512,14 +512,38 @@ Commit:
 
 ### Sistem
 
-⏳ Belum dimulai
+✅ Sprint 4A — Backend Foundation selesai
 
-Rencana:
+Commit:
+Bagian dari dokumentasi checkpoint 4A/4B
 
-* Backup
-* Restore
-* Log Aktivitas
-* Maintenance configuration
+* `getSystemSettings(sessionId)` menjadi reader konfigurasi sistem.
+* Field identity aplikasi: `nama_aplikasi`, `tagline_aplikasi`, `logo_aplikasi`, `favicon`, `versi_aplikasi`.
+* Field sistem: `mode_maintenance`.
+* Authorization: Admin-only access.
+* Backend `saveSystemSettings()` sudah tersedia untuk fase edit sprint berikutnya.
+* Tidak ada UI pada sprint 4A — backend foundation only.
+
+✅ Sprint 4B — Card Sistem UI / Read-Only selesai
+
+Deploy Uji:
+LOLOS
+
+Fitur:
+
+* Card Sistem tampil di halaman Pengaturan dengan pola Preview → Detail → Edit (konsisten dengan Card Akademik/Sekolah).
+* Preview menampilkan: Nama Aplikasi dan Versi Aplikasi.
+* Detail view menampilkan: Nama Aplikasi, Tagline Aplikasi, Versi Aplikasi, Logo Aplikasi (File ID), Favicon (File ID), Mode Maintenance (status).
+* Edit button tersedia namun disabled pada 4B (rencana aktivasi 4C untuk Asset Management).
+* Read-only display tanpa input form pada 4B.
+* Tidak ada upload asset pada 4B.
+* Tidak ada backup/restore/log aktivitas pada 4B.
+* Integrasi backend `getSystemSettings()` dengan authorization Admin-only.
+
+Rencana Sprint Berikutnya:
+
+* Sprint 4C: Asset Management (upload logo aplikasi, upload favicon)
+* POST-4C: Maintenance Mode toggle, Backup, Restore, Log Aktivitas
 
 ### Proses Akademik
 
