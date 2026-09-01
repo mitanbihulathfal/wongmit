@@ -36,133 +36,102 @@ Catatan
 ### Sprint 3A-3.5 — Application Identity Consumer: Sidebar & Title
 
 **Judul**
-
 Sidebar, Title, dan Login Menggunakan Satu Consumer Identity Aplikasi
 
 **Perubahan**
-
 - Menambahkan satu consumer identity frontend bersama: `loadAppIdentity()` dengan cache client-side `cachedAppInfo` agar Login, Sidebar, dan Title memakai satu hasil `getAppInfo()` tanpa RPC ganda.
-- Menambahkan ID branding pada elemen Sidebar: `sidebarAppLogo`, `sidebarAppName`, `sidebarAppTagline`.
+- Menambahkan ID branding pada elemen Sidebar(`sidebarAppLogo`, `sidebarAppName`, `sidebarAppTagline`).
 - Sidebar (logo, nama, tagline) kini dinamis dari identity aplikasi.
-- `<title>` / `document.title` kini dinamis dari `namaAplikasi`; fallback statis tetap dipertahankan.
-- Login direfactor secukupnya untuk memakai consumer identity bersama, tanpa mengubah behavior login/auth/session.
-- Anti-flash branding Login dan Sidebar tetap dipertahankan; fallback branding statis tetap tampil bila RPC gagal/kosong.
-- Logo diterapkan hanya bila nilai berupa URL langsung; File ID mentah tidak dipaksa menjadi URL.
+- `<title>`/`document.title` kini dinamis dari `namaAplikasi`(fallback statis tetap dipertahankan. - Login direfactor sejauh kebutuhan untuk memakai consumer identity bersama, tanpa mengubah behavior login/auth/session.
+- Anti-flash branding Login dan Sidebar dipertahankan; fallback branding statis tetap tampil bila RPC gagal/kosong。
+- Logo diterapkan hanya bila nilai berupa URL langsung; File ID mentah tidak dipaksa menjadi URL(pada tahap ini)。
 
 **Status**
-
 SELESAI
 
 **Commit**
-
-`58bc97e` — `feat(identity): complete branding consumers and school logo upload` (commit sumber mencakup seluruh rangkaian 3A-3.5 sampai 3A-3.6-FIX-2)
+`58bc97e` (feat(identity): complete branding consumersand school logo upload — commit sumber mencakup seluruh rangkaian 3A-3.5 → FIX-2)
 
 **Validasi**
-
 - Syntax check LOLOS.
-- clasp push ke GAS Uji LOLOS.
-- Deploy Uji Sidebar, Title, Login LOLOS.
+- clasp push ke GAS Uji LOLOS。
+- Deploy Uji Sidebar/Title/Login LOLOS。
 
 **Catatan**
-
-Consumer identity bersama ini menjadi fondasi konsumsi branding aplikasi pada Dashboard dan asset pada sprint berikutnya.
-
+Consumer identity bersama ini menjadi fondasi konsumsi branding aplikasi pada Dashboard dan asset pada sprint berikutnya。
 
 ### Sprint 3A-3.6 — Application Branding Asset & Dashboard Consumer
 
 **Judul**
-
 Asset Resolver, Logo Aplikasi Dinamis, dan Dashboard Consumer
 
 **Perubahan**
-
-- Menambahkan resolver asset `resolveDriveImageUrl()`: mengubah File ID di Sheet menjadi URL image yang dapat dikonsumsi `<img>` frontend (tanpa DriveApp saat render; string helper saja).
-- Menambahkan derived field `logoAplikasiUrl` pada `getAppInfo()` dan `logoSekolahUrl` pada `getSchoolIdentity()`. File ID tetap satu-satunya nilai yang disimpan di Sheet; kontrak File ID tidak berubah.
-- Logo Login dan Sidebar kini menampilkan `logoAplikasiUrl` secara dinamis, dengan urutan prioritas: URL resolver → URL langsung dari kontrak lama → fallback statis via `onerror` (dinetralkan setelah terpicu agar tidak loop).
-- Logo aplikasi yang kosong/invalid/tidak di-share → fallback aman, bukan broken image.
-- Dashboard: judul kini dinamis `"Dashboard " + namaAplikasi` via `cachedAppInfo`, tanpa RPC `getAppInfo()` tambahan.
-- Detail Pengaturan Sekolah menampilkan preview visual Logo Sekolah dan Logo Aplikasi di atas daftar field (File ID tetap tampil sebagai teks); state aman bila asset kosong.
+- Menambahkan resolver asset `resolveDriveImageUrl()`∶mengubah File ID di Sheet menjadi URL image yang dapat dikonsumsi `<img>` frontend(tanpa DriveApp saat render;string helper saja)。
+- Menambahkan derived field:`logoAplikasiUrl` pada `getAppInfo()` dan `logoSekolahUrl` pada `getSchoolIdentity()`; File ID tetap satu-satunya nilai yang disimpan di Sheet;kontrak File ID tidak berubah。
+- Logo Login dan Sidebar kini menampilkan `logoAplikasiUrl` secara dinamis, dengan urutan prioritas:URL resolver → URL langsung dari kontrak lama → fallback statis via `onerror`(dinetralkan setelah terpicu agar tidak loop)。
+- Logo aplikasi yang kosong/invalid/tidak di-share → fallback aman, bukan broken image。
+- Dashboard: judul kini dinamis `"Dashboard " + namaAplikasi`(via `cachedAppInfo`,tanpa RPC `getAppInfo()` tambahan)。
+- Detail Pengaturan Sekolah menampilkan preview visual Logo Sekolah dan Logo Aplikasi di atas daftar field(File ID tetap tampil sebagai teks);state aman bila asset kosong。
 
 **Status**
-
 SELESAI
 
 **Commit**
-
-`58bc97e` — commit sumber rangkaian 3A-3.5 sampai 3A-3.6-FIX-2
+`58bc97e`(commit sumber rangkaian 3A-3.5 → FIX-2)
 
 **Validasi**
-
-- Deploy Uji LOLOS (logo aplikasi dinamis, fallback onerror, judul Dashboard, preview asset Pengaturan).
+- Deploy Uji LOLOS(logo aplikasi dinamis,fallback onerror,judul Dashboard,preview asset Pengaturan)。
 
 **Catatan**
+Pemakaian logo sekolah pada konteks aplikasi tidak dilakukan;konsumen logo sekolah saat ini hanya detail Card Pengaturan Sekolah。
 
-Pemakaian logo sekolah pada konteks aplikasi tidak dilakukan; konsumen logo sekolah saat ini hanya detail Card Pengaturan Sekolah.
-
-### Micro-Fix — 3A-3.6-FIX-1 Dashboard Tagline Dinamis
+### 3A-3.6-FIX-1 — Dashboard Tagline Dinamis
 
 **Judul**
-
 Subtitle Dashboard Dinamis dari Tagline Aplikasi + Nama Sekolah
 
 **Perubahan**
-
-- Subtitle Dashboard kini memakai komposisi `appLongName + " " + nama_sekolah` (via `cachedAppInfo.appLongName` + identity sekolah dari `loadDashboardIdentity`), menggantikan prefix hardcode "Website ONline Guru".
-- Tanpa RPC `getAppInfo()` baru — cukup membaca cache client-side yang sudah terisi sebelum Dashboard dibuka.
-- Fallback statis subtitle tetap dipertahankan bila identity kosong/gagal.
-- Mekanisme anti-flash yang sudah LOLOS tidak diubah; `getDashboardData()` tidak tersentuh.
+- Subtitle Dashboard kini memakai komposisi `appLongName + " " + nama_sekolah`(`cachedAppInfo.appLongName` + identity sekolah dari `loadDashboardIdentity`),menggantikan prefix hardcode "Website ONline Guru"。 - Tanpa RPC `getAppInfo()` baru — cukup membaca cache client-side yang sudah terisi sebelum Dashboard dibuka。
+- Fallback statis subtitle tetap dipertahankan bila identity kosong/gagal。
+- Mekanisme anti-flash yang sudah LOLOS tidak diubah;`getDashboardData()` tidak tersentuh。
 
 **Status**
-
 SELESAI
 
 **Commit**
-
-`58bc97e` — commit sumber rangkaian 3A-3.5 sampai 3A-3.6-FIX-2
+`58bc97e`(commit sumber rangkaian 3A-3.5 → FIX-2)
 
 **Validasi**
-
-- Deploy Uji LOLOS (subtitle dinamis, fallback, regression Dashboard).
+- Deploy Uji LOLOS(subtitle dinamis,fallback,regression Dashboard)。
 
 **Catatan**
-
-Tidak ada RPC `getAppInfo()` tambahan pada Dashboard.
-
+- Tidak ada RPC `getAppInfo()` tambahan pada Dashboard。
 
 ### Sprint 3A-3.6-FIX-2 — Penyempurnaan Card Pengaturan Sekolah + Upload Logo Sekolah
 
 **Judul**
-
 Upload Logo Sekolah Profesional dan Penyempurnaan Card Sekolah
 
 **Perubahan**
-
-- Card Sekolah difokuskan hanya pada domain sekolah: `nama_sekolah`, `kepala_sekolah`, `logo_sekolah`. Logo Aplikasi dan Favicon tidak lagi diedit dari Card Sekolah; nilai Sheet-nya tetap aman dan menjadi domain Card Sistem (Sprint 4).
-- Upload Logo Sekolah dua fase: pilih file → validasi client + preview lokal → konfirmasi Upload → backend Admin-only → validasi server-side (MIME/ekstensi/ukuran) → folder "Assets WONG MIT" (harus tepat satu; tidak dibuat otomatis) → sharing `ANYONE_WITH_LINK / VIEW` → File ID otomatis terisi → Simpan = commit seluruh Card Sekolah.
-- Format diterima: JPG/JPEG/PNG; maksimal 2 MB; SVG ditolak pada versi ini.
-- Replace: file baru diunggah dan disimpan terlebih dahulu; file lama dihapus dari Drive HANYA setelah commit konfigurasi sukses. Sheet tidak pernah menunjuk file terhapus; jika save gagal, logo lama DAN file baru tetap aman.
-- Hapus Gambar menangani dua keadaan: pending upload baru (file baru dihapus dari Drive; konfigurasi tersimpan tak berubah) dan logo tersimpan (pending deletion; file dihapus pasca-commit; Batal mengembalikan logo lama).
-- Cancel mid-edit menghapus pending upload (anti-orphan); kegagalan cleanup logo lama pasca-commit tidak membatalkan konfigurasi baru, menampilkan peringatan jelas dan retry 1x.
-- Final patch: Login dan Sidebar menampilkan logo aplikasi dari `logo_aplikasi` secara dinamis (via `logoAplikasiUrl` + fallback `onerror`), dengan boundary tetap via `getAppInfo()` (tanpa session), bukan `getSchoolIdentity()`.
-- `logo_aplikasi` dan `favicon` di Sheet tetap utuh setelah Simpan Card Sekolah (payload hanya 3 field sekolah; guard `undefined` pada helper penyimpanan menjaga nilai lama).
-- Bug uji telah tuntas: `ReferenceError: updateValue is not defined` diperbaiki dengan menjadikan helper `updateSettingValue()` top-level (tidak ada residu); pemilihan file tidak lagi memicu upload otomatis; File ID terisi setelah upload sukses; helper undefined teratasi.
+- Card Sekolah difokuskan hanya pada domain sekolah:`nama_sekolah`, `kepala_sekolah`, `logo_sekolah`; Logo Aplikasi dan Favicon tidak lagi diedit dari Card Sekolah;nilai Sheet-nya tetap aman dan menjadi domain Card Sistem(Sprint 4)。
+- Upload Logo Sekolah dua fase:pilih file → validasi client + preview lokal → konfirmasi Upload → backend Admin-only → validasi server-side(MIME/ekstensi/ukuran)→ folder "Assets WONG MIT"(harus tepat satu;tidak dibuat otomatis)→ sharing `ANYONE_WITH_LINK/VIEW` → File ID otomatis terisi → Simpan = commit seluruh Card Sekolah。
+- Format diterima:JPG/JPEG/PNG;maksimal 2 MB;SVG ditolak pada versi ini�。
+- Replace:file baru diupload dan disimpan terlebih dahulu;file lama dihapus dari Drive HANYA setelah commit konfigurasi sukses}。 Sheet tidak pernah menunjuk file terhapus;jika save gagal,logo lama DAN file baru tetap aman。。
+- Hapus Gambar menangani dua keadaan:pending upload baru(file baru dihapus dari Drive;konfigurasi tersimpan tak berubah&& logo tersimpan(pending deletion;file dihapus pasca-commit;Batal mengembalikan logo lama)。
+- Cancel mid-edit menghapus pending upload(anti-orphan);kegagalan cleanup logo lama pasca-commit tidak membatalkan konfigurasi baru,menampilkan peringatan jelas dan retry 1x。
+- Final patch:Login dan Sidebar menampilkan logo aplikasi dari `logo_aplikasi` secara dinamis(via `logoAplikasiUrl` + fallback `onerror`),dengan boundary tetap via `getAppInfo()`(tanpa session),bukan `getSchoolIdentity()`。
+- `logo_aplikasi` dan `favicon` di Sheet tetap utuh setelah Simpan Card Sekolah(payload hanya 3 field sekolah;guard `undefined` pada helper penyimpanan menjaga nilai lama)。
 
 **Status**
-
 SELESAI
 
 **Commit**
-
-`58bc97e` — `feat(identity): complete branding consumers and school logo upload` (commit sumber rangkaian 3A-3.5 sampai 3A-3.6-FIX-2)
+`58bc97e`(commit sumber rangkaian 3A-3.5 → FIX-2)
 
 **Validasi**
-
-- Syntax check LOLOS (backend + frontend).
-- Deploy Uji LOLOS (upload dua fase, Hapus Kasus A/B, cancel anti-orphan, replace, fallback logo, regression).
-
-**Catatan**
-
-Nilai `logo_aplikasi` dan `favicon` di Sheet tidak tersentuh oleh Card Sekolah dan tetap menjadi domain Card Sistem pada Sprint 4.
+- Syntax check LOLOS(backend + frontend)。
+- Deploy Uji LOLOS(upload dua fase,hapus Kasus A/B,cancel anti-orphan,replace,fallback logo,regression)。
+- Bug uji telah tuntas:`ReferenceError: updateValue is not defined` diperbaiki dengan menjadikan helper `updateSettingValue()` top-level(0 residu;pemilihan file tidak lagi memicu upload otomatis;File ID terisi setelah upload sukses;helper undefined teratasi)。
 
 ## 2026-08-31
 
