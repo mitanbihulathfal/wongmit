@@ -50,7 +50,7 @@ Sidebar, Title, dan Login Menggunakan Satu Consumer Identity Aplikasi
 SELESAI
 
 **Commit**
-`58bc97e` (feat(identity): complete branding consumersand school logo upload — commit sumber mencakup seluruh rangkaian 3A-3.5 → FIX-2)
+`58bc97e`
 
 **Validasi**
 - Syntax check LOLOS.
@@ -77,13 +77,14 @@ Asset Resolver, Logo Aplikasi Dinamis, dan Dashboard Consumer
 SELESAI
 
 **Commit**
-`58bc97e`(commit sumber rangkaian 3A-3.5 → FIX-2)
+`58bc97e`
 
 **Validasi**
 - Deploy Uji LOLOS(logo aplikasi dinamis,fallback onerror,judul Dashboard,preview asset Pengaturan)。
 
 **Catatan**
 Pemakaian logo sekolah pada konteks aplikasi tidak dilakukan;konsumen logo sekolah saat ini hanya detail Card Pengaturan Sekolah。
+Preview Logo Aplikasi pada Card Sekolah merupakan kondisi sementara sebelum penyempurnaan 3A-3.6-FIX-2.
 
 ### 3A-3.6-FIX-1 — Dashboard Tagline Dinamis
 
@@ -99,7 +100,7 @@ Subtitle Dashboard Dinamis dari Tagline Aplikasi + Nama Sekolah
 SELESAI
 
 **Commit**
-`58bc97e`(commit sumber rangkaian 3A-3.5 → FIX-2)
+`58bc97e`
 
 **Validasi**
 - Deploy Uji LOLOS(subtitle dinamis,fallback,regression Dashboard)。
@@ -126,7 +127,7 @@ Upload Logo Sekolah Profesional dan Penyempurnaan Card Sekolah
 SELESAI
 
 **Commit**
-`58bc97e`(commit sumber rangkaian 3A-3.5 → FIX-2)
+`58bc97e`
 
 **Validasi**
 - Syntax check LOLOS(backend + frontend)。
@@ -170,7 +171,7 @@ SELESAI
 
 **Catatan**
 
-Consumer branding lainnya (Sidebar, Title) masih menjadi pekerjaan sprint berikutnya.
+Catatan saat sprint ini selesai: consumer branding lainnya (Sidebar dan Title) belum diimplementasikan dan dilanjutkan pada sprint berikutnya.
 
 
 ## 2026-08-31

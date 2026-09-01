@@ -518,10 +518,22 @@ Fokus
 
 Progress
 
-- Pengaturan Akademik — selesai
-- Pengaturan Sekolah — belum difungsikan
+- Pengaturan Akademik — DONE
+- Pengaturan Sekolah — DONE
 - Pengaturan Sistem — belum difungsikan
 - Pengaturan Tahun Ajaran — belum difungsikan
+
+Catatan
+
+Pengaturan Akademik dan Pengaturan Sekolah telah selesai diimplementasikan, melalui testing dan deploy uji, serta dinyatakan LOLOS.
+
+Pengaturan Sekolah mencakup:
+- Identitas sekolah
+- Nama sekolah
+- Kepala sekolah
+- Logo sekolah
+- Upload, replace, dan hapus logo sekolah berbasis Google Drive
+- Integrasi logo sekolah sebagai consumer identitas sekolah
 
 Status keseluruhan sprint tetap ACTIVE sampai seluruh bagian Pengaturan selesai dan telah melalui testing serta deploy production.
 

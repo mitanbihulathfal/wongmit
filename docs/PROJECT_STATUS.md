@@ -36,8 +36,15 @@ Integrasi identity aplikasi ke consumer telah berjalan bertahap:
 * Sprint 3A-3.3: nama aplikasi terintegrasi ke halaman Login.
 * Micro-fix: freshness pembacaan identity aplikasi dan anti-flash branding Login.
 * Sprint 3A-3.4: tagline aplikasi menjadi configurable melalui key `tagline_aplikasi` (sumber `appLongName`), dengan fallback universal tetap dipertahankan.
+* Sprint 3A-3.6: identity aplikasi digunakan secara dinamis pada branding Login/Sidebar dan title aplikasi.
+* Sprint 3A-3.6-FIX-1: tagline Dashboard menjadi dinamis dari tagline aplikasi + nama sekolah.
+* Sprint 3A-3.6-FIX-2: Pengaturan Sekolah selesai, termasuk upload, replace, dan hapus logo sekolah serta penyempurnaan consumer logo aplikasi pada Login/Sidebar.
 
-Consumer branding lainnya (Sidebar, Title) masih menjadi pekerjaan sprint berikutnya.
+Pemisahan identity aplikasi dan identity sekolah tetap dipertahankan:
+* Login/Sidebar menggunakan `logo_aplikasi`.
+* Area yang membutuhkan identitas sekolah menggunakan `logo_sekolah`.
+* `getAppInfo()` tetap menjadi owner identity aplikasi dan dapat digunakan sebelum session.
+* `getSchoolIdentity()` tetap menjadi owner identity sekolah pada area yang membutuhkan autentikasi.
 
 Roadmap global juga mencakup rencana e-book mata pelajaran, pengelolaan/pengingat PR, dan notifikasi guru.
 
@@ -475,8 +482,7 @@ Commit:
 * `getAppInfo()` dapat dipanggil tanpa session.
 * `nama_aplikasi`, `logo_aplikasi`, `favicon`, dan `versi_aplikasi` menjadi sumber identity aplikasi.
 * Alias legacy `appName` dan `logo` dipertahankan untuk backward compatibility.
-* Consumer identity aplikasi telah diintegrasikan ke Login.
-* Consumer identity aplikasi lainnya seperti Sidebar, Title, dan branding frontend lainnya masih menunggu sprint berikutnya.
+* Consumer identity aplikasi telah diintegrasikan secara bertahap ke Login, Sidebar, Title, dan Dashboard sesuai boundary masing-masing.
 
 ✅ Application Identity Consumer Integration — Tahap 1: Login selesai
 
