@@ -451,9 +451,10 @@ Fitur:
 * Nama Sekolah
 * Kepala Sekolah
 * Logo Sekolah
-* Logo Aplikasi
-* Favicon
-* Penyimpanan asset menggunakan File ID Google Drive
+* (Sejak Sprint 3A-3.6-FIX-2) Card Sekolah difokuskan hanya pada identitas sekolah: Nama Sekolah, Kepala Sekolah, Logo Sekolah.
+* Setelah FIX-2, `logo_aplikasi` dan `favicon` TIDAK lagi diedit dari Card Sekolah; nilai Sheet tetap aman dan menjadi domain Card Sistem (Sprint 4).
+* Upload logo sekolah tersedia melalui UI Card Sekolah (Admin-only, JPG/JPEG/PNG, maks 2 MB, SVG ditolak, folder "Assets WONG MIT", sharing `ANYONE_WITH_LINK / VIEW`, dua fase upload, pending state, replace/delete aman; file lama dihapus hanya setelah commit sukses).
+* Commit sumber rangkaian 3A-3.5 sampai 3A-3.6-FIX-2: `58bc97e`.
 
 ✅ Dashboard menggunakan Identity Sekolah
 

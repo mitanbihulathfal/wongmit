@@ -1790,3 +1790,177 @@ Commit
 Catatan
 
 Key `tagline_aplikasi` ditambahkan manual pada Sheet Pengaturan per deployment. Consumer branding lainnya (Sidebar, Title) masih menjadi pekerjaan sprint berikutnya.
+# Sprint 3A-3.5 — Application Identity Consumer: Sidebar & Title
+
+Status
+
+DONE
+
+Target
+
+Mengintegrasikan identity aplikasi ke Sidebar dan Title dengan satu consumer identity frontend bersama, tanpa RPC ganda dan tanpa mengubah kontrak backend.
+
+
+
+Fokus
+
+- Satu consumer `loadAppIdentity()` dengan cache client-side `cachedAppInfo` untuk Login, Sidebar, dan Title.
+- Sidebar (logo, nama, tagline) dinamis dari identity aplikasi。
+- `<title>` / `document.title` dinamis dari `namaAplikasi`。
+- Anti-flash Login dan Sidebar dipertahankan; fallback branding statis tetap tampil bila RPC gagal/kosong。
+- Tidak mengubah `getAppInfo()`, `getSchoolIdentity()`, auth/session, maupun consumer lain।
+
+
+
+Hasil
+
+✅ Login, Sidebar, dan Title memakai satu hasil `getAppInfo()` tanpa RPC ganda
+✅ Sidebar (logo, nama, tagline) dinamis dari identity aplikasi
+            
+✅ `<title>` dinamis dari `namaAplikasi` dengan fallback statis
+            
+✅ Anti-flash Login dan Sidebar tetap bekerja
+            
+✅ Fallback branding tetap aman
+            
+Validasi
+
+✅ Syntax check LOLOS
+✅ clasp push ke GAS Uji LOLOS
+✅ Deploy Uji Sidebar, Title, Login LOLOS
+
+
+
+Commit
+
+`58bc97e` — `feat(identity): complete branding consumers and school logo upload` (commit ini mencakup seluruh rangkaian 3A-3.5 sampai 3A-3.6-FIX-2)
+
+Catatan
+
+Consumer bersama ini menjadi fondasi konsumsi branding aplikasi pada Dashboard dan asset pada sprint berikutnya。
+
+
+# Sprint 3A-3.6 — Application Branding Asset & Dashboard Consumer
+
+Status
+
+DONE
+
+Target
+
+Menambahkan resolver asset File ID → URL, mengintegrasikan logo aplikasi dinamis pada Login/Sidebar, dan menjadikan judul Dashboard dinamis tanpa menambah RPC identity。
+
+
+
+
+
+Fokus
+
+- Resolver `resolveDriveImageUrl()`: File ID di Sheet → URL image untuk `<img>` frontend (tanpa DriveApp saat render)。
+- Derived field `logoAplikasiUrl` (`getAppInfo()`) dan `logoSekolahUrl` (`getSchoolIdentity()`)；File ID tetap satu-satunya nilai di Sheet。
+- Logo Login/Sidebar dari `logoAplikasiUrl` dengan urutan prioritas: URL resolver → URL langsung → fallback statis via `onerror` (anti-loop)。
+- Judul Dashboard `"Dashboard " + namaAplikasi` via `cachedAppInfo`(tanpa RPC tambahan)。
+- Preview visual Logo Sekolah dan Logo Aplikasi pada Detail Pengaturan Sekolah。
+
+
+
+Hasil
+
+✅ Logo Login/Sidebar dinamis dari `logo_aplikasi`; kosong/invalid/unshared → fallback aman, bukan broken image
+✅ Judul Dashboard dinamis tanpa RPC `getAppInfo()` ganda
+✅ File ID tetap satu-satunya nilai asset di Sheet;kontrak tidak berubah
+✅ Preview asset pada Detail Pengaturan Sekolah
+            
+Validasi
+
+✅ Deploy Uji LOLOS(logo dinamis,fallback,judul Dashboard,preview asset)
+
+Commit
+
+`58bc97e` — commit sumber rangkaian 3A-3.5 sampai 3A-3.6-FIX-2
+
+Catatan
+
+Konsumen logo sekolah saat ini hanya detail Card Pengaturan Sekolah;tidak ada pemakaian logo sekolah pada login/sidebar/aplikasi。
+# Micro-Fix — 3A-3.6-FIX-1 Dashboard Tagline Dinamis
+
+Status
+
+DONE
+
+Target
+
+Menjadikan subtitle Dashboard dinamis dari tagline aplikasi + nama sekolah tanpa RPC identity tambahan.
+
+
+
+Fokus
+
+- Komposisi `appLongName + " " + nama_sekolah` (`cachedAppInfo.appLongName` + identity sekolah dari `loadDashboardIdentity`).
+- Fallback statis subtitle tetap dipertahankan.
+- Tidak mengubah `getDashboardData()` maupun anti-flash yang sudah LOLOS.
+
+
+
+Hasil
+
+✅ Subtitle Dashboard dinamis dari `cachedAppInfo.appLongName` + nama sekolah
+✅ Tanpa RPC `getAppInfo()` baru
+✅ Fallback subtitle tetap aman
+
+Validasi
+
+✅ Deploy Uji LOLOS (subtitle dinamis, fallback, regression Dashboard)
+
+Commit
+
+`58bc97e` — commit sumber rangkaian 3A-3.5 sampai 3A-3.6-FIX-2
+
+Catatan
+
+Tidak ada RPC `getAppInfo()` tambahan pada Dashboard.
+
+
+
+# Sprint 3A-3.6-FIX-2 — Penyempurnaan Card Pengaturan Sekolah + Upload Logo Sekolah
+
+Status
+
+DONE
+
+Target
+
+Memfokuskan Card Pengaturan Sekolah hanya pada identitas sekolah dan menyediakan upload logo sekolah yang profesional, aman, dan Admin-only.
+
+
+
+Fokus
+
+- Card Sekolah hanya: `nama_sekolah`, `kepala_sekolah`, `logo_sekolah`. `logo_aplikasi`/`favicon` tidak lagi diedit dari Card Sekolah dan menjadi domain Card Sistem (Sprint 4).
+- Upload dua fase: pilih file → validasi client + preview lokal → konfirmasi Upload → backend Admin-only → validasi server-side (MIME/ekstensi/ukuran) → folder "Assets WONG MIT" (tepat satu, tidak dibuat otomatis) → sharing `ANYONE_WITH_LINK / VIEW` → File ID otomatis terisi → Simpan = commit.
+- Format: JPG/JPEG/PNG; maksimal 2 MB; SVG ditolak pada versi ini.
+- Replace/delete: file lama dihapus dari Drive HANYA setelah commit konfigurasi sukses; Sheet tidak pernah menunjuk file terhapus; Cancel anti-orphan; Hapus Gambar menangani pending upload dan pending deletion.
+- Final patch: Login dan Sidebar menampilkan logo aplikasi dari `logo_aplikasi` (`logoAplikasiUrl`) secara dinamis dengan fallback `onerror`; boundary tetap via `getAppInfo()` (tanpa session).
+
+Hasil
+
+✅ `logo_aplikasi`/`favicon` di Sheet tetap utuh setelah Simpan Card Sekolah
+✅ Tidak ada lagi `ReferenceError: updateValue is not defined` (helper `updateSettingValue()` top-level)
+✅ Pemilihan file tidak memicu upload otomatis (upload hanya saat konfirmasi)
+✅ File ID terisi setelah upload sukses; preview/detail sinkron
+✅ Cancel/Hapus tidak meninggalkan orphan file
+✅ Replace tidak pernah menunjuk Sheet ke file terhapus
+✅ Logo Login/Sidebar dinamis dari `logo_aplikasi` dengan fallback aman
+
+Validasi
+
+✅ Syntax check LOLOS (backend + frontend)
+✅ Deploy Uji LOLOS (upload dua fase, Hapus Kasus A/B, cancel anti-orphan, replace, fallback logo, regression)
+
+Commit
+
+`58bc97e` — `feat(identity): complete branding consumers and school logo upload`
+
+Catatan
+
+Sprint 4 Card Sistem akan menangani `nama_aplikasi`, `tagline_aplikasi`, `logo_aplikasi`, `favicon`, `versi_aplikasi`, `mode_maintenance`, Backup, Restore, dan Log Aktivitas; Card Tahun Ajaran/Proses Akademik juga masih menjadi agenda terpisah.
