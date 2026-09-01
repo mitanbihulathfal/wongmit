@@ -8,9 +8,22 @@
 
   let pengaturanSekolahData = null;
 
+  /* State asset logo sekolah -
+     aktif hanya saat mode Edit.
+     Upload BUKAN commit - [Simpan]
+     adalah satu-satunya commit. */
+
+  let assetAwal = null;
+
+  let assetPendingUpload = null;
+
+  let assetPendingDelete = null;
+
+  let fileDipilih = null;
+
   const pengaturanDetailMeta = {
     akademik: {title: "Pengaturan Akademik", description: "Tahun ajaran, semester, dan hari libur sekolah."},
-    sekolah: {title: "Pengaturan Sekolah", description: "Nama sekolah, kepala sekolah, dan asset logo aplikasi."},
+    sekolah: {title: "Pengaturan Sekolah", description: "Nama sekolah, kepala sekolah, dan logo sekolah."},
     sistem: {title: "Pengaturan Sistem", description: "Konfigurasi sistem akan tersedia pada sprint berikutnya."},
     "tahun-ajaran": {title: "Pengaturan Tahun Ajaran", description: "Proses naik kelas, kelulusan, dan arsip akan tersedia pada sprint berikutnya."}
   };
@@ -170,7 +183,32 @@
 
     if (action.dataset.pengaturanAction === "cancel-sekolah") {
       batalEditSekolah();
+      return;
     }
+
+    if (action.dataset.pengaturanAction === "upload-logo-sekolah") {
+      pilihFileLogoSekolah();
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "hapus-logo-sekolah") {
+      hapusGambarSekolah();
+      return;
+    }
+
+  });
+
+  document.addEventListener("change", function (event) {
+
+    if (!event.target || event.target.id !== "editLogoSekolahFile") {
+      return;
+    }
+
+    /* Pilih file BUKAN trigger upload -
+       hanya validasi + preview lokal,
+       menunggu konfirmasi admin. */
+
+    tahapFileLogoSekolah(event.target);
 
   });
 
@@ -631,11 +669,15 @@
     content.className = "pengaturan-detail-content";
     content.innerHTML = `
       <div class="pengaturan-detail-list">
+        <div style="display:flex; gap:16px; margin-bottom:10px;">
+          <div style="text-align:center;">
+            <img id="previewLogoSekolah" alt="Logo Sekolah" style="display:none; width:64px; height:64px; object-fit:contain; border:1px solid #e3e6f0; border-radius:8px; background:#fff; padding:4px;">
+            <div style="font-size:11px; color:#6c757d;">Logo Sekolah</div>
+          </div>
+        </div>
         <div><strong>Nama Sekolah</strong><span id="detailNamaSekolah">-</span></div>
         <div><strong>Kepala Sekolah</strong><span id="detailKepalaSekolah">-</span></div>
         <div><strong>Logo Sekolah (File ID)</strong><span id="detailLogoSekolah">-</span></div>
-        <div><strong>Logo Aplikasi (File ID)</strong><span id="detailLogoAplikasi">-</span></div>
-        <div><strong>Favicon (File ID)</strong><span id="detailFavicon">-</span></div>
       </div>
     `;
     actions.innerHTML = `
@@ -656,9 +698,7 @@
     [
       ["detailNamaSekolah", pengaturanSekolahData.namaSekolah],
       ["detailKepalaSekolah", pengaturanSekolahData.kepalaSekolah],
-      ["detailLogoSekolah", pengaturanSekolahData.logoSekolah],
-      ["detailLogoAplikasi", pengaturanSekolahData.logoAplikasi],
-      ["detailFavicon", pengaturanSekolahData.favicon]
+      ["detailLogoSekolah", pengaturanSekolahData.logoSekolah]
     ]
       .forEach(function (field) {
         const detail =
@@ -668,6 +708,56 @@
           detail.innerText = field[1] || "-";
         }
       });
+
+    pasangPreviewAsset(
+      "previewLogoSekolah",
+      pengaturanSekolahData.logoSekolahUrl
+    );
+
+  }
+
+  /* =========================
+     PREVIEW ASSET IDENTITY
+     Konsumsi field derived URL
+     (resolver backend). Gagal
+     render -> sembunyikan (state
+     aman), File ID tetap tampil
+     sebagai teks di list detail.
+  ========================= */
+
+  function pasangPreviewAsset(imgId, url) {
+
+    const img =
+      document.getElementById(imgId);
+
+    if (!img) {
+      return;
+    }
+
+    if (url) {
+
+      img.onerror =
+        function () {
+
+          img.onerror = null;
+
+          img.style.display = "none";
+
+        };
+
+      img.style.display = "";
+
+      img.src = url;
+
+    } else {
+
+      img.onerror = null;
+
+      img.style.display = "none";
+
+      img.removeAttribute("src");
+
+    }
 
   }
 
@@ -730,9 +820,35 @@
 
       <strong>
 
-        Logo Sekolah (File ID)
+        Logo Sekolah
 
       </strong>
+
+      <div class="d-flex align-items-center gap-2 mt-1">
+
+        <img id="editPreviewLogoSekolah" alt="Preview Logo Sekolah" style="display:none; width:48px; height:48px; object-fit:contain; border:1px solid #e3e6f0; border-radius:8px; background:#fff; padding:3px;">
+
+        <div class="d-flex flex-column gap-1">
+
+          <button type="button" id="btnUploadLogoSekolah" class="btn btn-outline-primary btn-sm" data-pengaturan-action="upload-logo-sekolah">
+
+            <i class="fa-solid fa-upload"></i> Upload Gambar
+
+          </button>
+
+          <button type="button" class="btn btn-outline-danger btn-sm" data-pengaturan-action="hapus-logo-sekolah">
+
+            <i class="fa-solid fa-trash"></i> Hapus Gambar
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <input type="file" id="editLogoSekolahFile" accept=".jpg,.jpeg,.png" style="display:none;">
+
+      <div class="form-text" id="editLogoSekolahStatus"></div>
 
       <input
 
@@ -740,53 +856,41 @@
 
         class="form-control mt-1"
 
-        placeholder="File ID Google Drive"
+        placeholder="File ID Google Drive (otomatis terisi setelah upload)"
 
         value="${data.logoSekolah || ""}">
 
-    </div>
+      <div class="form-text">
 
-    <div class="mb-2">
+        File ID (informasi teknis) - boleh diisi manual atau dikosongkan.
 
-      <strong>
-
-        Logo Aplikasi (File ID)
-
-      </strong>
-
-      <input
-
-        id="editLogoAplikasi"
-
-        class="form-control mt-1"
-
-        placeholder="File ID Google Drive"
-
-        value="${data.logoAplikasi || ""}">
-
-    </div>
-
-    <div class="mb-2">
-
-      <strong>
-
-        Favicon (File ID)
-
-      </strong>
-
-      <input
-
-        id="editFavicon"
-
-        class="form-control mt-1"
-
-        placeholder="File ID Google Drive"
-
-        value="${data.favicon || ""}">
+      </div>
 
     </div>
 
   `;
+
+    /* Snapshot logo tersimpan saat
+       masuk mode Edit - dasar untuk
+       Cancel dan pending state asset. */
+
+    assetAwal = {
+      fileId: data.logoSekolah || "",
+      url: data.logoSekolahUrl || ""
+    };
+
+    assetPendingUpload = null;
+
+    assetPendingDelete = null;
+
+    fileDipilih = null;
+
+    pasangPreviewAsset(
+      "editPreviewLogoSekolah",
+      assetAwal.url
+    );
+
+    setAssetStatus("");
 
     tampilkanButtonSekolah();
 
@@ -816,16 +920,6 @@
     const logoSekolah =
       document.getElementById(
         "editLogoSekolah"
-      ).value.trim();
-
-    const logoAplikasi =
-      document.getElementById(
-        "editLogoAplikasi"
-      ).value.trim();
-
-    const favicon =
-      document.getElementById(
-        "editFavicon"
       ).value.trim();
 
     if (!namaSekolah) {
@@ -861,6 +955,49 @@
 
             resetButtonLoading(btn);
 
+            const sessionId =
+              localStorage.getItem(
+                "wongmit_session"
+              );
+
+            /* [Simpan] adalah satu-satunya
+               COMMIT konfigurasi. Pembersihan
+               Drive hanya SETELAH commit
+               sukses (best effort):
+               - pending upload: logo lama
+                 tersimpan diganti file baru.
+               - pending deletion: file lama
+                 dihapus dari Drive.
+               Gagal hapus tidak membatalkan
+               konfigurasi yang sudah tersimpan. */
+
+            if (
+              assetPendingUpload
+              && assetAwal
+              && assetAwal.fileId
+            ) {
+
+              hapusAssetSekolahSisiClient(
+                sessionId,
+                assetAwal.fileId
+              );
+
+            }
+
+            if (
+              assetPendingDelete
+              && assetPendingDelete.fileId
+            ) {
+
+              hapusAssetSekolahSisiClient(
+                sessionId,
+                assetPendingDelete.fileId
+              );
+
+            }
+
+            resetAssetState();
+
             showToast(
               "Pengaturan Sekolah berhasil disimpan"
             );
@@ -894,11 +1031,7 @@
 
               kepalaSekolah: kepalaSekolah,
 
-              logoSekolah: logoSekolah,
-
-              logoAplikasi: logoAplikasi,
-
-              favicon: favicon
+              logoSekolah: logoSekolah
 
             }
 
@@ -957,7 +1090,670 @@
 
   function batalEditSekolah() {
 
+    const sessionId =
+      localStorage.getItem(
+        "wongmit_session"
+      );
+
+    /* File baru yang sudah terupload ke
+       Drive tapi belum di-Simpan dihapus
+       agar tidak menjadi orphan. File
+       tersimpan lama TIDAK disentuh. */
+
+    if (
+      assetPendingUpload
+      && assetPendingUpload.fileId
+    ) {
+
+      hapusAssetSekolahSisiClient(
+        sessionId,
+        assetPendingUpload.fileId
+      );
+
+    }
+
+    resetAssetState();
+
     bukaPengaturanDetail("sekolah");
+
+  }
+
+
+  /* =========================
+     UPLOAD LOGO SEKOLAH (UI)
+     Pilih file -> validasi client
+     (MIME/ekstensi/ukuran) ->
+     kirim ke uploadLogoSekolah()
+     (validasi ulang server-side,
+     Admin-only) -> File ID terisi
+     otomatis + preview diperbarui.
+  ========================= */
+
+  function pulihkanInputFile() {
+
+    const inputFile =
+      document.getElementById(
+        "editLogoSekolahFile"
+      );
+
+    if (inputFile) {
+      inputFile.value = "";
+    }
+
+  }
+
+  function setAssetStatus(pesan) {
+
+    const el =
+      document.getElementById(
+        "editLogoSekolahStatus"
+      );
+
+    if (el) {
+      el.innerText = pesan || "";
+    }
+
+  }
+
+  function resetAssetState() {
+
+    assetAwal = null;
+
+    assetPendingUpload = null;
+
+    assetPendingDelete = null;
+
+    fileDipilih = null;
+
+    pasangPreviewAsset(
+      "editPreviewLogoSekolah",
+      ""
+    );
+
+    setAssetStatus("");
+
+  }
+
+  function hapusAssetSekolahSisiClient(
+    sessionId,
+    fileId,
+    sudahRetry
+  ) {
+
+    /* Best effort - kegagalan hapus
+       file di Drive TIDAK membatalkan
+       konfigurasi yang sudah tersimpan. */
+
+    if (!sessionId || !fileId) {
+      return;
+    }
+
+    google.script.run
+      .withFailureHandler(function (error) {
+
+        console.warn(
+          "hapusAssetSekolah:",
+          error
+        );
+
+        /* Konfigurasi baru tetap valid -
+           hanya asset lama yang tertinggal
+           di Drive. Coba 1x lagi bila belum;
+           bila tetap gagal, beri peringatan
+           jelas tanpa mengganggu hasil save. */
+
+        if (!sudahRetry) {
+
+          hapusAssetSekolahSisiClient(
+            sessionId,
+            fileId,
+            true
+          );
+
+          return;
+
+        }
+
+        showToast(
+          "Asset logo lama gagal dihapus dari Drive. Konfigurasi tetap tersimpan dengan aman.",
+          "warning"
+        );
+
+      })
+      .hapusAssetSekolah(
+        sessionId,
+        fileId
+      );
+
+  }
+
+  function hapusGambarSekolah() {
+
+    /* ============ KASUS A ============
+       Upload baru yang belum di-Simpan:
+       hapus file baru dari Drive,
+       kembalikan ke logo lama (atau
+       kosong). Logo tersimpan TIDAK
+       diubah. */
+
+    if (
+      assetPendingUpload
+      && assetPendingUpload.fileId
+    ) {
+
+      const sessionId =
+        localStorage.getItem(
+          "wongmit_session"
+        );
+
+      hapusAssetSekolahSisiClient(
+        sessionId,
+        assetPendingUpload.fileId
+      );
+
+      const kembaliKeLama =
+        assetAwal
+        && assetAwal.fileId;
+
+      const inputLogo =
+        document.getElementById(
+          "editLogoSekolah"
+        );
+
+      if (inputLogo) {
+
+        inputLogo.value =
+          kembaliKeLama
+            ? assetAwal.fileId
+            : "";
+
+      }
+
+      pasangPreviewAsset(
+        "editPreviewLogoSekolah",
+        kembaliKeLama
+          ? assetAwal.url
+          : ""
+      );
+
+      assetPendingUpload = null;
+
+      fileDipilih = null;
+
+      pulihkanInputFile();
+
+      pulihkanTombolUpload();
+
+      ubahLabelTombolUpload(
+        "Upload Gambar",
+        "fa-upload"
+      );
+
+      setAssetStatus(
+        kembaliKeLama
+          ? "Upload baru dibatalkan - logo lama tetap digunakan."
+          : "Upload baru dibatalkan."
+      );
+
+      showToast(
+        "Upload baru dibatalkan"
+      );
+
+      return;
+
+    }
+
+    /* ============ KASUS B ============
+       Logo tersimpan: tandai pending
+       deletion (tidak destruktif).
+       File lama hanya dihapus dari
+       Drive SETELAH [Simpan] sukses;
+       Batal membatalkannya. */
+
+    if (assetAwal && assetAwal.fileId) {
+
+      showConfirmModal(
+
+        "Hapus Logo Sekolah",
+
+        "Yakin ingin menghapus Logo Sekolah? Perubahan tersimpan setelah Anda menekan Simpan.",
+
+        function () {
+
+          assetPendingDelete = {
+            fileId: assetAwal.fileId
+          };
+
+          assetPendingUpload = null;
+
+          fileDipilih = null;
+
+          pulihkanInputFile();
+
+          pulihkanTombolUpload();
+
+          ubahLabelTombolUpload(
+            "Upload Gambar",
+            "fa-upload"
+          );
+
+          const inputLogo =
+            document.getElementById(
+              "editLogoSekolah"
+            );
+
+          if (inputLogo) {
+            inputLogo.value = "";
+          }
+
+          pasangPreviewAsset(
+            "editPreviewLogoSekolah",
+            ""
+          );
+
+          setAssetStatus(
+            "Logo ditandai untuk dihapus. Klik \"Simpan\" untuk konfirmasi."
+          );
+
+        }
+
+      );
+
+      return;
+
+    }
+
+    showToast(
+      "Belum ada Logo Sekolah",
+      "warning"
+    );
+
+  }
+
+  function pilihFileLogoSekolah() {
+
+    /* Dua fase: klik pertama membuka
+       file picker; setelah file dipilih
+       (belum diupload), klik tombol yang
+       sama berarti KONFIRMASI upload
+       ke Drive. */
+
+    if (fileDipilih) {
+
+      prosesUploadLogoSekolah();
+
+      return;
+
+    }
+
+    const input =
+      document.getElementById(
+        "editLogoSekolahFile"
+      );
+
+    if (!input) {
+      return;
+    }
+
+    input.value = "";
+
+    input.click();
+
+  }
+
+  function tahapFileLogoSekolah(input) {
+
+    const file =
+      input.files && input.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    /* Validasi client (UX saja -
+       server tetap memvalidasi
+       ulang dengan aturan sama). */
+
+    const ekstensiDiizinkan = ["jpg", "jpeg", "png"];
+
+    const mimeDiizinkan = ["image/jpeg", "image/png"];
+
+    const ekstensi =
+      file.name.split(".").pop().toLowerCase();
+
+    if (
+      mimeDiizinkan.indexOf(file.type) === -1
+      || ekstensiDiizinkan.indexOf(ekstensi) === -1
+    ) {
+
+      showToast(
+        "Format harus JPG atau PNG",
+        "warning"
+      );
+
+      input.value = "";
+
+      fileDipilih = null;
+
+      pulihkanTombolUpload();
+
+      return;
+
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+
+      showToast(
+        "Ukuran file maksimal 2 MB",
+        "warning"
+      );
+
+      input.value = "";
+
+      fileDipilih = null;
+
+      pulihkanTombolUpload();
+
+      return;
+
+    }
+
+    /* Pilih file BUKAN upload -
+       simpan pilihan + preview
+       lokal, menunggu konfirmasi
+       admin via tombol Upload. */
+
+    const reader =
+      new FileReader();
+
+    reader.onload = function (event) {
+
+      fileDipilih = {
+        file: file,
+        previewUrl:
+          String(event.target.result || "")
+      };
+
+      pasangPreviewAsset(
+        "editPreviewLogoSekolah",
+        fileDipilih.previewUrl
+      );
+
+      setAssetStatus(
+        "File siap. Klik \"Upload ke Drive\" untuk mengunggah."
+      );
+
+      ubahLabelTombolUpload(
+        "Upload ke Drive",
+        "fa-cloud-arrow-up"
+      );
+
+    };
+
+    reader.onerror = function () {
+
+      fileDipilih = null;
+
+      pulihkanTombolUpload();
+
+      showToast(
+        "Gagal membaca file",
+        "error"
+      );
+
+    };
+
+    reader.readAsDataURL(file);
+
+  }
+
+  function ubahLabelTombolUpload(
+    teks,
+    ikon
+  ) {
+
+    const btn =
+      document.getElementById(
+        "btnUploadLogoSekolah"
+      );
+
+    if (btn) {
+
+      btn.innerHTML =
+        '<i class="fa-solid '
+        + ikon
+        + '"></i> '
+        + teks;
+
+    }
+
+  }
+
+  function pulihkanTombolUpload() {
+
+    const btn =
+      document.getElementById(
+        "btnUploadLogoSekolah"
+      );
+
+    if (btn) {
+
+      btn.disabled = false;
+
+    }
+
+    ubahLabelTombolUpload(
+      fileDipilih
+        ? "Upload ke Drive"
+        : "Upload Gambar",
+      fileDipilih
+        ? "fa-cloud-arrow-up"
+        : "fa-upload"
+    );
+
+  }
+
+  function prosesUploadLogoSekolah() {
+
+    /* Upload hanya berjalan bila ada
+       file yang sudah dipilih DAN
+       dikonfirmasi via tombol Upload.
+       Membuka picker saja TIDAK
+       membuat file di Drive. */
+
+    if (!fileDipilih) {
+      return;
+    }
+
+    const file =
+      fileDipilih.file;
+
+    const sessionId =
+      localStorage.getItem(
+        "wongmit_session"
+      );
+
+    if (!sessionId) {
+
+      showToast(
+        "Sesi tidak ditemukan",
+        "error"
+      );
+
+      return;
+
+    }
+
+    const btn =
+      document.getElementById(
+        "btnUploadLogoSekolah"
+      );
+
+    if (btn) {
+
+      btn.disabled = true;
+
+      btn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah...';
+
+    }
+
+    const reader =
+      new FileReader();
+
+    reader.onload = function (event) {
+
+      const dataUrl =
+        String(event.target.result || "");
+
+      const base64 =
+        dataUrl.indexOf("base64,") === -1
+          ? ""
+          : dataUrl.substring(
+              dataUrl.indexOf("base64,") + 7
+            );
+
+      if (!base64) {
+
+        showToast(
+          "Gagal membaca file",
+          "error"
+        );
+
+        pulihkanInputFile();
+
+        pulihkanTombolUpload();
+
+        return;
+
+      }
+
+      google.script.run
+
+        .withSuccessHandler(function (hasil) {
+
+          pulihkanInputFile();
+
+          if (!hasil || !hasil.fileId) {
+
+            showToast(
+              "Upload selesai namun hasil tidak lengkap",
+              "warning"
+            );
+
+            pulihkanTombolUpload();
+
+            return;
+
+          }
+
+          /* File ID otomatis terisi -
+             tetap perlu Simpan untuk
+             merekam perubahan lain. */
+
+          const inputLogo =
+            document.getElementById(
+              "editLogoSekolah"
+            );
+
+          if (inputLogo) {
+
+            inputLogo.value =
+              hasil.fileId;
+
+          }
+
+          pasangPreviewAsset(
+            "editPreviewLogoSekolah",
+            hasil.url
+          );
+
+          /* Upload baru BERHASIL ke Drive,
+             namun BUKAN commit. File ID
+             ditandai pending - logo lama
+             yang tersimpan tidak disentuh
+             sampai [Simpan] sukses. */
+
+          assetPendingUpload = {
+            fileId: hasil.fileId,
+            url: hasil.url || ""
+          };
+
+          assetPendingDelete = null;
+
+          fileDipilih = null;
+
+          setAssetStatus(
+            "Logo terupload. Klik \"Simpan\" untuk menyimpan."
+          );
+
+          pulihkanTombolUpload();
+
+          ubahLabelTombolUpload(
+            "Upload Gambar",
+            "fa-upload"
+          );
+
+          showToast(
+            "Logo berhasil diupload"
+          );
+
+        })
+
+        .withFailureHandler(function (error) {
+
+          pulihkanInputFile();
+
+          fileDipilih = null;
+
+          pulihkanTombolUpload();
+
+          ubahLabelTombolUpload(
+            "Upload Gambar",
+            "fa-upload"
+          );
+
+          showToast(
+            (error && error.message)
+              ? error.message
+              : "Gagal mengupload logo",
+            "error"
+          );
+
+        })
+
+        .uploadLogoSekolah(
+          sessionId,
+          {
+            fileName: file.name,
+            mimeType: file.type,
+            base64: base64
+          }
+        );
+
+    };
+
+    reader.onerror = function () {
+
+      pulihkanInputFile();
+
+      fileDipilih = null;
+
+      pulihkanTombolUpload();
+
+      ubahLabelTombolUpload(
+        "Upload Gambar",
+        "fa-upload"
+      );
+
+      showToast(
+        "Gagal membaca file",
+        "error"
+      );
+
+    };
+
+    reader.readAsDataURL(file);
 
   }
 

@@ -119,6 +119,15 @@ function getAppInfo() {
     logoAplikasi:
       config.logo_aplikasi || "",
 
+    /* Field derived URL - tambahan
+       saja, nilai File ID existing
+       tidak berubah. */
+
+    logoAplikasiUrl:
+      resolveDriveImageUrl(
+        config.logo_aplikasi
+      ),
+
     favicon:
       config.favicon || "",
 
@@ -137,6 +146,35 @@ function getAppInfo() {
       config.logo_aplikasi || ""
 
   };
+
+}
+
+/* =========================
+   ASSET RESOLVER
+   Kontrak Sheet tetap File ID.
+   Resolver string-only (tanpa
+   DriveApp): File ID valid ->
+   URL thumbnail Drive yang dapat
+   dipakai <img>. Invalid/kosong
+   -> "" (frontend pakai fallback).
+========================= */
+
+function resolveDriveImageUrl(fileId) {
+
+  const id =
+    String(fileId || "").trim();
+
+  if (
+    !/^[A-Za-z0-9_-]{20,}$/.test(id)
+  ) {
+
+    return "";
+
+  }
+
+  return "https://drive.google.com/thumbnail?id="
+    + id
+    + "&sz=w400";
 
 }
 

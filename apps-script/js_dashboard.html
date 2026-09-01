@@ -4,6 +4,40 @@
         DASHBOARD FRONTEND
     ========================= */
 
+    /* =========================
+        APP TITLE DASHBOARD
+    ========================= */
+
+    function terapkanJudulDashboard() {
+
+        const judul =
+            document.getElementById(
+                "dashboardAppTitle"
+            );
+
+        if (!judul) {
+            return;
+        }
+
+        /* Konsumsi cache consumer bersama
+           3A-3.5 - tanpa RPC getAppInfo()
+           kedua. Jika cache belum ada
+           (RPC pending), judul statis
+           fallback tetap tampil dan akan
+           diisi oleh terapkanAppIdentity. */
+
+        if (
+            window.cachedAppInfo
+            && window.cachedAppInfo.namaAplikasi
+        ) {
+
+            judul.innerText =
+                "Dashboard " + window.cachedAppInfo.namaAplikasi;
+
+        }
+
+    }
+
     function loadDashboard() {
 
         google.script.run
@@ -61,6 +95,8 @@
 
             })
             .getDashboardData();
+
+        terapkanJudulDashboard();
 
         loadDashboardIdentity();
 
@@ -276,8 +312,22 @@
                     return;
                 }
 
+                /* Prefix tagline dari identity
+                   aplikasi (cachedAppInfo -
+                   consumer bersama 3A-3.5,
+                   tanpa RPC getAppInfo baru).
+                   Fallback "Website ONline Guru"
+                   bila cache belum terisi. */
+
+                const tagline =
+                    (typeof cachedAppInfo !== "undefined"
+                        && cachedAppInfo
+                        && cachedAppInfo.appLongName)
+                        ? cachedAppInfo.appLongName
+                        : "Website ONline Guru";
+
                 subtitle.innerText =
-                    "Website ONline Guru " + identity.namaSekolah;
+                    tagline + " " + identity.namaSekolah;
 
             })
             .withFailureHandler(function (error) {

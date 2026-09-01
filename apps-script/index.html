@@ -2335,6 +2335,36 @@
       }
 
     }
+    /* =========================
+       BRAND IDENTITY TYPOGRAPHY
+       Scoped hanya pada elemen
+       branding identity - tidak
+       mengubah font global.
+    ========================= */
+
+    #loginAppName,
+    #sidebarAppName {
+      font-weight: 700;
+      letter-spacing: .5px;
+      line-height: 1.2;
+    }
+
+    #loginAppTagline,
+    #sidebarAppTagline {
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .3px;
+      line-height: 1.3;
+      opacity: .85;
+    }
+
+    #loginAppLogo,
+    #sidebarAppLogo {
+      object-fit: contain;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .08);
+    }
+
   </style>
 
 </head>
@@ -2355,11 +2385,11 @@
 
       <div class="logo-box">
 
-        <img src="https://iili.io/C4jH40G.png" alt="WONG MIT lines Logo Trans (2)" border="0">
+        <img id="sidebarAppLogo" src="https://iili.io/C4jH40G.png" alt="WONG MIT lines Logo Trans (2)" border="0">
 
-        <h5>WONG MIT</h5>
+        <h5 id="sidebarAppName">WONG MIT</h5>
 
-        <small>Website ONline Guru</small>
+        <small id="sidebarAppTagline">Website ONline Guru</small>
 
       </div>
 
@@ -3373,7 +3403,7 @@
 
             if (pageName === "page_login") {
               loadLoginUsernameHistory();
-              loadLoginAppInfo();
+              loadAppIdentity();
             }
 
             if (
@@ -3845,7 +3875,20 @@
          page_login.html tetap tampil.
       ========================= */
 
-      function loadLoginAppInfo() {
+      /* =========================
+         APPLICATION IDENTITY CONSUMER
+         Satu consumer getAppInfo() untuk
+         Login + Sidebar + Title dengan
+         cache client-side sederhana.
+         Anti-flash: sembunyikan branding
+         sinkron sebelum paint, reveal di
+         handler - pola login yang LOLOS.
+      ========================= */
+
+      var cachedAppInfo = null;
+      var appInfoInFlight = false;
+
+      function sembunyikanBrandingLogin() {
 
         const appName =
           document.getElementById(
@@ -3862,118 +3905,307 @@
             "loginAppTagline"
           );
 
-        /* =========================
-           ANTI-FLASH BRANDING
-           Fungsi ini dipanggil sinkron
-           pada handler yang sama dengan
-           injeksi innerHTML, sehingga
-           fallback statis "WONG MIT"
-           tidak sempat ter-paint sebelum
-           identity dimuat. Visibility
-           (bukan display) dipakai agar
-           layout tidak melompat.
-        ========================= */
+        if (appName) {
+          appName.style.visibility = "hidden";
+        }
 
-        function sembunyikanBrandingLogin() {
+        if (appLogo) {
+          appLogo.style.visibility = "hidden";
+        }
 
-          if (appName) {
-            appName.style.visibility = "hidden";
-          }
+        if (appTagline) {
+          appTagline.style.visibility = "hidden";
+        }
 
-          if (appLogo) {
-            appLogo.style.visibility = "hidden";
-          }
+      }
 
-          if (appTagline) {
-            appTagline.style.visibility = "hidden";
+      function tampilkanBrandingLogin() {
+
+        const appName =
+          document.getElementById(
+            "loginAppName"
+          );
+
+        const appLogo =
+          document.getElementById(
+            "loginAppLogo"
+          );
+
+        const appTagline =
+          document.getElementById(
+            "loginAppTagline"
+          );
+
+        if (appName) {
+          appName.style.visibility = "visible";
+        }
+
+        if (appLogo) {
+          appLogo.style.visibility = "visible";
+        }
+
+        if (appTagline) {
+          appTagline.style.visibility = "visible";
+        }
+
+      }
+
+      function sembunyikanBrandingSidebar() {
+
+        const sidebarLogo =
+          document.getElementById(
+            "sidebarAppLogo"
+          );
+
+        const sidebarName =
+          document.getElementById(
+            "sidebarAppName"
+          );
+
+        const sidebarTagline =
+          document.getElementById(
+            "sidebarAppTagline"
+          );
+
+        if (sidebarLogo) {
+          sidebarLogo.style.visibility = "hidden";
+        }
+
+        if (sidebarName) {
+          sidebarName.style.visibility = "hidden";
+        }
+
+        if (sidebarTagline) {
+          sidebarTagline.style.visibility = "hidden";
+        }
+
+      }
+
+      function tampilkanBrandingSidebar() {
+
+        const sidebarLogo =
+          document.getElementById(
+            "sidebarAppLogo"
+          );
+
+        const sidebarName =
+          document.getElementById(
+            "sidebarAppName"
+          );
+
+        const sidebarTagline =
+          document.getElementById(
+            "sidebarAppTagline"
+          );
+
+        if (sidebarLogo) {
+          sidebarLogo.style.visibility = "visible";
+        }
+
+        if (sidebarName) {
+          sidebarName.style.visibility = "visible";
+        }
+
+        if (sidebarTagline) {
+          sidebarTagline.style.visibility = "visible";
+        }
+
+      }
+
+      function terapkanBrandingElemen(
+        namaId,
+        taglineId,
+        logoId,
+        info
+      ) {
+
+        const elNama =
+          document.getElementById(namaId);
+
+        const elTagline =
+          document.getElementById(taglineId);
+
+        const elLogo =
+          document.getElementById(logoId);
+
+        if (elNama && info.namaAplikasi) {
+
+          elNama.innerText =
+            info.namaAplikasi;
+
+        }
+
+        /* Tagline dari appLongName
+           (key "tagline_aplikasi") hanya
+           bila terisi - fallback statis
+           existing tetap. */
+
+        if (elTagline && info.appLongName) {
+
+          elTagline.innerText =
+            info.appLongName;
+
+        }
+
+        /* Logo: utamakan logoAplikasiUrl
+           (derived dari File ID oleh
+           resolver backend). Jika tidak
+           ada, terima URL langsung dari
+           kontrak lama. Gagal render ->
+           onerror kembali ke fallback
+           statis existing. */
+
+        if (elLogo) {
+
+          const logoUrl =
+            info.logoAplikasiUrl
+            || (
+              info.logoAplikasi
+              && String(info.logoAplikasi).indexOf("http") === 0
+                ? info.logoAplikasi
+                : ""
+            );
+
+          if (logoUrl) {
+
+            if (!elLogo.dataset.brandFallback) {
+              elLogo.dataset.brandFallback =
+                elLogo.src;
+            }
+
+            elLogo.onerror =
+              function () {
+
+                elLogo.onerror = null;
+
+                elLogo.src =
+                  elLogo.dataset.brandFallback
+                  || elLogo.src;
+
+              };
+
+            elLogo.src = logoUrl;
+
           }
 
         }
 
-        function tampilkanBrandingLogin() {
+      }
 
-          if (appName) {
-            appName.style.visibility = "visible";
-          }
+      function terapkanAppIdentity(info) {
 
-          if (appLogo) {
-            appLogo.style.visibility = "visible";
-          }
+        cachedAppInfo =
+          info || null;
 
-          if (appTagline) {
-            appTagline.style.visibility = "visible";
-          }
+        if (!info) {
+
+          /* Kosong/gagal - fallback branding
+             statis existing ditampilkan. */
+
+          tampilkanBrandingLogin();
+
+          tampilkanBrandingSidebar();
+
+          return;
 
         }
+
+        /* Title memakai namaAplikasi.
+           Fallback "WONG MIT" statis tetap
+           di markup bila kosong. */
+
+        if (info.namaAplikasi) {
+
+          document.title =
+            info.namaAplikasi;
+
+        }
+
+        /* Judul Dashboard ikut namaAplikasi
+           bila halaman Dashboard sedang
+           terpasang. Fallback statis tetap
+           di markup bila elemen tidak ada. */
+
+        const dashTitle =
+          document.getElementById(
+            "dashboardAppTitle"
+          );
+
+        if (dashTitle && info.namaAplikasi) {
+
+          dashTitle.innerText =
+            "Dashboard " + info.namaAplikasi;
+
+        }
+
+        terapkanBrandingElemen(
+          "loginAppName",
+          "loginAppTagline",
+          "loginAppLogo",
+          info
+        );
+
+        terapkanBrandingElemen(
+          "sidebarAppName",
+          "sidebarAppTagline",
+          "sidebarAppLogo",
+          info
+        );
+
+        tampilkanBrandingLogin();
+
+        tampilkanBrandingSidebar();
+
+      }
+
+      function loadAppIdentity() {
+
+        /* Sembunyikan sinkron - sama task
+           dengan injeksi innerHTML, branding
+           statis tidak sempat ter-paint. */
 
         sembunyikanBrandingLogin();
 
-        if (!appName && !appLogo && !appTagline) {
+        sembunyikanBrandingSidebar();
+
+        if (cachedAppInfo) {
+
+          terapkanAppIdentity(
+            cachedAppInfo
+          );
+
+          return;
+
+        }
+
+        /* Satu RPC saja: bila sedang
+           in-flight, handler akan
+           menerapkan hasilnya. */
+
+        if (appInfoInFlight) {
           return;
         }
+
+        appInfoInFlight = true;
 
         google.script.run
           .withSuccessHandler(function (info) {
 
-            if (!info) {
+            appInfoInFlight = false;
 
-              tampilkanBrandingLogin();
-
-              return;
-
-            }
-
-            if (appName && info.namaAplikasi) {
-
-              appName.innerText =
-                info.namaAplikasi;
-
-            }
-
-            /* Tagline login diisi dari appLongName
-               (key "tagline_aplikasi") hanya bila
-               terisi - fallback branding statis
-               existing di page_login.html tetap. */
-
-            if (
-              appTagline
-              && info.appLongName
-            ) {
-
-              appTagline.innerText =
-                info.appLongName;
-
-            }
-
-            /* Hanya terapkan jika nilai sudah
-               berupa URL yang dapat dipakai
-               langsung. Bukan resolver URL Drive. */
-
-            if (
-              appLogo
-              && info.logoAplikasi
-              && String(info.logoAplikasi).indexOf("http") === 0
-            ) {
-
-              appLogo.src =
-                info.logoAplikasi;
-
-            }
-
-            tampilkanBrandingLogin();
+            terapkanAppIdentity(info);
 
           })
           .withFailureHandler(function (error) {
 
-            /* RPC gagal - fallback branding
-               statis lama ditampilkan kembali. */
+            appInfoInFlight = false;
 
             console.warn(
-              "loadLoginAppInfo:",
+              "loadAppIdentity:",
               error
             );
 
-            tampilkanBrandingLogin();
+            terapkanAppIdentity(null);
 
           })
           .getAppInfo();
@@ -4173,6 +4405,14 @@
 
       window.onload = function () {
 
+        /* Muat identity aplikasi sedini
+           mungkin - sebelum Sidebar dapat
+           terlihat. Satu RPC getAppInfo(),
+           hasilnya di-cache untuk Login +
+           Sidebar + Title. */
+
+        loadAppIdentity();
+
         const sessionId =
 
           localStorage.getItem(
@@ -4262,6 +4502,17 @@
       }
 
       function showMainApp() {
+
+        /* Tahan branding sidebar bila
+           identity masih dimuat agar
+           branding lama tidak terlihat.
+           Reveal dilakukan handler identity. */
+
+        if (appInfoInFlight) {
+
+          sembunyikanBrandingSidebar();
+
+        }
 
         const body =
           document.body;
