@@ -367,6 +367,7 @@ Daftar sprint Rekap yang telah selesai:
 - Sprint Cleanup Legacy Rekap
 - Sprint Rekap 6
 - Sprint Rekap 7B
+
 ---
 
 # Sprint Guru Mengajar — UX Panel & Search
@@ -493,9 +494,7 @@ Hasil
 
 ✅ Audit `git diff` selesai
 
-✅ node --check Code.js LOLOS
-
-✅ git diff --check menemukan trailing whitespace pada `index.html` baris 4262, 4265, dan 4581; tidak diperbaiki pada sesi dokumentasi karena source code DS.4 tidak boleh disentuh
+⚠️ `git diff --check` menemukan trailing whitespace pada `index.html` baris 4262, 4265, dan 4581; tidak diperbaiki pada sesi dokumentasi karena source code DS.4 tidak boleh disentuh
 
 ---
 
@@ -1125,6 +1124,8 @@ Hasil
 
 ✅ Deploy Production LOLOS
 
+---
+
 # Sprint Guru Mengajar — Refactoring & Modularisasi
 
 Status
@@ -1162,6 +1163,8 @@ Hasil
 
 ✅ Deploy Production LOLOS
 
+---
+
 # Sprint Guru Mengajar — Bugfix Preview Import Massal
 
 Status
@@ -1197,6 +1200,8 @@ Hasil
 
 ✅ Deploy Production LOLOS
 
+---
+
 # Sprint Mapel — Refactoring & Modularisasi
 
 Status
@@ -1231,19 +1236,35 @@ Catatan
 
 Refactoring Mapel selesai tanpa perubahan database dan tanpa perubahan behavior runtime yang terdeteksi.
 
-#### Refactoring Absensi Harian — SELESAI
+---
 
-Absensi Harian telah dimodularisasi secara atomic:
-`Code.js` → `Absensi.js`
-`index.html` → `js_absensi.html`
+# Sprint Absensi Harian — Refactoring & Modularisasi
 
-Loader frontend:
-`<?!= getPage("js_absensi") ?>`
+Status
 
-Seluruh fungsi dan state Absensi yang termasuk boundary modul telah dipindahkan, termasuk alur Absensi Baru, Draft, Simpan, dan Revisi.
+DONE
 
-Hasil Deploy Uji:
-**LOLOS seluruh QA Absensi Harian.**
+Target
+
+Memisahkan boundary backend dan frontend Absensi Harian tanpa mengubah behavior runtime.
+
+Hasil
+
+✅ Backend Absensi dipisahkan ke `Absensi.js`
+
+✅ Frontend Absensi dipisahkan ke `js_absensi.html`
+
+✅ Loader `<?!= getPage("js_absensi") ?>` ditambahkan
+
+✅ Extraction dilakukan sebagai satu atomic change: backend + frontend + loader
+
+✅ Alur Absensi Baru, Draft, Simpan, dan Revisi tetap berjalan
+
+✅ Deploy Uji LOLOS
+
+✅ QA Absensi Harian LOLOS
+
+---
 
 # Sprint Rekap — Refactoring & Modularisasi
 
@@ -1418,6 +1439,8 @@ Catatan
 
 Sprint ini hanya menyempurnakan fondasi UX Pengaturan. Implementasi backend dan fungsi operasional Pengaturan Sekolah, Pengaturan Sistem, dan Pengaturan Tahun Ajaran tetap menjadi sprint berikutnya sesuai roadmap.
 
+---
+
 # Sprint 3A-1 — Backend Identity Foundation
 
 Status
@@ -1430,13 +1453,13 @@ Membangun fondasi backend identitas sekolah tanpa mengubah kontrak Pengaturan Ak
 
 Fokus
 
-* `getSchoolIdentity(sessionId)`
-* `saveSchoolIdentity(sessionId, data)`
-* Role check
-* Master Data cache
-* Cache invalidation
-* Dukungan key `logo_aplikasi`
-* File ID Google Drive sebagai nilai asset
+- `getSchoolIdentity(sessionId)`
+- `saveSchoolIdentity(sessionId, data)`
+- Role check
+- Master Data cache
+- Cache invalidation
+- Dukungan key `logo_aplikasi`
+- File ID Google Drive sebagai nilai asset
 
 Hasil
 
@@ -1472,6 +1495,8 @@ Validasi
 
 ✅ Rekap LOLOS
 
+---
+
 # Sprint 3A-2 — UI Pengaturan Sekolah
 
 Status
@@ -1484,15 +1509,15 @@ Membangun UI Pengaturan Sekolah dengan pola Preview → Detail → Edit.
 
 Fokus
 
-* Preview card
-* Detail Sekolah
-* Edit
-* Save
-* Cancel
-* Validasi Nama Sekolah
-* Integrasi `getSchoolIdentity()`
-* Integrasi `saveSchoolIdentity()`
-* File ID Google Drive
+- Preview card
+- Detail Sekolah
+- Edit
+- Save
+- Cancel
+- Validasi Nama Sekolah
+- Integrasi `getSchoolIdentity()`
+- Integrasi `saveSchoolIdentity()`
+- File ID Google Drive
 
 Hasil
 
@@ -1529,6 +1554,8 @@ Validasi
 Commit
 
 `feat(pengaturan): add school identity UI`
+
+---
 
 # Sprint 3A-3.1 — Identity Reader Foundation
 
@@ -1577,13 +1604,9 @@ Commit
 
 `29266bd`
 
-Status
-
-DONE
-
 ---
 
-# Sprint Pengaturan — 3A-3.2 Application Identity Foundation
+# Sprint 3A-3.2 — Application Identity Foundation
 
 Status
 
@@ -1636,6 +1659,8 @@ Catatan
 
 Sprint ini hanya membangun fondasi reader identity aplikasi. Integrasi identity aplikasi ke login, sidebar, title, dan consumer branding lainnya dilakukan pada sprint berikutnya.
 
+---
+
 # Sprint 3A-3.3 — Application Identity Consumer Integration
 
 Status
@@ -1686,6 +1711,7 @@ Catatan
 
 Integrasi consumer lainnya seperti Sidebar, Title, dan branding frontend lainnya belum dilakukan dan tetap menjadi pekerjaan sprint berikutnya.
 
+---
 
 # Micro-Fix — Application Identity Freshness & Login Anti-Flash
 
@@ -1740,6 +1766,7 @@ Catatan
 
 Micro-fix ini tidak mengubah `getSchoolIdentity()`, Master Data cache layer secara global, consumer lain, maupun kontrak `getAppInfo()`.
 
+---
 
 # Sprint 3A-3.4 — Configurable Application Branding
 
@@ -1801,7 +1828,10 @@ Commit
 
 Catatan
 
-Key `tagline_aplikasi` ditambahkan manual pada Sheet Pengaturan per deployment. Consumer branding lainnya (Sidebar, Title) masih menjadi pekerjaan sprint berikutnya.
+Key `tagline_aplikasi` ditambahkan manual pada Sheet Pengaturan per deployment. Consumer branding lainnya (Sidebar dan Title) masih menjadi pekerjaan sprint berikutnya.
+
+---
+
 # Sprint 3A-3.5 — Application Identity Consumer: Sidebar & Title
 
 Status
@@ -1812,45 +1842,43 @@ Target
 
 Mengintegrasikan identity aplikasi ke Sidebar dan Title dengan satu consumer identity frontend bersama, tanpa RPC ganda dan tanpa mengubah kontrak backend.
 
-
-
 Fokus
 
 - Satu consumer `loadAppIdentity()` dengan cache client-side `cachedAppInfo` untuk Login, Sidebar, dan Title.
-- Sidebar (logo, nama, tagline) dinamis dari identity aplikasi。
-- `<title>` / `document.title` dinamis dari `namaAplikasi`。
-- Anti-flash Login dan Sidebar dipertahankan; fallback branding statis tetap tampil bila RPC gagal/kosong。
-- Tidak mengubah `getAppInfo()`, `getSchoolIdentity()`, auth/session, maupun consumer lain।
-
-
+- Sidebar (logo, nama, tagline) dinamis dari identity aplikasi.
+- `<title>` / `document.title` dinamis dari `namaAplikasi`.
+- Anti-flash Login dan Sidebar dipertahankan; fallback branding statis tetap tampil bila RPC gagal/kosong.
+- Tidak mengubah `getAppInfo()`, `getSchoolIdentity()`, auth/session, maupun consumer lain.
 
 Hasil
 
 ✅ Login, Sidebar, dan Title memakai satu hasil `getAppInfo()` tanpa RPC ganda
+
 ✅ Sidebar (logo, nama, tagline) dinamis dari identity aplikasi
-            
+
 ✅ `<title>` dinamis dari `namaAplikasi` dengan fallback statis
-            
+
 ✅ Anti-flash Login dan Sidebar tetap bekerja
-            
+
 ✅ Fallback branding tetap aman
-            
+
 Validasi
 
 ✅ Syntax check LOLOS
+
 ✅ clasp push ke GAS Uji LOLOS
+
 ✅ Deploy Uji Sidebar, Title, Login LOLOS
-
-
 
 Commit
 
-`58bc97e` — `feat(identity): complete branding consumers and school logo upload` (commit ini mencakup seluruh rangkaian 3A-3.5 sampai 3A-3.6-FIX-2)
+`58bc97e` — commit sumber rangkaian 3A-3.5 sampai 3A-3.6-FIX-2
 
 Catatan
 
-Consumer bersama ini menjadi fondasi konsumsi branding aplikasi pada Dashboard dan asset pada sprint berikutnya。
+Consumer bersama ini menjadi fondasi konsumsi branding aplikasi pada Dashboard dan asset pada sprint berikutnya.
 
+---
 
 # Sprint 3A-3.6 — Application Branding Asset & Dashboard Consumer
 
@@ -1860,32 +1888,29 @@ DONE
 
 Target
 
-Menambahkan resolver asset File ID → URL, mengintegrasikan logo aplikasi dinamis pada Login/Sidebar, dan menjadikan judul Dashboard dinamis tanpa menambah RPC identity。
-
-
-
-
+Menambahkan resolver asset File ID → URL, mengintegrasikan logo aplikasi dinamis pada Login/Sidebar, dan menjadikan judul Dashboard dinamis tanpa menambah RPC identity.
 
 Fokus
 
-- Resolver `resolveDriveImageUrl()`: File ID di Sheet → URL image untuk `<img>` frontend (tanpa DriveApp saat render)。
-- Derived field `logoAplikasiUrl` (`getAppInfo()`) dan `logoSekolahUrl` (`getSchoolIdentity()`)；File ID tetap satu-satunya nilai di Sheet。
-- Logo Login/Sidebar dari `logoAplikasiUrl` dengan urutan prioritas: URL resolver → URL langsung → fallback statis via `onerror` (anti-loop)。
-- Judul Dashboard `"Dashboard " + namaAplikasi` via `cachedAppInfo`(tanpa RPC tambahan)。
-- Preview visual Logo Sekolah dan Logo Aplikasi pada Detail Pengaturan Sekolah。
-
-
+- Resolver `resolveDriveImageUrl()`: File ID di Sheet → URL image untuk `<img>` frontend (tanpa DriveApp saat render).
+- Derived field `logoAplikasiUrl` (`getAppInfo()`) dan `logoSekolahUrl` (`getSchoolIdentity()`); File ID tetap satu-satunya nilai di Sheet.
+- Logo Login/Sidebar dari `logoAplikasiUrl` dengan urutan prioritas: URL resolver → URL langsung → fallback statis via `onerror` (anti-loop).
+- Judul Dashboard `"Dashboard " + namaAplikasi` via `cachedAppInfo` (tanpa RPC tambahan).
+- Preview visual Logo Sekolah dan Logo Aplikasi pada Detail Pengaturan Sekolah.
 
 Hasil
 
 ✅ Logo Login/Sidebar dinamis dari `logo_aplikasi`; kosong/invalid/unshared → fallback aman, bukan broken image
+
 ✅ Judul Dashboard dinamis tanpa RPC `getAppInfo()` ganda
-✅ File ID tetap satu-satunya nilai asset di Sheet;kontrak tidak berubah
+
+✅ File ID tetap satu-satunya nilai asset di Sheet; kontrak tidak berubah
+
 ✅ Preview asset pada Detail Pengaturan Sekolah
-            
+
 Validasi
 
-✅ Deploy Uji LOLOS(logo dinamis,fallback,judul Dashboard,preview asset)
+✅ Deploy Uji LOLOS (logo dinamis, fallback, judul Dashboard, preview asset)
 
 Commit
 
@@ -1893,7 +1918,10 @@ Commit
 
 Catatan
 
-Konsumen logo sekolah saat ini hanya detail Card Pengaturan Sekolah;tidak ada pemakaian logo sekolah pada login/sidebar/aplikasi。
+Konsumen logo sekolah saat ini hanya Detail Pengaturan Sekolah; tidak ada pemakaian logo sekolah pada Login/Sidebar.
+
+---
+
 # Micro-Fix — 3A-3.6-FIX-1 Dashboard Tagline Dinamis
 
 Status
@@ -1904,20 +1932,18 @@ Target
 
 Menjadikan subtitle Dashboard dinamis dari tagline aplikasi + nama sekolah tanpa RPC identity tambahan.
 
-
-
 Fokus
 
 - Komposisi `appLongName + " " + nama_sekolah` (`cachedAppInfo.appLongName` + identity sekolah dari `loadDashboardIdentity`).
 - Fallback statis subtitle tetap dipertahankan.
 - Tidak mengubah `getDashboardData()` maupun anti-flash yang sudah LOLOS.
 
-
-
 Hasil
 
 ✅ Subtitle Dashboard dinamis dari `cachedAppInfo.appLongName` + nama sekolah
+
 ✅ Tanpa RPC `getAppInfo()` baru
+
 ✅ Fallback subtitle tetap aman
 
 Validasi
@@ -1932,7 +1958,7 @@ Catatan
 
 Tidak ada RPC `getAppInfo()` tambahan pada Dashboard.
 
-
+---
 
 # Sprint 3A-3.6-FIX-2 — Penyempurnaan Card Pengaturan Sekolah + Upload Logo Sekolah
 
@@ -1943,8 +1969,6 @@ DONE
 Target
 
 Memfokuskan Card Pengaturan Sekolah hanya pada identitas sekolah dan menyediakan upload logo sekolah yang profesional, aman, dan Admin-only.
-
-
 
 Fokus
 
@@ -1957,16 +1981,23 @@ Fokus
 Hasil
 
 ✅ `logo_aplikasi`/`favicon` di Sheet tetap utuh setelah Simpan Card Sekolah
+
 ✅ Tidak ada lagi `ReferenceError: updateValue is not defined` (helper `updateSettingValue()` top-level)
+
 ✅ Pemilihan file tidak memicu upload otomatis (upload hanya saat konfirmasi)
+
 ✅ File ID terisi setelah upload sukses; preview/detail sinkron
+
 ✅ Cancel/Hapus tidak meninggalkan orphan file
+
 ✅ Replace tidak pernah menunjuk Sheet ke file terhapus
+
 ✅ Logo Login/Sidebar dinamis dari `logo_aplikasi` dengan fallback aman
 
 Validasi
 
 ✅ Syntax check LOLOS (backend + frontend)
+
 ✅ Deploy Uji LOLOS (upload dua fase, Hapus Kasus A/B, cancel anti-orphan, replace, fallback logo, regression)
 
 Commit
@@ -1975,4 +2006,29 @@ Commit
 
 Catatan
 
-Sprint 4 Card Sistem akan menangani `nama_aplikasi`, `tagline_aplikasi`, `logo_aplikasi`, `favicon`, `versi_aplikasi`, `mode_maintenance`, Backup, Restore, dan Log Aktivitas; Card Tahun Ajaran/Proses Akademik juga masih menjadi agenda terpisah.
+Sprint 3A-3.6-FIX-2 menyelesaikan rangkaian identity/branding dan Pengaturan Sekolah. `logo_aplikasi` dan `favicon` tetap menjadi domain konfigurasi aplikasi dan belum memiliki UI pengelolaan pada Sprint 3. Pengelolaan keduanya, bersama `nama_aplikasi`, `tagline_aplikasi`, `versi_aplikasi`, `mode_maintenance`, Backup, Restore, dan Log Aktivitas, menjadi ruang lingkup Sprint 4 — Card Sistem.
+
+---
+
+# SPRINT 3 — CLOSED
+
+Seluruh pekerjaan Sprint 3 terkait fondasi identity aplikasi, consumer branding, Dashboard identity, dan Pengaturan Sekolah telah selesai dan dinyatakan LOLOS berdasarkan Deploy Uji.
+
+Cakupan selesai:
+
+- Identity Sekolah (`getSchoolIdentity()` / `saveSchoolIdentity()`)
+- Identity Aplikasi (`getAppInfo()`)
+- Freshness `getAppInfo()` dan anti-flash Login
+- Configurable nama aplikasi dan tagline
+- Consumer Login, Sidebar, dan Title
+- Resolver asset logo aplikasi/sekolah
+- Dashboard title dan subtitle dinamis
+- Pengaturan Sekolah: nama sekolah, kepala sekolah, logo sekolah
+- Upload, replace, delete, dan cleanup asset logo sekolah
+- Boundary ownership antara identity aplikasi dan identity sekolah
+
+Catatan:
+
+`logo_aplikasi` dan `favicon` sudah didukung pada level konfigurasi/reader dan consumer logo aplikasi, tetapi pengelolaan UI-nya belum dikerjakan pada Sprint 3. Pengelolaan tersebut menjadi bagian Sprint 4 — Card Sistem.
+
+Sprint 3 ditutup pada level fitur dan audit. Dokumentasi Sprint 3 menjadi baseline untuk Sprint 4.
