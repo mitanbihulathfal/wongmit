@@ -11,7 +11,7 @@ Menyelesaikan Card Sistem pada Pengaturan secara bertahap, aman, modular, dan ba
 
 ### 4A — System Settings Backend Foundation
 
-Status: IMPLEMENTED — MENUNGGU TESTING GAS UJI
+Status: DONE — CLOSED
 
 Endpoint:
 - `getSystemSettings(sessionId)`
@@ -31,6 +31,8 @@ File: `apps-script/Sistem.js`
 
 ### 4B — Card Sistem UI
 
+Status: DONE — CLOSED
+
 - Preview → Detail → Edit.
 - Load melalui `getSystemSettings()`.
 - Save melalui `saveSystemSettings()`.
@@ -38,6 +40,8 @@ File: `apps-script/Sistem.js`
 - Tidak mengubah consumer identity existing.
 
 ### 4C — Application Asset Management
+
+Status: DONE — CLOSED & LOLOS (scope implementasi). Favicon consumer webapp Apps Script dinamis; favicon tab browser production masih dari root GitHub Pages wrapper — integrasi wrapper PENDING / MICRO-AUDIT TERPISAH setelah Sprint 4C.
 
 - Logo aplikasi.
 - Favicon.

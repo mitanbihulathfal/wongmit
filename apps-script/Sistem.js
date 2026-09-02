@@ -27,7 +27,27 @@ function getSystemSettings(sessionId) {
     favicon: config.favicon || "",
     versiAplikasi: config.versi_aplikasi || "",
     modeMaintenance: config.mode_maintenance === true ||
-      String(config.mode_maintenance).toLowerCase() === "true"
+      String(config.mode_maintenance).toLowerCase() === "true",
+
+    /* Field derived URL - tambahan
+       additive (Sprint 4C), pola sama
+       dengan getAppInfo() dan
+       getSchoolIdentity(). Nilai
+       File ID existing tidak berubah.
+       Invalid/kosong -> "" (frontend
+       pakai fallback). Kontrak lama
+       tetap utuh. */
+
+    logoAplikasiUrl:
+      resolveDriveImageUrl(
+        config.logo_aplikasi
+      ),
+
+    faviconUrl:
+      resolveDriveImageUrl(
+        config.favicon
+      )
+
   };
 }
 
@@ -67,4 +87,244 @@ function saveSystemSettings(sessionId, data) {
   invalidateMasterCache("Pengaturan");
 
   return true;
+}
+
+/* =========================
+   UPLOAD ASSET APLIKASI
+   Sprint 4C - Asset Management.
+   Admin-only. Target:
+   "logo_aplikasi" | "favicon"
+   (identity aplikasi, domain
+   Card Sistem - BUKAN
+   logo_sekolah). Asset diupload
+   ke folder Drive "Assets WONG MIT"
+   (wajib tepat satu; tidak dibuat
+   otomatis; tolak bila ambigu).
+   Sharing otomatis. File lama
+   tidak dihapus di sini. Upload
+   BUKAN commit konfigurasi - File
+   ID baru masuk Sheet hanya saat
+   [Simpan] (saveSystemSettings).
+   Validasi server-side wajib:
+   jangan percaya validasi client.
+   SVG (favicon) divalidasi
+   kontennya: ditolak bila
+   mengandung <script atau event
+   handler on*=.
+========================= */
+
+function uploadAssetAplikasi(
+  sessionId,
+  upload,
+  target
+) {
+
+  if (!checkRole(sessionId, ["Admin"])) {
+
+    throw new Error("Akses ditolak");
+
+  }
+
+  if (target !== "logo_aplikasi" && target !== "favicon") {
+
+    throw new Error("Target asset tidak valid");
+
+  }
+
+  if (!upload || !upload.base64 || !upload.mimeType || !upload.fileName) {
+
+    throw new Error("Data file tidak lengkap");
+
+  }
+
+  /* Whitelist per target (Sprint 4C):
+     logo_aplikasi - JPG/JPEG/PNG.
+     favicon - JPG/JPEG/PNG/ICO/SVG. */
+
+  const mimeTypeDiizinkan = target === "favicon"
+    ? [
+        "image/jpeg",
+        "image/png",
+        "image/x-icon",
+        "image/vnd.microsoft.icon",
+        "image/svg+xml"
+      ]
+    : [
+        "image/jpeg",
+        "image/png"
+      ];
+
+  const ekstensiDiizinkan = target === "favicon"
+    ? ["jpg", "jpeg", "png", "ico", "svg"]
+    : ["jpg", "jpeg", "png"];
+
+  const mimeType =
+    String(upload.mimeType).toLowerCase();
+
+  if (mimeTypeDiizinkan.indexOf(mimeType) === -1) {
+
+    throw new Error(
+      target === "favicon"
+        ? "Format file harus JPG, PNG, ICO, atau SVG"
+        : "Format file harus JPG atau PNG"
+    );
+
+  }
+
+  const namaFile =
+    String(upload.fileName);
+
+  const ekstensi =
+    namaFile.split(".").pop().toLowerCase();
+
+  if (ekstensiDiizinkan.indexOf(ekstensi) === -1) {
+
+    throw new Error(
+      target === "favicon"
+        ? "Format file harus JPG, PNG, ICO, atau SVG"
+        : "Format file harus JPG atau PNG"
+    );
+
+  }
+
+  /* Batas ukuran 2 MB (sebelum
+     overhead base64). */
+
+  const ukuranBytes =
+    Math.floor(
+      upload.base64.length * 3 / 4
+    );
+
+  const batasBytes =
+    2 * 1024 * 1024;
+
+  if (ukuranBytes <= 0 || ukuranBytes > batasBytes) {
+
+    throw new Error("Ukuran file maksimal 2 MB");
+
+  }
+
+  /* Cari folder target.
+     Tidak dibuat otomatis.
+     Tolak bila tidak ada atau
+     ambigu (lebih dari satu). */
+
+  const iterasiFolder =
+    DriveApp.getFoldersByName(
+      "Assets WONG MIT"
+    );
+
+  if (!iterasiFolder.hasNext()) {
+
+    throw new Error(
+      'Folder "Assets WONG MIT" tidak ditemukan di Google Drive'
+    );
+
+  }
+
+  const folder =
+    iterasiFolder.next();
+
+  if (iterasiFolder.hasNext()) {
+
+    throw new Error(
+      'Ada lebih dari satu folder "Assets WONG MIT". Seragamkan dulu di Google Drive'
+    );
+
+  }
+
+  let bytes;
+
+  try {
+
+    bytes =
+      Utilities.base64Decode(
+        upload.base64
+      );
+
+  } catch (error) {
+
+    throw new Error("Gagal membaca data file");
+
+  }
+
+  const blob =
+    Utilities.newBlob(
+      bytes,
+      mimeType,
+      namaFile
+    );
+
+  /* Validasi konten SVG (favicon
+     saja): tolak bila mengandung
+     <script atau event handler
+     on*= (keputusan Sprint 4C). */
+
+  if (ekstensi === "svg") {
+
+    const kontenSvg =
+      blob.getDataAsString();
+
+    if (
+      /<script/i.test(kontenSvg)
+      || /\son[a-z]+\s*=/i.test(kontenSvg)
+    ) {
+
+      throw new Error(
+        "SVG ditolak: mengandung <script atau event handler on*="
+      );
+
+    }
+
+  }
+
+  let file;
+
+  try {
+
+    file =
+      folder.createFile(blob);
+
+  } catch (error) {
+
+    throw new Error("Gagal mengupload file ke Google Drive");
+
+  }
+
+  if (!file) {
+
+    throw new Error("Gagal mengupload file ke Google Drive");
+
+  }
+
+  /* Asset harus dapat diakses
+     browser sebagai gambar. */
+
+  file.setSharing(
+    DriveApp.Access.ANYONE_WITH_LINK,
+    DriveApp.Permission.VIEW
+  );
+
+  const fileId =
+    file.getId();
+
+  const url =
+    resolveDriveImageUrl(fileId);
+
+  /* Upload BUKAN commit konfigurasi.
+     File ID baru disimpan ke Sheet
+     hanya saat [Simpan] ditekan
+     (saveSystemSettings). Bila admin
+     membatalkan/menghapus, file baru
+     dihapus via hapusAssetSekolah -
+     tidak ada orphan file. */
+
+  return {
+
+    fileId: fileId,
+
+    url: url
+
+  };
+
 }

@@ -39,6 +39,7 @@ Integrasi identity aplikasi ke consumer telah berjalan bertahap:
 * Sprint 3A-3.6: identity aplikasi digunakan secara dinamis pada branding Login/Sidebar dan title aplikasi.
 * Sprint 3A-3.6-FIX-1: tagline Dashboard menjadi dinamis dari tagline aplikasi + nama sekolah.
 * Sprint 3A-3.6-FIX-2: Pengaturan Sekolah selesai, termasuk upload, replace, dan hapus logo sekolah serta penyempurnaan consumer logo aplikasi pada Login/Sidebar.
+* Sprint 4C: Edit Card Sistem dan Asset Management aplikasi selesai — upload/replace/hapus `logo_aplikasi` dan `favicon` (Admin-only, upload ≠ commit), consumer favicon runtime dinamis pada webapp Apps Script; favicon pada tab browser production masih dari root GitHub Pages wrapper dan integrasinya berstatus PENDING / MICRO-AUDIT TERPISAH setelah Sprint 4C.
 
 Pemisahan identity aplikasi dan identity sekolah tetap dipertahankan:
 * Login/Sidebar menggunakan `logo_aplikasi`.
@@ -540,9 +541,31 @@ Fitur:
 * Tidak ada backup/restore/log aktivitas pada 4B.
 * Integrasi backend `getSystemSettings()` dengan authorization Admin-only.
 
+✅ Sprint 4C — Asset Management selesai (CLOSED & LOLOS untuk scope implementasi)
+
+Deploy Uji / Manual Test:
+
+LOLOS (kecuali favicon production pada tab browser — lihat Catatan)
+
+Fitur:
+
+* Edit Card Sistem diaktifkan (Preview → Detail → Edit, konsisten dengan Card Sekolah/Akademik).
+* Upload asset aplikasi `logo_aplikasi` dan `favicon` melalui endpoint `uploadAssetAplikasi()` (Admin-only; logo: JPG/JPEG/PNG, favicon: JPG/JPEG/PNG/ICO/SVG, maks 2 MB; SVG divalidasi konten server-side; folder "Assets WONG MIT" wajib tepat satu; sharing `ANYONE_WITH_LINK / VIEW`).
+* Upload ≠ commit: upload tidak menulis Sheet; File ID baru masuk Sheet hanya saat [Simpan] (`saveSystemSettings`).
+* Replace/hapus asset aman: Simpan commit dulu → Sheet menunjuk File ID baru → file lama dihapus best-effort (retry 1x + warning); Simpan gagal → asset lama tetap ada; Cancel membersihkan pending upload (anti-orphan); Sheet tidak pernah menunjuk file yang sudah dihapus.
+* Field derived URL additive: `logoAplikasiUrl`/`faviconUrl` pada `getSystemSettings()`, `faviconUrl` pada `getAppInfo()` — kontrak lama dan alias legacy tetap utuh.
+* Upload favicon ke Drive + penyimpanan File ID ke Sheet LOLOS.
+* Consumer favicon runtime dinamis pada webapp Apps Script (fallback statis di `<head>` diganti dari `getAppInfo().faviconUrl`, tanpa RPC baru).
+* `mode_maintenance` tidak pernah ditulis oleh flow Card Sistem dan tetap READ-ONLY pada 4C (tanpa toggle).
+* Root `index.html` GitHub Pages TIDAK diubah.
+
+Catatan:
+
+Favicon consumer webapp Apps Script sudah dinamis, tetapi favicon pada tab browser production masih berasal dari root GitHub Pages `index.html` karena aplikasi berjalan di dalam iframe wrapper. Integrasi favicon production wrapper berstatus PENDING / MICRO-AUDIT TERPISAH setelah Sprint 4C — favicon production BELUM dinyatakan selesai.
+
 Rencana Sprint Berikutnya:
 
-* Sprint 4C: Asset Management (upload logo aplikasi, upload favicon)
+* MICRO-AUDIT TERPISAH: integrasi favicon production wrapper (root GitHub Pages `index.html`)
 * POST-4C: Maintenance Mode toggle, Backup, Restore, Log Aktivitas
 
 ### Proses Akademik

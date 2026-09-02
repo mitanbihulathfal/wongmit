@@ -23,6 +23,31 @@
 
   let fileDipilih = null;
 
+  /* State asset Card Sistem (Sprint 4C) -
+     state TERPISAH per slot: "logo"
+     (logo_aplikasi) dan "favicon".
+     Pola state machine FIX-2 dipakai
+     ulang. Upload BUKAN commit - [Simpan]
+     pada Card Sistem adalah satu-satunya
+     commit. mode_maintenance TIDAK
+     dikelola di sini (POST-4C). */
+
+  function buatStateAssetSistem() {
+
+    return {
+      awal: null,
+      pendingUpload: null,
+      pendingDelete: null,
+      fileDipilih: null
+    };
+
+  }
+
+  let sistemAsset = {
+    logo: buatStateAssetSistem(),
+    favicon: buatStateAssetSistem()
+  };
+
   const pengaturanDetailMeta = {
     akademik: {title: "Pengaturan Akademik", description: "Tahun ajaran, semester, dan hari libur sekolah."},
     sekolah: {title: "Pengaturan Sekolah", description: "Nama sekolah, kepala sekolah, dan logo sekolah."},
@@ -203,19 +228,74 @@
       return;
     }
 
+    if (action.dataset.pengaturanAction === "edit-sistem") {
+      aktifkanEditSistem();
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "save-sistem") {
+      simpanSistem();
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "cancel-sistem") {
+      batalEditSistem();
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "upload-logo-aplikasi") {
+      pilihFileAssetSistem("logo");
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "hapus-logo-aplikasi") {
+      hapusGambarSistem("logo");
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "upload-favicon") {
+      pilihFileAssetSistem("favicon");
+      return;
+    }
+
+    if (action.dataset.pengaturanAction === "hapus-favicon") {
+      hapusGambarSistem("favicon");
+      return;
+    }
+
   });
 
   document.addEventListener("change", function (event) {
 
-    if (!event.target || event.target.id !== "editLogoSekolahFile") {
+    const id =
+      event.target && event.target.id;
+
+    if (id === "editLogoSekolahFile") {
+
+      /* Pilih file BUKAN trigger upload -
+         hanya validasi + preview lokal,
+         menunggu konfirmasi admin. */
+
+      tahapFileLogoSekolah(event.target);
+
       return;
     }
 
-    /* Pilih file BUKAN trigger upload -
-       hanya validasi + preview lokal,
-       menunggu konfirmasi admin. */
+    /* Sprint 4C - Card Sistem: pilih file
+       logo aplikasi / favicon BUKAN
+       trigger upload - hanya validasi +
+       preview lokal, menunggu konfirmasi
+       admin via tombol Upload. */
 
-    tahapFileLogoSekolah(event.target);
+    if (id === "editLogoAplikasiFile") {
+      tahapFileAssetSistem(event.target, "logo");
+      return;
+    }
+
+    if (id === "editFaviconFile") {
+      tahapFileAssetSistem(event.target, "favicon");
+      return;
+    }
 
   });
 
@@ -735,6 +815,16 @@
     content.className = "pengaturan-detail-content";
     content.innerHTML = `
       <div class="pengaturan-detail-list">
+        <div style="display:flex; gap:24px; margin-bottom:10px; flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <img id="detailPreviewLogoAplikasi" alt="Logo Aplikasi" style="display:none; width:64px; height:64px; object-fit:contain; border:1px solid #e3e6f0; border-radius:8px; background:#fff; padding:4px;">
+            <div style="font-size:11px; color:#6c757d;">Logo Aplikasi</div>
+          </div>
+          <div style="text-align:center;">
+            <img id="detailPreviewFavicon" alt="Favicon" style="display:none; width:48px; height:48px; object-fit:contain; border:1px solid #e3e6f0; border-radius:8px; background:#fff; padding:4px;">
+            <div style="font-size:11px; color:#6c757d;">Favicon</div>
+          </div>
+        </div>
         <div><strong>Nama Aplikasi</strong><span id="detailNamaAplikasi">-</span></div>
         <div><strong>Tagline Aplikasi</strong><span id="detailTaglineAplikasi">-</span></div>
         <div><strong>Versi Aplikasi</strong><span id="detailVersiAplikasi">-</span></div>
@@ -744,8 +834,8 @@
       </div>
     `;
     actions.innerHTML = `
-      <button type="button" class="btn btn-secondary" disabled aria-disabled="true">
-        <i class="fa-solid fa-pen"></i> Edit belum tersedia
+      <button type="button" class="btn btn-primary" data-pengaturan-action="edit-sistem">
+        <i class="fa-solid fa-pen"></i> Edit
       </button>
     `;
     perbaruiDetailSistem();
@@ -774,6 +864,22 @@
           detail.innerText = field[1] || "-";
         }
       });
+
+    /* Preview visual dari field derived
+       URL (resolver backend, Sprint 4C).
+       Gagal render -> sembunyikan (state
+       aman), File ID tetap tampil sebagai
+       teks di list detail. */
+
+    pasangPreviewAsset(
+      "detailPreviewLogoAplikasi",
+      pengaturanSistemData.logoAplikasiUrl
+    );
+
+    pasangPreviewAsset(
+      "detailPreviewFavicon",
+      pengaturanSistemData.faviconUrl
+    );
 
   }
 
@@ -1820,6 +1926,1059 @@
 
 
   /* =========================
+     EDIT CARD SISTEM (Sprint 4C)
+     Asset management logo_aplikasi
+     dan favicon. Pola state machine
+     FIX-2 dipakai ulang: pilih file
+     -> validasi + preview lokal ->
+     [Upload] -> pending -> [Simpan]
+     = satu-satunya commit ->
+     cleanup Drive setelah commit.
+     Hapus endpoint backend memakai
+     ulang hapusAssetSekolah()
+     (guard folder, idempoten) tanpa
+     mengubah implementasinya.
+     mode_maintenance TIDAK dikelola
+     di sini (read-only, POST-4C).
+  ========================= */
+
+  const KONFIG_SLOT_ASSET_SISTEM = {
+    logo: {
+      target: "logo_aplikasi",
+      label: "Logo Aplikasi",
+      inputId: "editLogoAplikasi",
+      fileIdId: "editLogoAplikasiFile",
+      previewId: "editPreviewLogoAplikasi",
+      statusId: "editLogoAplikasiStatus",
+      tombolUploadId: "btnUploadLogoAplikasi",
+      accept: ".jpg,.jpeg,.png",
+      ekstensi: ["jpg", "jpeg", "png"],
+      mime: ["image/jpeg", "image/png"],
+      pesanFormat: "Format harus JPG atau PNG"
+    },
+    favicon: {
+      target: "favicon",
+      label: "Favicon",
+      inputId: "editFavicon",
+      fileIdId: "editFaviconFile",
+      previewId: "editPreviewFavicon",
+      statusId: "editFaviconStatus",
+      tombolUploadId: "btnUploadFavicon",
+      accept: ".jpg,.jpeg,.png,.ico,.svg",
+      ekstensi: ["jpg", "jpeg", "png", "ico", "svg"],
+      mime: ["image/jpeg", "image/png", "image/x-icon", "image/vnd.microsoft.icon", "image/svg+xml"],
+      pesanFormat: "Format harus JPG, PNG, ICO, atau SVG"
+    }
+  };
+
+  function setStatusAssetSistem(slot, pesan) {
+
+    const el =
+      document.getElementById(
+        KONFIG_SLOT_ASSET_SISTEM[slot].statusId
+      );
+
+    if (el) {
+      el.innerText = pesan || "";
+    }
+
+  }
+
+  function setLabelTombolUploadSistem(slot, teks, ikon) {
+
+    const btn =
+      document.getElementById(
+        KONFIG_SLOT_ASSET_SISTEM[slot].tombolUploadId
+      );
+
+    if (btn) {
+
+      btn.innerHTML =
+        '<i class="fa-solid '
+        + ikon
+        + '"></i> '
+        + teks;
+
+    }
+
+  }
+
+  function pulihkanTombolUploadSistem(slot) {
+
+    const state = sistemAsset[slot];
+
+    const btn =
+      document.getElementById(
+        KONFIG_SLOT_ASSET_SISTEM[slot].tombolUploadId
+      );
+
+    if (btn) {
+      btn.disabled = false;
+    }
+
+    setLabelTombolUploadSistem(
+      slot,
+      state.fileDipilih
+        ? "Upload ke Drive"
+        : "Upload Gambar",
+      state.fileDipilih
+        ? "fa-cloud-arrow-up"
+        : "fa-upload"
+    );
+
+  }
+
+  function pulihkanInputFileSistem(slot) {
+
+    const inputFile =
+      document.getElementById(
+        KONFIG_SLOT_ASSET_SISTEM[slot].fileIdId
+      );
+
+    if (inputFile) {
+      inputFile.value = "";
+    }
+
+  }
+
+  function resetStateAssetSistemSlot(slot) {
+
+    sistemAsset[slot] = buatStateAssetSistem();
+
+  }
+
+
+  function aktifkanEditSistem() {
+
+    const data =
+      pengaturanSistemData || {};
+
+    const container =
+      document.getElementById(
+        "pengaturanDetailContent"
+      );
+
+    const actions =
+      document.getElementById(
+        "pengaturanDetailActions"
+      );
+
+    container.className =
+      "pengaturan-detail-content pengaturan-edit";
+
+    container.innerHTML = `
+
+    <div class="mb-2">
+
+      <strong>Nama Aplikasi</strong>
+
+      <input id="editNamaAplikasi" class="form-control mt-1" value="${data.namaAplikasi || ""}">
+
+    </div>
+
+    <div class="mb-2">
+
+      <strong>Tagline Aplikasi</strong>
+
+      <input id="editTaglineAplikasi" class="form-control mt-1" value="${data.taglineAplikasi || ""}">
+
+    </div>
+
+    <div class="mb-2">
+
+      <strong>Versi Aplikasi</strong>
+
+      <input id="editVersiAplikasi" class="form-control mt-1" value="${data.versiAplikasi || ""}">
+
+    </div>
+
+    <div class="mb-2">
+
+      <strong>Logo Aplikasi</strong>
+
+      <div class="d-flex align-items-center gap-2 mt-1">
+
+        <img id="editPreviewLogoAplikasi" alt="Preview Logo Aplikasi" style="display:none; width:48px; height:48px; object-fit:contain; border:1px solid #e3e6f0; border-radius:8px; background:#fff; padding:3px;">
+
+        <div class="d-flex flex-column gap-1">
+
+          <button type="button" id="btnUploadLogoAplikasi" class="btn btn-outline-primary btn-sm" data-pengaturan-action="upload-logo-aplikasi">
+
+            <i class="fa-solid fa-upload"></i> Upload Gambar
+
+          </button>
+
+          <button type="button" class="btn btn-outline-danger btn-sm" data-pengaturan-action="hapus-logo-aplikasi">
+
+            <i class="fa-solid fa-trash"></i> Hapus Gambar
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <input type="file" id="editLogoAplikasiFile" accept=".jpg,.jpeg,.png" style="display:none;">
+
+      <div class="form-text" id="editLogoAplikasiStatus"></div>
+
+      <input id="editLogoAplikasi" class="form-control mt-1" placeholder="File ID Google Drive (otomatis terisi setelah upload)" value="${data.logoAplikasi || ""}">
+
+      <div class="form-text">
+
+        File ID (informasi teknis) - boleh diisi manual atau dikosongkan.
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  /* Favicon + Mode Maintenance (read-only)
+     dilanjutkan pada container yang sama. */
+
+    container.innerHTML += `
+
+    <div class="mb-2">
+
+      <strong>Favicon</strong>
+
+      <div class="d-flex align-items-center gap-2 mt-1">
+
+        <img id="editPreviewFavicon" alt="Preview Favicon" style="display:none; width:32px; height:32px; object-fit:contain; border:1px solid #e3e6f0; border-radius:8px; background:#fff; padding:3px;">
+
+        <div class="d-flex flex-column gap-1">
+
+          <button type="button" id="btnUploadFavicon" class="btn btn-outline-primary btn-sm" data-pengaturan-action="upload-favicon">
+
+            <i class="fa-solid fa-upload"></i> Upload Gambar
+
+          </button>
+
+          <button type="button" class="btn btn-outline-danger btn-sm" data-pengaturan-action="hapus-favicon">
+
+            <i class="fa-solid fa-trash"></i> Hapus Gambar
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <input type="file" id="editFaviconFile" accept=".jpg,.jpeg,.png,.ico,.svg" style="display:none;">
+
+      <div class="form-text" id="editFaviconStatus"></div>
+
+      <input id="editFavicon" class="form-control mt-1" placeholder="File ID Google Drive (otomatis terisi setelah upload)" value="${data.favicon || ""}">
+
+      <div class="form-text">
+
+        File ID (informasi teknis) - boleh diisi manual atau dikosongkan. Format: JPG, PNG, ICO, atau SVG.
+
+      </div>
+
+    </div>
+
+    <div class="mb-2">
+
+      <strong>Mode Maintenance</strong>
+
+      <div class="form-text mt-1">
+
+        Status: ${data.modeMaintenance ? "Aktif" : "Nonaktif"} (read-only - pengelolaan Maintenance adalah scope POST-4C).
+
+      </div>
+
+    </div>
+
+  `;
+
+    actions.innerHTML = `
+
+    <button
+
+      id="btnSimpanSistem"
+
+      class="btn btn-success"
+
+      data-pengaturan-action="save-sistem">
+
+      <i class="fa-solid fa-floppy-disk"></i>
+
+      Simpan
+
+    </button>
+
+    <button
+
+      class="btn btn-secondary btn-sm"
+
+      data-pengaturan-action="cancel-sistem">
+
+      Batal
+
+    </button>
+
+  `;
+
+    /* Snapshot asset tersimpan saat
+       masuk mode Edit - dasar untuk
+       Cancel dan pending state asset
+       (pola FIX-2), TERPISAH per slot. */
+
+    sistemAsset.logo = buatStateAssetSistem();
+
+    sistemAsset.favicon = buatStateAssetSistem();
+
+    sistemAsset.logo.awal = {
+      fileId: data.logoAplikasi || "",
+      url: data.logoAplikasiUrl || ""
+    };
+
+    sistemAsset.favicon.awal = {
+      fileId: data.favicon || "",
+      url: data.faviconUrl || ""
+    };
+
+    pasangPreviewAsset(
+      "editPreviewLogoAplikasi",
+      sistemAsset.logo.awal.url
+    );
+
+    pasangPreviewAsset(
+      "editPreviewFavicon",
+      sistemAsset.favicon.awal.url
+    );
+
+    setStatusAssetSistem("logo", "");
+
+    setStatusAssetSistem("favicon", "");
+
+  }
+
+  function pilihFileAssetSistem(slot) {
+
+    /* Dua fase (pola FIX-2): klik pertama
+       membuka file picker; setelah file
+       dipilih (belum diupload), klik
+       tombol yang sama berarti KONFIRMASI
+       upload ke Drive. */
+
+    if (sistemAsset[slot].fileDipilih) {
+
+      prosesUploadAssetSistem(slot);
+
+      return;
+
+    }
+
+    const input =
+      document.getElementById(
+        KONFIG_SLOT_ASSET_SISTEM[slot].fileIdId
+      );
+
+    if (!input) {
+      return;
+    }
+
+    input.value = "";
+
+    input.click();
+
+  }
+
+
+  function tahapFileAssetSistem(input, slot) {
+
+    const konfig =
+      KONFIG_SLOT_ASSET_SISTEM[slot];
+
+    const state = sistemAsset[slot];
+
+    const file =
+      input.files && input.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    /* Validasi client (UX saja -
+       server tetap memvalidasi ulang
+       dengan aturan sama, termasuk
+       konten SVG). */
+
+    const ekstensi =
+      file.name.split(".").pop().toLowerCase();
+
+    if (
+      konfig.mime.indexOf(file.type) === -1
+      || konfig.ekstensi.indexOf(ekstensi) === -1
+    ) {
+
+      showToast(konfig.pesanFormat, "warning");
+
+      input.value = "";
+
+      state.fileDipilih = null;
+
+      pulihkanTombolUploadSistem(slot);
+
+      return;
+
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+
+      showToast(
+        "Ukuran file maksimal 2 MB",
+        "warning"
+      );
+
+      input.value = "";
+
+      state.fileDipilih = null;
+
+      pulihkanTombolUploadSistem(slot);
+
+      return;
+
+    }
+
+    /* Pilih file BUKAN upload -
+       simpan pilihan + preview
+       lokal, menunggu konfirmasi
+       admin via tombol Upload. */
+
+    const reader =
+      new FileReader();
+
+    reader.onload = function (event) {
+
+      state.fileDipilih = {
+        file: file,
+        previewUrl:
+          String(event.target.result || "")
+      };
+
+      pasangPreviewAsset(
+        konfig.previewId,
+        state.fileDipilih.previewUrl
+      );
+
+      setStatusAssetSistem(
+        slot,
+        'File siap. Klik "Upload ke Drive" untuk mengunggah.'
+      );
+
+      setLabelTombolUploadSistem(
+        slot,
+        "Upload ke Drive",
+        "fa-cloud-arrow-up"
+      );
+
+    };
+
+    reader.onerror = function () {
+
+      state.fileDipilih = null;
+
+      pulihkanTombolUploadSistem(slot);
+
+      showToast(
+        "Gagal membaca file",
+        "error"
+      );
+
+    };
+
+    reader.readAsDataURL(file);
+
+  }
+
+
+  function prosesUploadAssetSistem(slot) {
+
+    /* Upload hanya berjalan bila ada
+       file yang sudah dipilih DAN
+       dikonfirmasi via tombol Upload.
+       Membuka picker saja TIDAK
+       membuat file di Drive. */
+
+    const konfig =
+      KONFIG_SLOT_ASSET_SISTEM[slot];
+
+    const state = sistemAsset[slot];
+
+    if (!state.fileDipilih) {
+      return;
+    }
+
+    const file =
+      state.fileDipilih.file;
+
+    const sessionId =
+      localStorage.getItem(
+        "wongmit_session"
+      );
+
+    if (!sessionId) {
+
+      showToast(
+        "Sesi tidak ditemukan",
+        "error"
+      );
+
+      return;
+
+    }
+
+    const btn =
+      document.getElementById(
+        konfig.tombolUploadId
+      );
+
+    if (btn) {
+
+      btn.disabled = true;
+
+      btn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah...';
+
+    }
+
+    const reader =
+      new FileReader();
+
+    reader.onload = function (event) {
+
+      const dataUrl =
+        String(event.target.result || "");
+
+      const base64 =
+        dataUrl.indexOf("base64,") === -1
+          ? ""
+          : dataUrl.substring(
+              dataUrl.indexOf("base64,") + 7
+            );
+
+      if (!base64) {
+
+        showToast(
+          "Gagal membaca file",
+          "error"
+        );
+
+        pulihkanInputFileSistem(slot);
+
+        state.fileDipilih = null;
+
+        pulihkanTombolUploadSistem(slot);
+
+        return;
+
+      }
+
+      google.script.run
+
+        .withSuccessHandler(function (hasil) {
+
+          pulihkanInputFileSistem(slot);
+
+          if (!hasil || !hasil.fileId) {
+
+            showToast(
+              "Upload selesai namun hasil tidak lengkap",
+              "warning"
+            );
+
+            pulihkanTombolUploadSistem(slot);
+
+            return;
+
+          }
+
+          /* File ID otomatis terisi -
+             tetap perlu Simpan untuk
+             commit konfigurasi. */
+
+          const inputAsset =
+            document.getElementById(
+              konfig.inputId
+            );
+
+          if (inputAsset) {
+
+            inputAsset.value =
+              hasil.fileId;
+
+          }
+
+          pasangPreviewAsset(
+            konfig.previewId,
+            hasil.url
+          );
+
+          /* Upload baru BERHASIL ke Drive,
+             namun BUKAN commit. File ID
+             ditandai pending - asset lama
+             yang tersimpan tidak disentuh
+             sampai [Simpan] sukses. */
+
+          state.pendingUpload = {
+            fileId: hasil.fileId,
+            url: hasil.url || ""
+          };
+
+          state.pendingDelete = null;
+
+          state.fileDipilih = null;
+
+          setStatusAssetSistem(
+            slot,
+            konfig.label + " terupload. Klik \"Simpan\" untuk menyimpan."
+          );
+
+          pulihkanTombolUploadSistem(slot);
+
+          showToast(
+            konfig.label + " berhasil diupload"
+          );
+
+        })
+
+        .withFailureHandler(function (error) {
+
+          pulihkanInputFileSistem(slot);
+
+          state.fileDipilih = null;
+
+          pulihkanTombolUploadSistem(slot);
+
+          showToast(
+            (error && error.message)
+              ? error.message
+              : "Gagal mengupload " + konfig.label.toLowerCase(),
+            "error"
+          );
+
+        })
+
+        .uploadAssetAplikasi(
+          sessionId,
+          {
+            fileName: file.name,
+            mimeType: file.type,
+            base64: base64
+          },
+          konfig.target
+        );
+
+    };
+
+    reader.onerror = function () {
+
+      pulihkanInputFileSistem(slot);
+
+      state.fileDipilih = null;
+
+      pulihkanTombolUploadSistem(slot);
+
+      showToast(
+        "Gagal membaca file",
+        "error"
+      );
+
+    };
+
+    reader.readAsDataURL(file);
+
+  }
+
+
+  function hapusGambarSistem(slot) {
+
+    const konfig =
+      KONFIG_SLOT_ASSET_SISTEM[slot];
+
+    const state = sistemAsset[slot];
+
+    /* ============ KASUS A ============
+       Upload baru yang belum di-Simpan:
+       hapus file baru dari Drive,
+       kembalikan ke asset lama (atau
+       kosong). Asset tersimpan TIDAK
+       diubah. */
+
+    if (
+      state.pendingUpload
+      && state.pendingUpload.fileId
+    ) {
+
+      const sessionId =
+        localStorage.getItem(
+          "wongmit_session"
+        );
+
+      hapusAssetSekolahSisiClient(
+        sessionId,
+        state.pendingUpload.fileId
+      );
+
+      const kembaliKeLama =
+        state.awal
+        && state.awal.fileId;
+
+      const inputAsset =
+        document.getElementById(
+          konfig.inputId
+        );
+
+      if (inputAsset) {
+
+        inputAsset.value =
+          kembaliKeLama
+            ? state.awal.fileId
+            : "";
+
+      }
+
+      pasangPreviewAsset(
+        konfig.previewId,
+        kembaliKeLama
+          ? state.awal.url
+          : ""
+      );
+
+      state.pendingUpload = null;
+
+      state.fileDipilih = null;
+
+      pulihkanInputFileSistem(slot);
+
+      pulihkanTombolUploadSistem(slot);
+
+      setStatusAssetSistem(
+        slot,
+        kembaliKeLama
+          ? "Upload baru dibatalkan - " + konfig.label.toLowerCase() + " lama tetap digunakan."
+          : "Upload baru dibatalkan."
+      );
+
+      showToast(
+        "Upload baru dibatalkan"
+      );
+
+      return;
+
+    }
+
+    /* ============ KASUS B ============
+       Asset tersimpan: tandai pending
+       deletion (tidak destruktif).
+       File lama hanya dihapus dari
+       Drive SETELAH [Simpan] sukses;
+       Batal membatalkannya. */
+
+    if (state.awal && state.awal.fileId) {
+
+      showConfirmModal(
+
+        "Hapus " + konfig.label,
+
+        "Yakin ingin menghapus " + konfig.label + "? Perubahan tersimpan setelah Anda menekan Simpan.",
+
+        function () {
+
+          state.pendingDelete = {
+            fileId: state.awal.fileId
+          };
+
+          state.pendingUpload = null;
+
+          state.fileDipilih = null;
+
+          pulihkanInputFileSistem(slot);
+
+          pulihkanTombolUploadSistem(slot);
+
+          const inputAsset =
+            document.getElementById(
+              konfig.inputId
+            );
+
+          if (inputAsset) {
+            inputAsset.value = "";
+          }
+
+          pasangPreviewAsset(
+            konfig.previewId,
+            ""
+          );
+
+          setStatusAssetSistem(
+            slot,
+            konfig.label + " ditandai untuk dihapus. Klik \"Simpan\" untuk konfirmasi."
+          );
+
+        }
+
+      );
+
+      return;
+
+    }
+
+    showToast(
+      "Belum ada " + konfig.label,
+      "warning"
+    );
+
+  }
+
+
+  function batalEditSistem() {
+
+    const sessionId =
+      localStorage.getItem(
+        "wongmit_session"
+      );
+
+    /* File baru yang sudah terupload ke
+       Drive tapi belum di-Simpan dihapus
+       agar tidak menjadi orphan (pola
+       FIX-2). File tersimpan lama TIDAK
+       disentuh. */
+
+    ["logo", "favicon"].forEach(function (slot) {
+
+      if (
+        sistemAsset[slot].pendingUpload
+        && sistemAsset[slot].pendingUpload.fileId
+      ) {
+
+        hapusAssetSekolahSisiClient(
+          sessionId,
+          sistemAsset[slot].pendingUpload.fileId
+        );
+
+      }
+
+      resetStateAssetSistemSlot(slot);
+
+    });
+
+    bukaPengaturanDetail("sistem");
+
+  }
+
+
+  function simpanSistem() {
+
+    const btn =
+      document.getElementById(
+        "btnSimpanSistem"
+      );
+
+    const namaAplikasi =
+      document.getElementById(
+        "editNamaAplikasi"
+      ).value.trim();
+
+    const taglineAplikasi =
+      document.getElementById(
+        "editTaglineAplikasi"
+      ).value.trim();
+
+    const versiAplikasi =
+      document.getElementById(
+        "editVersiAplikasi"
+      ).value.trim();
+
+    const logoAplikasi =
+      document.getElementById(
+        "editLogoAplikasi"
+      ).value.trim();
+
+    const favicon =
+      document.getElementById(
+        "editFavicon"
+      ).value.trim();
+
+    if (!namaAplikasi) {
+
+      showToast(
+        "Nama Aplikasi wajib diisi",
+        "warning"
+      );
+
+      return;
+
+    }
+
+    /* Hanya kirim field yang benar-benar
+       berubah - updateSettingValue()
+       melewatkan undefined, jadi field
+       yang tidak dikirim TIDAK tertimpa
+       di Sheet. modeMaintenance sengaja
+       TIDAK dikirim (bukan scope 4C,
+       nilai Sheet tidak berubah).
+       logo_sekolah juga tidak disentuh. */
+
+    const data = {};
+
+    const lama =
+      pengaturanSistemData || {};
+
+    if (namaAplikasi !== (lama.namaAplikasi || "")) {
+      data.namaAplikasi = namaAplikasi;
+    }
+
+    if (taglineAplikasi !== (lama.taglineAplikasi || "")) {
+      data.taglineAplikasi = taglineAplikasi;
+    }
+
+    if (versiAplikasi !== (lama.versiAplikasi || "")) {
+      data.versiAplikasi = versiAplikasi;
+    }
+
+    const logoAwalId =
+      sistemAsset.logo.awal
+        ? sistemAsset.logo.awal.fileId
+        : "";
+
+    if (
+      logoAplikasi !== logoAwalId
+      || sistemAsset.logo.pendingDelete
+    ) {
+      data.logoAplikasi = logoAplikasi;
+    }
+
+    const faviconAwalId =
+      sistemAsset.favicon.awal
+        ? sistemAsset.favicon.awal.fileId
+        : "";
+
+    if (
+      favicon !== faviconAwalId
+      || sistemAsset.favicon.pendingDelete
+    ) {
+      data.favicon = favicon;
+    }
+
+    showConfirmModal(
+
+      "Simpan Pengaturan Sistem",
+
+      "Yakin ingin menyimpan perubahan Pengaturan Sistem?",
+
+      function () {
+
+        setButtonLoading(
+
+          btn,
+
+          "Menyimpan..."
+
+        );
+
+        google.script.run
+
+          .withSuccessHandler(function () {
+
+            resetButtonLoading(btn);
+
+            const sessionId =
+              localStorage.getItem(
+                "wongmit_session"
+              );
+
+            /* [Simpan] adalah satu-satunya
+               COMMIT konfigurasi. Pembersihan
+               Drive hanya SETELAH commit
+               sukses (best effort, pola
+               FIX-2):
+               - pending upload: asset lama
+                 tersimpan diganti file baru.
+               - pending deletion: file lama
+                 dihapus dari Drive.
+               Gagal hapus tidak membatalkan
+               konfigurasi yang sudah tersimpan
+               (retry 1x + warning di helper
+               hapusAssetSekolahSisiClient). */
+
+            ["logo", "favicon"].forEach(function (slot) {
+
+              const state = sistemAsset[slot];
+
+              if (
+                state.pendingUpload
+                && state.awal
+                && state.awal.fileId
+              ) {
+
+                hapusAssetSekolahSisiClient(
+                  sessionId,
+                  state.awal.fileId
+                );
+
+              }
+
+              if (
+                state.pendingDelete
+                && state.pendingDelete.fileId
+              ) {
+
+                hapusAssetSekolahSisiClient(
+                  sessionId,
+                  state.pendingDelete.fileId
+                );
+
+              }
+
+              resetStateAssetSistemSlot(slot);
+
+            });
+
+            showToast(
+              "Pengaturan Sistem berhasil disimpan"
+            );
+
+            bukaPengaturanDetail("sistem");
+
+            loadSystemSettings();
+
+          })
+
+          .withFailureHandler(function () {
+
+            resetButtonLoading(btn);
+
+            showToast(
+              "Gagal menyimpan",
+              "error"
+            );
+
+          })
+
+          .saveSystemSettings(
+
+            localStorage.getItem(
+              "wongmit_session"
+            ),
+
+            data
+
+          );
+
+      }
+
+    );
+
+  }
+
+
+  /* =========================
      LOAD SEKOLAH
   ========================= */
 
@@ -1901,7 +3060,31 @@
 
         }
 
-        if (pengaturanDetailType === "sistem" && !document.getElementById("detailNamaAplikasi")) {
+        const tagline =
+          document.getElementById(
+            "previewTaglineAplikasi"
+          );
+
+        if (tagline) {
+
+          tagline.innerText =
+            data.taglineAplikasi || "-";
+
+        }
+
+        const maintenance =
+          document.getElementById(
+            "previewModeMaintenance"
+          );
+
+        if (maintenance) {
+
+          maintenance.innerText =
+            data.modeMaintenance ? "Aktif" : "Nonaktif";
+
+        }
+
+        if (pengaturanDetailType === "sistem") {
           perbaruiDetailSistem();
         }
 

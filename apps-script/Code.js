@@ -131,6 +131,18 @@ function getAppInfo() {
     favicon:
       config.favicon || "",
 
+    /* Field derived URL - tambahan
+       additive (Sprint 4C): favicon
+       runtime dinamis. Invalid/kosong
+       -> "" (frontend pakai fallback).
+       Nilai File ID existing tidak
+       berubah. */
+
+    faviconUrl:
+      resolveDriveImageUrl(
+        config.favicon
+      ),
+
     versiAplikasi:
       config.versi_aplikasi || "",
 

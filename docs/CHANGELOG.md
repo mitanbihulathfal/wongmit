@@ -993,6 +993,49 @@ Sprint 4B fokus HANYA pada display/read-only. Implementasi edit/save, upload ass
 
 ---
 
+## 2026-09-02
+
+### Sprint 4C — Asset Management
+
+**Judul**
+
+Edit Card Sistem, Pengelolaan Asset Aplikasi (logo_aplikasi & favicon), dan Favicon Runtime Dinamis
+
+**Perubahan**
+
+- Menambahkan endpoint `uploadAssetAplikasi(sessionId, upload, target)` pada `apps-script/Sistem.js` (Admin-only, target `logo_aplikasi|favicon`).
+- Validasi server-side: MIME + ekstensi whitelist per target (logo: JPG/JPEG/PNG; favicon: JPG/JPEG/PNG/ICO/SVG), ukuran maksimal 2 MB, validasi konten SVG (ditolak bila mengandung `<script` atau event handler `on*=`).
+- Folder Drive "Assets WONG MIT" wajib tepat satu (ditolak bila tidak ada atau ambigu); sharing `ANYONE_WITH_LINK / VIEW`.
+- Upload tidak menulis Sheet (upload ≠ commit); File ID baru masuk Sheet hanya saat [Simpan] via `saveSystemSettings()`.
+- Field derived URL additive: `logoAplikasiUrl` dan `faviconUrl` pada `getSystemSettings()`; `faviconUrl` pada `getAppInfo()` — kontrak lama dan alias legacy `appName`/`logo` tetap utuh.
+- Mengaktifkan Edit Card Sistem pada `apps-script/js_pengaturan.html` dengan state machine per-slot (`assetAwal`, `assetPendingUpload`, `assetPendingDelete`, `fileDipilih`) mengikuti pola FIX-2; `hapusAssetSekolah()` dan `hapusAssetSekolahSisiClient()` di-reuse tanpa mengubah implementasinya.
+- Replace: Simpan commit terlebih dahulu → Sheet menunjuk File ID baru → file lama dihapus best-effort (retry 1x + warning); Simpan gagal → asset lama tidak dihapus; Cancel membersihkan pending upload (anti-orphan).
+- Simpan hanya mengirim field yang berubah; `modeMaintenance` tidak pernah dikirim (nilai `mode_maintenance` tidak berubah); `logo_sekolah` tidak disentuh.
+- Mengubah `apps-script/index.html`: fallback favicon statis di `<head>` (`#appFavicon`) dan consumer favicon dinamis pada `terapkanAppIdentity()` dari `getAppInfo().faviconUrl` via consumer identity yang sudah ada, tanpa RPC baru.
+- Mengubah `apps-script/page_pengaturan.html`: markup preview/detail Card Sistem (Tagline, preview asset, Mode Maintenance read-only).
+- Root `index.html` GitHub Pages TIDAK diubah.
+
+**Status**
+
+SELESAI — CLOSED & LOLOS untuk scope implementasi Card Sistem + Asset Management
+
+**Validasi**
+
+- Syntax check LOLOS (backend + frontend)
+- git diff --check LOLOS
+- FINAL REVIEW = PASS
+- Manual test LOLOS semua item, kecuali favicon production pada tab browser
+
+**Commit**
+
+`feat(pengaturan): close Sprint 4C system asset management`
+
+**Catatan**
+
+Favicon consumer pada webapp Apps Script sudah dinamis, tetapi favicon pada tab browser production masih berasal dari root GitHub Pages `index.html` karena aplikasi berjalan di dalam iframe wrapper. Integrasi favicon production wrapper berstatus PENDING / MICRO-AUDIT TERPISAH setelah Sprint 4C dan BELUM dinyatakan selesai. Modul Maintenance Mode, Backup, Restore, dan Log Aktivitas tetap POST-4C.
+
+---
+
 ## 2026-08-10
 
 ### Sprint DS.4 — Data Siswa Access & Export Stabilization

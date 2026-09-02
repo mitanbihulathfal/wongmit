@@ -18,6 +18,14 @@
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Favicon fallback statis - identitas
+       aplikasi yang sudah dipakai wrapper
+       dan branding Login/Sidebar. Diganti
+       dinamis oleh consumer identity
+       (getAppInfo().faviconUrl, Sprint 4C)
+       bila key "favicon" di Sheet terisi. -->
+  <link id="appFavicon" rel="icon" href="https://iili.io/CU1QcrJ.png">
+
   <style>
     :root {
 
@@ -4135,6 +4143,32 @@
 
           dashTitle.innerText =
             "Dashboard " + info.namaAplikasi;
+
+        }
+
+        /* Favicon runtime dinamis (Sprint 4C,
+           additive): utamakan faviconUrl
+           (derived File ID via resolver
+           backend). Bila Sheet kosong ->
+           fallback statis di <head> tidak
+           disentuh. Kontrak getAppInfo()
+           tidak berubah. */
+
+        const faviconUrl =
+          info.faviconUrl
+          || (
+            info.favicon
+            && String(info.favicon).indexOf("http") === 0
+              ? info.favicon
+              : ""
+          );
+
+        const elFavicon =
+          document.getElementById("appFavicon");
+
+        if (faviconUrl && elFavicon) {
+
+          elFavicon.href = faviconUrl;
 
         }
 
