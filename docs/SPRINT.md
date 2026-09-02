@@ -2250,8 +2250,6 @@ Sprint 4C ditutup pada level implementasi Card Sistem + Asset Management. Favico
 
 ---
 
----
-
 # Micro-Fix — Integrasi Favicon GitHub Pages Wrapper
 
 Status
@@ -2303,3 +2301,146 @@ Catatan / Batasan
 - Favicon yang dikirim adalah derived URL runtime (`faviconUrl`); Sheet `Pengaturan` tetap menyimpan File ID sebagai sumber konfigurasi.
 - Format favicon production yang paling direkomendasikan: PNG. ICO/SVG memiliki keterbatasan pada Drive thumbnail dan hanya diuji sebagai format tambahan.
 - Modul Maintenance, Backup, Restore, dan Log Aktivitas tetap POST-4C.
+
+---
+
+# Sprint 4 — Pengaturan Sistem
+
+Status
+
+ACTIVE
+
+Target
+
+Menyelesaikan Card Sistem pada Pengaturan secara bertahap, aman, modular, dan backward compatible.
+
+## 4A — System Settings Backend Foundation
+
+Status
+
+DONE — CLOSED
+
+Endpoint:
+- `getSystemSettings(sessionId)`
+- `saveSystemSettings(sessionId, data)`
+
+Role: Admin-only.
+
+Field:
+- `nama_aplikasi`
+- `tagline_aplikasi`
+- `logo_aplikasi`
+- `favicon`
+- `versi_aplikasi`
+- `mode_maintenance`
+
+File:
+- `apps-script/Sistem.js`
+
+## 4B — Card Sistem UI
+
+Status
+
+DONE — CLOSED
+
+- Preview → Detail → Edit.
+- Load melalui `getSystemSettings()`.
+- Save melalui `saveSystemSettings()`.
+- Admin-only untuk edit/save.
+- Consumer identity existing tetap dipertahankan.
+
+## 4C — Application Asset Management
+
+Status
+
+DONE — CLOSED & LOLOS
+
+- Logo aplikasi.
+- Favicon.
+- Upload/replace/delete dengan pola aman.
+- Asset Management selesai.
+- Consumer favicon webapp Apps Script dinamis.
+- Tidak mengubah format penyimpanan File ID.
+
+## Micro-Fix — Integrasi Favicon GitHub Pages Wrapper
+
+Status
+
+DONE — production LOLOS.
+
+- Favicon production mengikuti favicon Card Sistem melalui postMessage bridge.
+- Root GitHub Pages wrapper menerima favicon dari iframe Apps Script.
+- Validasi URL ketat; hanya `https://drive.google.com`.
+- Fallback favicon wrapper tetap dipertahankan.
+- Commit: `b5178a8` — `fix(wrapper): sync dynamic favicon from app iframe`.
+- `/exec` yang dibuka langsung tetap menggunakan favicon bawaan Google Apps Script karena batasan platform.
+
+## 4D — Maintenance Mode
+
+Status
+
+NEXT
+
+- Definisikan gate runtime terlebih dahulu.
+- Tentukan siapa yang tetap boleh masuk saat maintenance.
+- Pastikan fallback/error-safe.
+- Tidak mengaktifkan hard gate sebelum QA.
+
+## 4E — Backup
+
+Status
+
+PLANNED
+
+- Audit struktur data terlebih dahulu.
+- Backup read-only terhadap sumber.
+- Tidak mengubah Sheet production.
+- File backup memiliki identitas dan timestamp jelas.
+
+## 4F — Restore
+
+Status
+
+PLANNED
+
+- Admin-only.
+- Konfirmasi eksplisit.
+- Validasi sumber backup.
+- Guard dan validasi sebelum overwrite production.
+- Audit penuh sebelum implementasi.
+
+## 4G — Log Aktivitas
+
+Status
+
+PLANNED
+
+- Tentukan event yang benar-benar perlu dicatat.
+- Hindari pencatatan data sensitif secara berlebihan.
+- Gunakan Sheet `Log` existing.
+- Tidak mengubah struktur header tanpa persetujuan.
+
+## 4H — Final QA & Production
+
+Status
+
+PLANNED
+
+- Syntax.
+- `git diff --check`.
+- GAS Uji.
+- Desktop.
+- Mobile.
+- Role/authorization.
+- Regression lintas modul.
+- Production deployment.
+- Update dokumentasi berdasarkan hasil aktual.
+
+## Aturan Sprint 4
+
+- Move, Don't Rewrite.
+- Satu sprint = satu boundary yang jelas.
+- Tidak menyentuh modul frozen tanpa bug nyata.
+- Tidak mengubah database/header tanpa persetujuan.
+- Tidak mencatat pekerjaan sebagai DONE sebelum testing.
+- Maintenance, Backup, dan Restore tidak digabung secara diam-diam dengan perubahan identity.
