@@ -4172,6 +4172,47 @@
 
         }
 
+        /* Favicon production wrapper (MICRO-FIX
+           setelah Sprint 4C, additive): bila
+           webapp berjalan di dalam iframe
+           GitHub Pages wrapper, teruskan
+           faviconUrl ke window.top via
+           postMessage agar favicon tab
+           browser mengikuti Card Sistem.
+           Tidak ada RPC/backend baru. Bila
+           webapp dibuka langsung (tanpa
+           wrapper) -> guard mencegah
+           postMessage, tidak ada error.
+           Payload divalidasi ketat di
+           sisi wrapper (type + URL
+           https://drive.google.com). */
+
+        if (
+          faviconUrl
+          && window.top
+          && window.top !== window.self
+        ) {
+
+          try {
+
+            window.top.postMessage(
+              {
+                type: "wongmit-favicon",
+                url: faviconUrl
+              },
+              "*"
+            );
+
+          } catch (e) {
+
+            /* Best-effort: kegagalan
+               postMessage tidak boleh
+               mengganggu identity app. */
+
+          }
+
+        }
+
         terapkanBrandingElemen(
           "loginAppName",
           "loginAppTagline",

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Wong MIT</title>
-  <link rel="icon" href="https://iili.io/CU1QcrJ.png" />
+  <link id="wrapperFavicon" rel="icon" href="https://iili.io/CU1QcrJ.png" />
   <style>
     html, body {
       margin: 0;
@@ -41,5 +41,65 @@
       allow="fullscreen; camera; microphone; display-capture; geolocation;">
     </iframe>
   </div>
+  <script>
+    /* Favicon production bridge (MICRO-FIX
+       setelah Sprint 4C): menerima faviconUrl
+       dari Apps Script iframe via postMessage
+       agar favicon tab browser mengikuti
+       konfigurasi Card Sistem. Fallback statis
+       (iili.io) TIDAK pernah dihapus dan tetap
+       dipakai bila tidak ada payload valid.
+       Validasi ketat: hanya type persis
+       "wongmit-favicon" dan URL https dari
+       domain asset Drive yang dihasilkan
+       resolveDriveImageUrl() (drive.google.com).
+       Payload tidak valid -> diabaikan. */
+    (function () {
+      "use strict";
+
+      var el = document.getElementById("wrapperFavicon");
+
+      if (!el) { return; }
+
+      window.addEventListener("message", function (event) {
+
+        var data = event.data;
+        var url;
+        var parsed;
+
+        if (!data || typeof data !== "object") { return; }
+
+        if (data.type !== "wongmit-favicon") { return; }
+
+        url = data.url;
+
+        if (typeof url !== "string" || url.length === 0 || url.length > 2048) {
+          return;
+        }
+
+        try {
+
+          parsed = new URL(url);
+
+        } catch (e) {
+
+          return;
+
+        }
+
+        /* Hanya izinkan domain asset Drive yang
+           digunakan Sprint 4C, jangan URL arbitrer. */
+        if (
+          parsed.protocol !== "https:"
+          || parsed.hostname !== "drive.google.com"
+        ) {
+          return;
+        }
+
+        el.href = parsed.href;
+
+      });
+    })();
+  </script>
 </body>
 </html>
