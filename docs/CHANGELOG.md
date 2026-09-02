@@ -1034,6 +1034,41 @@ SELESAI — CLOSED & LOLOS untuk scope implementasi Card Sistem + Asset Manageme
 
 Favicon consumer pada webapp Apps Script sudah dinamis, tetapi favicon pada tab browser production masih berasal dari root GitHub Pages `index.html` karena aplikasi berjalan di dalam iframe wrapper. Integrasi favicon production wrapper berstatus PENDING / MICRO-AUDIT TERPISAH setelah Sprint 4C dan BELUM dinyatakan selesai. Modul Maintenance Mode, Backup, Restore, dan Log Aktivitas tetap POST-4C.
 
+## 2026-09-02
+
+### Micro-Fix — Integrasi Favicon GitHub Pages Wrapper
+
+**Judul**
+
+Favicon Tab Browser Production Mengikuti Konfigurasi Card Sistem (postMessage Bridge)
+
+**Perubahan**
+
+- Micro-Audit terpisah SETELAH Sprint 4C menemukan bahwa favicon tab browser production berasal dari root GitHub Pages `index.html` (dokumen top-level), bukan dari dokumen iframe Apps Script; fetch lintas-origin dari wrapper ke `/exec` diblokir CORS.
+- Solusi: postMessage bridge. `apps-script/index.html` mengirim `{ type: "wongmit-favicon", url: faviconUrl }` ke `window.top` setelah consumer favicon Sprint 4C menerapkan `faviconUrl` valid (guard `window.top !== window.self`; tanpa RPC/backend baru; webapp tanpa wrapper tidak menghasilkan error).
+- Root `index.html` GitHub Pages: `<link rel="icon">` diberi `id="wrapperFavicon"` + listener `message` dengan validasi ketat (type persis `"wongmit-favicon"` + URL HTTPS hostname `drive.google.com` saja); payload tidak valid diabaikan.
+- Fallback favicon lama `https://iili.io/CU1QcrJ.png` tetap dipertahankan.
+- Hanya 2 file diubah: root `index.html` dan `apps-script/index.html`.
+
+**Status**
+
+SELESAI — production LOLOS
+
+**Validasi**
+
+- Syntax check LOLOS (script root + Apps Script)
+- git diff --check LOLOS
+- Production GitHub Pages ter-deploy dan terverifikasi (listener aktif pada HTML production)
+- Deploy Uji production LOLOS: favicon tab browser berubah mengikuti konfigurasi Card Sistem
+
+**Commit**
+
+`b5178a8` — `fix(wrapper): sync dynamic favicon from app iframe`
+
+**Catatan**
+
+Saat `/exec` Apps Script dibuka langsung, favicon tab tetap favicon bawaan Google Apps Script — batasan arsitektur/platform Apps Script (tab top-level bukan dokumen HTML aplikasi), BUKAN failure dan bukan item perbaikan. PNG direkomendasikan sebagai format favicon production; ICO/SVG dibatasi keterbatasan Drive thumbnail.
+
 ---
 
 ## 2026-08-10

@@ -2,7 +2,7 @@
 
 Versi : 2.0
 Status : ACTIVE
-Last Update : Agustus 2026
+Last Update : September 2026
 
 ---
 
@@ -216,6 +216,53 @@ Identitas sekolah digunakan setelah autentikasi.
 * `logo_aplikasi` dan `favicon` adalah identitas aplikasi.
 * `logo_sekolah` adalah identitas sekolah.
 * Kontrak lama yang masih membawa field lintas-boundary tidak boleh dihapus mendadak apabila masih digunakan; migrasi dilakukan bertahap dan backward compatible.
+
+## GITHUB PAGES WRAPPER & FAVICON PRODUCTION
+
+Production WONG MIT berjalan dengan arsitektur wrapper:
+
+root `index.html` (GitHub Pages)
+
+↓
+
+iframe Apps Script `/exec`
+
+↓
+
+sandbox Apps Script (googleusercontent)
+
+↓
+
+`getAppInfo()`
+
+↓
+
+`faviconUrl` (derived File ID via resolver)
+
+↓
+
+postMessage ke `window.top`
+
+↓
+
+listener root wrapper
+
+↓
+
+`<link rel="icon">`
+
+↓
+
+tab browser production
+
+Fakta arsitektur:
+
+* Root `index.html` (GitHub Pages) dan `apps-script/index.html` (HTML Service) adalah dua dokumen berbeda; iframe dan wrapper tidak berbagi origin.
+* Favicon tab browser production berasal dari root wrapper (dokumen top-level), bukan dari dokumen iframe.
+* Karena lintas-origin, pengiriman favicon dilakukan dengan `postMessage` (type `wongmit-favicon`) dari iframe Apps Script ke `window.top`, dengan validasi ketat di wrapper (URL HTTPS hostname `drive.google.com` saja).
+* Fallback favicon statis pada root wrapper tetap tersedia dan dipakai bila tidak ada payload valid.
+* Saat `/exec` Apps Script dibuka langsung, tab top-level adalah bootstrap Google Apps Script, sehingga favicon tab tetap favicon bawaan Google Apps Script — batasan platform, bukan kustomisasi yang mungkin dari kode aplikasi.
+* Sheet `Pengaturan` tetap menyimpan File ID favicon sebagai sumber konfigurasi; derived URL hanya bergerak saat runtime.
 
 ## MODEL DEPLOYMENT
 

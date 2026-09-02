@@ -2247,3 +2247,59 @@ Commit
 Catatan
 
 Sprint 4C ditutup pada level implementasi Card Sistem + Asset Management. Favicon consumer webapp Apps Script sudah dinamis, tetapi favicon pada tab browser production masih berasal dari root GitHub Pages `index.html` karena aplikasi berjalan di dalam iframe wrapper tersebut. Root `index.html` GitHub Pages TIDAK diubah pada 4C. Integrasi favicon production wrapper ditandai PENDING dan akan dikerjakan sebagai MICRO-AUDIT TERPISAH setelah Sprint 4C — favicon production BELUM dinyatakan selesai. Modul Maintenance Mode, Backup, Restore, dan Log Aktivitas tetap POST-4C.
+
+---
+
+---
+
+# Micro-Fix — Integrasi Favicon GitHub Pages Wrapper
+
+Status
+
+DONE — LOLOS (production)
+
+Posisi
+
+Dikerjakan SETELAH Sprint 4C ditutup (commit `feat(pengaturan): close Sprint 4C system asset management`). Bukan bagian dari Sprint 4C dan bukan Sprint 4D — merupakan micro-fix lanjutan yang terpisah.
+
+Tujuan
+
+Favicon pada tab browser production (yang berasal dari root GitHub Pages wrapper, bukan dari dokumen iframe Apps Script) mengikuti favicon yang dikonfigurasi melalui Pengaturan → Sistem → Favicon.
+
+Diagnosis Arsitektur (hasil Micro-Audit)
+
+- Production berjalan sebagai: root `index.html` GitHub Pages → iframe Apps Script `/exec` → sandbox googleusercontent.
+- Favicon tab browser berasal dari dokumen top-level; saat production, dokumen top-level adalah root wrapper (favicon lama hardcoded `https://iili.io/CU1QcrJ.png`).
+- Dokumen HTML aplikasi berada di iframe sandbox; favicon iframe tidak pernah ditampilkan browser.
+- Saat `/exec` dibuka langsung, dokumen top-level adalah bootstrap Google Apps Script tanpa favicon → tab menampilkan favicon bawaan Google Apps Script. Ini batasan arsitektur/platform Apps Script dan BUKAN failure.
+- CORS memblokir fetch lintas-origin dari wrapper ke `/exec`; solusi yang dipilih: postMessage bridge.
+
+Solusi: postMessage Bridge
+
+- `apps-script/index.html`: setelah consumer favicon Sprint 4C menerapkan `faviconUrl` valid, jika `window.top !== window.self` dikirim `window.top.postMessage({ type: "wongmit-favicon", url: faviconUrl }, "*")` (best-effort; tanpa RPC/backend baru; webapp yang dibuka langsung tanpa wrapper tidak menghasilkan error).
+- Root `index.html`: `<link rel="icon">` diberi `id="wrapperFavicon"` + listener `message` yang memvalidasi payload secara ketat: `type` persis `"wongmit-favicon"` dan URL HTTPS dengan hostname `drive.google.com` saja (domain hasil `resolveDriveImageUrl()`). Payload tidak valid diabaikan.
+- Fallback favicon lama `https://iili.io/CU1QcrJ.png` tetap dipertahankan dan dipakai bila tidak ada payload valid / Sheet kosong / message gagal.
+
+File yang Diubah (hanya 2)
+
+- `index.html` (root GitHub Pages): id pada link icon + listener postMessage (fallback tidak dihapus; iframe src/layout/title tidak berubah).
+- `apps-script/index.html`: postMessage additive setelah blok favicon Sprint 4C pada `terapkanAppIdentity()`.
+
+Hasil & Validasi
+
+✅ git diff --check LOLOS (hanya 2 file target)
+
+✅ Syntax check script root dan Apps Script LOLOS
+
+✅ Commit & push ke GitHub: `fix(wrapper): sync dynamic favicon from app iframe` (`b5178a8`)
+
+✅ Production GitHub Pages ter-deploy dan terverifikasi (listener aktif pada HTML production)
+
+✅ Deploy Uji production LOLOS: favicon tab browser BERUBAH mengikuti konfigurasi Card Sistem
+
+Catatan / Batasan
+
+- Saat `/exec` Apps Script dibuka langsung (tanpa wrapper), favicon tab tetap favicon bawaan Google Apps Script — batasan platform, BUKAN bug dan BUKAN kriteria failure.
+- Favicon yang dikirim adalah derived URL runtime (`faviconUrl`); Sheet `Pengaturan` tetap menyimpan File ID sebagai sumber konfigurasi.
+- Format favicon production yang paling direkomendasikan: PNG. ICO/SVG memiliki keterbatasan pada Drive thumbnail dan hanya diuji sebagai format tambahan.
+- Modul Maintenance, Backup, Restore, dan Log Aktivitas tetap POST-4C.

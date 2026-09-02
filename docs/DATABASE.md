@@ -2,7 +2,7 @@
 
 Versi : 2.0
 Status : ACTIVE
-Last Update : Agustus 2026
+Last Update : September 2026
 
 ---
 
@@ -104,13 +104,16 @@ Field identity aplikasi yang dikelola melalui Card Sistem:
 
 **Status konsumer:**
 
-* Sprint 4A: Backend `getSystemSettings(sessionId)` — Admin-only, membaca seluruh field Sistem.
-* Sprint 4B: Card Sistem UI — Display read-only field Sistem pada halaman Pengaturan.
-* Sprint 4C+: Edit/upload asset (rencana) — Upload logo aplikasi, upload favicon, toggle maintenance mode.
+* Sprint 4A: Backend `getSystemSettings(sessionId)` — Admin-only, membaca seluruh field Sistem. SELESAI.
+* Sprint 4B: Card Sistem UI — Display read-only field Sistem pada halaman Pengaturan. SELESAI.
+* Sprint 4C: Edit Card Sistem + Asset Management — SELESAI. Upload/replace/hapus `logo_aplikasi` dan `favicon` (Admin-only; upload ≠ commit; [Simpan] = satu-satunya commit konfigurasi ke Sheet). `mode_maintenance` tetap read-only / belum diaktifkan pada 4C (tanpa toggle).
 
 **Catatan:**
 
-`mode_maintenance`, `logo_aplikasi`, dan `favicon` sudah menjadi bagian dari `getSystemSettings()` namun edit/upload/toggle functionality masih dalam roadmap sprint berikutnya.
+* `logo_aplikasi` dan `favicon` tetap disimpan sebagai File ID pada Sheet `Pengaturan`; format penyimpanan database tidak berubah.
+* URL asset (`logoAplikasiUrl`, `faviconUrl`) merupakan derived/runtime value hasil resolver, bukan perubahan format penyimpanan database.
+* `mode_maintenance` terbaca melalui `getSystemSettings()` dan ditampilkan read-only pada Card Sistem; fungsionalisasi toggle merupakan scope POST-4C (Maintenance Mode).
+* Favicon tab browser production mengikuti konfigurasi ini melalui derived URL yang dikirim saat runtime (postMessage bridge dari iframe Apps Script ke root GitHub Pages wrapper); Sheet `Pengaturan` tetap menjadi sumber konfigurasi.
 
 ## AKADEMIK
 

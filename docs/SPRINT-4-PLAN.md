@@ -41,13 +41,23 @@ Status: DONE — CLOSED
 
 ### 4C — Application Asset Management
 
-Status: DONE — CLOSED & LOLOS (scope implementasi). Favicon consumer webapp Apps Script dinamis; favicon tab browser production masih dari root GitHub Pages wrapper — integrasi wrapper PENDING / MICRO-AUDIT TERPISAH setelah Sprint 4C.
+Status: DONE — CLOSED & LOLOS (scope implementasi). Asset Management selesai pada 4C; favicon consumer webapp Apps Script dinamis. Integrasi favicon production wrapper TIDAK termasuk 4C — diselesaikan melalui Micro-Fix terpisah SETELAH 4C (production LOLOS; lihat bagian Micro-Fix di bawah).
 
 - Logo aplikasi.
 - Favicon.
 - Upload/replace/delete dengan pola aman.
 - Reuse resolver asset existing.
 - Tidak mengubah File ID menjadi format penyimpanan baru.
+
+### Micro-Fix — Integrasi Favicon GitHub Pages Wrapper (pasca-4C, bukan sprint baru)
+
+Status: DONE — production LOLOS.
+
+- Favicon tab browser production kini mengikuti favicon Card Sistem melalui postMessage bridge: root GitHub Pages wrapper → iframe Apps Script → `getAppInfo().faviconUrl` → postMessage → root wrapper → `<link rel="icon">` → tab browser.
+- File yang diubah: root `index.html` + `apps-script/index.html` (fallback `https://iili.io/CU1QcrJ.png` dipertahankan; validasi URL ketat hostname `drive.google.com` saja).
+- Commit: `b5178a8` — `fix(wrapper): sync dynamic favicon from app iframe`.
+- Saat `/exec` dibuka langsung, favicon tab tetap favicon bawaan Google Apps Script (batasan platform, bukan failure).
+- Urutan tetap: 4A DONE → 4B DONE → 4C DONE → Micro-Fix favicon wrapper DONE → 4D Maintenance Mode.
 
 ### 4D — Maintenance Mode
 

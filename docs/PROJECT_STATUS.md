@@ -39,7 +39,8 @@ Integrasi identity aplikasi ke consumer telah berjalan bertahap:
 * Sprint 3A-3.6: identity aplikasi digunakan secara dinamis pada branding Login/Sidebar dan title aplikasi.
 * Sprint 3A-3.6-FIX-1: tagline Dashboard menjadi dinamis dari tagline aplikasi + nama sekolah.
 * Sprint 3A-3.6-FIX-2: Pengaturan Sekolah selesai, termasuk upload, replace, dan hapus logo sekolah serta penyempurnaan consumer logo aplikasi pada Login/Sidebar.
-* Sprint 4C: Edit Card Sistem dan Asset Management aplikasi selesai — upload/replace/hapus `logo_aplikasi` dan `favicon` (Admin-only, upload ≠ commit), consumer favicon runtime dinamis pada webapp Apps Script; favicon pada tab browser production masih dari root GitHub Pages wrapper dan integrasinya berstatus PENDING / MICRO-AUDIT TERPISAH setelah Sprint 4C.
+* Sprint 4C: Edit Card Sistem dan Asset Management aplikasi selesai — upload/replace/hapus `logo_aplikasi` dan `favicon` (Admin-only, upload ≠ commit), consumer favicon runtime dinamis pada webapp Apps Script.
+* Micro-Fix (pasca-Sprint 4C): favicon tab browser production kini mengikuti favicon Card Sistem melalui postMessage bridge dari iframe Apps Script ke root GitHub Pages wrapper (`b5178a8`); production LOLOS. Saat `/exec` dibuka langsung, tab tetap menampilkan favicon bawaan Google Apps Script (batasan platform Apps Script, bukan failure).
 
 Pemisahan identity aplikasi dan identity sekolah tetap dipertahankan:
 * Login/Sidebar menggunakan `logo_aplikasi`.
@@ -561,11 +562,23 @@ Fitur:
 
 Catatan:
 
-Favicon consumer webapp Apps Script sudah dinamis, tetapi favicon pada tab browser production masih berasal dari root GitHub Pages `index.html` karena aplikasi berjalan di dalam iframe wrapper. Integrasi favicon production wrapper berstatus PENDING / MICRO-AUDIT TERPISAH setelah Sprint 4C — favicon production BELUM dinyatakan selesai.
+Sprint 4C ditutup dengan favicon production wrapper sebagai item PENDING (favicon consumer webapp Apps Script sudah dinamis, tetapi tab browser production masih memakai favicon root GitHub Pages wrapper). Item tersebut kemudian diselesaikan melalui Micro-Fix terpisah setelah Sprint 4C — lihat di bawah. Root `index.html` GitHub Pages tidak diubah pada 4C.
+
+✅ Micro-Fix — Integrasi Favicon GitHub Pages Wrapper selesai (pasca-Sprint 4C)
+
+Commit:
+`b5178a8` — `fix(wrapper): sync dynamic favicon from app iframe`
+
+Hasil:
+
+* Root `index.html` GitHub Pages: `<link id="wrapperFavicon">` + listener postMessage dengan validasi ketat (type persis `wongmit-favicon`, URL HTTPS hostname `drive.google.com` saja); fallback `https://iili.io/CU1QcrJ.png` dipertahankan.
+* `apps-script/index.html`: `terapkanAppIdentity()` mengirim `getAppInfo().faviconUrl` via `window.top.postMessage` (additive, tanpa RPC baru; guard `window.top !== window.self`).
+* Arsitektur: GitHub Pages wrapper → iframe Apps Script → `getAppInfo().faviconUrl` → postMessage → root wrapper → `<link rel="icon">` → tab browser production.
+* Production GitHub Pages ter-deploy dan diuji: favicon tab browser BERUBAH mengikuti konfigurasi Card Sistem — LOLOS.
+* Saat `/exec` dibuka langsung: favicon tab tetap favicon bawaan Google Apps Script (batasan platform Apps Script, bukan failure).
 
 Rencana Sprint Berikutnya:
 
-* MICRO-AUDIT TERPISAH: integrasi favicon production wrapper (root GitHub Pages `index.html`)
 * POST-4C: Maintenance Mode toggle, Backup, Restore, Log Aktivitas
 
 ### Proses Akademik
