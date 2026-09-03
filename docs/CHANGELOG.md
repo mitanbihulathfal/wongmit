@@ -1071,6 +1071,44 @@ Saat `/exec` Apps Script dibuka langsung, favicon tab tetap favicon bawaan Googl
 
 ---
 
+## 2026-09-04
+
+### Sprint 4D — Maintenance Mode
+
+**Judul**
+
+Maintenance Mode Global dengan Admin-Only Bypass dan Maintenance Page
+
+**Perubahan**
+
+- Helper `isMaintenanceMode()` di `Sistem.js`: fresh read `mode_maintenance` dari Sheet `Pengaturan` (tanpa cache); hanya `true`/"true" (case-insensitive, di-trim) yang dianggap aktif; fail-open saat pembacaan gagal.
+- Guard server-side di `Auth.js` (satu-satunya perubahan modul frozen, dijustifikasi sebagai choke point): `checkLogin()` menolak non-Admin dengan `{success:false, maintenance:true}` tanpa membuat session; `checkSession()` tetap boolean namun mengembalikan `false` untuk session non-Admin saat ON; `checkRole()` menolak RPC non-Admin dengan pesan khusus "Aplikasi sedang dalam mode maintenance" (dibedakan dari "Akses ditolak") — menutup tab lama ber-session aktif. Admin bypass penuh di ketiganya.
+- Card Sistem: `mode_maintenance` menjadi toggle Admin; commit tetap hanya melalui [Simpan] (`saveSystemSettings()` tidak diubah).
+- Maintenance Page full-viewport (dual tone biru + gold, animasi tools halus, ikon permohonan maaf, redaksi "Nyuwun Ngapunten", `prefers-reduced-motion` dihormati) menggantikan toast sebagai pemberitahuan utama non-Admin.
+- Global bootstrap gate: probe maintenance sebelum login via endpoint publik additive `getMaintenanceStatus()` (reuse helper existing; fail-open ke alur login existing); non-Admin langsung melihat Maintenance Page; tombol diskret "Masuk sebagai Admin" pada halaman tersebut (otoritas tetap server-side).
+- RPC error maintenance diarahkan ke Maintenance Page melalui failure handler `loadPage` (exact-match pesan; tanpa crash/blank).
+- `getAppInfo()` dan `doGet()` tidak diubah; struktur Sheet/header tidak berubah.
+
+**Status**
+
+SELESAI — CLOSED & LOLOS
+
+**Validasi**
+
+- Server-side QA 41/41 PASS (normalisasi nilai, fail-open, bypass Admin, blokir non-Admin, anti session baru)
+- Syntax check + git diff --check LOLOS
+- clasp push + deploy uji GAS + manual QA production LOLOS (OFF/ON, blokir login, session lama, active tab, Admin bypass, regression 4C)
+
+**Commit**
+
+Satu commit closeout Sprint 4D (kode + dokumentasi) — lihat `git log`.
+
+**Catatan**
+
+Maintenance OFF mengembalikan perilaku existing 100%. `getMaintenanceStatus()` publik hanya membocorkan boolean ON/OFF. Backup, Restore, Log Aktivitas tetap sprint berikutnya.
+
+---
+
 ## 2026-08-10
 
 ### Sprint DS.4 — Data Siswa Access & Export Stabilization

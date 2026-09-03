@@ -29,8 +29,9 @@
      Pola state machine FIX-2 dipakai
      ulang. Upload BUKAN commit - [Simpan]
      pada Card Sistem adalah satu-satunya
-     commit. mode_maintenance TIDAK
-     dikelola di sini (POST-4C). */
+     commit. mode_maintenance dikelola
+     sebagai toggle sejak Sprint 4D
+     (tetap lewat [Simpan] yang sama). */
 
   function buatStateAssetSistem() {
 
@@ -1938,8 +1939,9 @@
      ulang hapusAssetSekolah()
      (guard folder, idempoten) tanpa
      mengubah implementasinya.
-     mode_maintenance TIDAK dikelola
-     di sini (read-only, POST-4C).
+     mode_maintenance dikelola
+     sebagai toggle sejak Sprint 4D
+     (commit tetap via [Simpan]).
   ========================= */
 
   const KONFIG_SLOT_ASSET_SISTEM = {
@@ -2135,7 +2137,8 @@
   `;
 
 
-  /* Favicon + Mode Maintenance (read-only)
+  /* Favicon + Mode Maintenance
+     (toggle sejak Sprint 4D)
      dilanjutkan pada container yang sama. */
 
     container.innerHTML += `
@@ -2184,9 +2187,21 @@
 
       <strong>Mode Maintenance</strong>
 
-      <div class="form-text mt-1">
+      <div class="form-check form-switch mt-1">
 
-        Status: ${data.modeMaintenance ? "Aktif" : "Nonaktif"} (read-only - pengelolaan Maintenance adalah scope POST-4C).
+        <input class="form-check-input" type="checkbox" role="switch" id="editModeMaintenance" ${data.modeMaintenance ? "checked" : ""}>
+
+        <label class="form-check-label" for="editModeMaintenance">
+
+          Aktifkan Mode Maintenance
+
+        </label>
+
+      </div>
+
+      <div class="form-text">
+
+        Saat aktif: hanya Admin yang dapat login/mengakses aplikasi. Perubahan berlaku setelah [Simpan].
 
       </div>
 
@@ -2805,6 +2820,11 @@
         "editFavicon"
       ).value.trim();
 
+    const modeMaintenance =
+      document.getElementById(
+        "editModeMaintenance"
+      ).checked;
+
     if (!namaAplikasi) {
 
       showToast(
@@ -2820,10 +2840,11 @@
        berubah - updateSettingValue()
        melewatkan undefined, jadi field
        yang tidak dikirim TIDAK tertimpa
-       di Sheet. modeMaintenance sengaja
-       TIDAK dikirim (bukan scope 4C,
-       nilai Sheet tidak berubah).
-       logo_sekolah juga tidak disentuh. */
+       di Sheet. modeMaintenance dikirim
+       HANYA bila toggle berubah sejak
+       Sprint 4D (commit tetap hanya via
+       [Simpan] ini). logo_sekolah juga
+       tidak disentuh. */
 
     const data = {};
 
@@ -2840,6 +2861,12 @@
 
     if (versiAplikasi !== (lama.versiAplikasi || "")) {
       data.versiAplikasi = versiAplikasi;
+    }
+
+    if (
+      modeMaintenance !== (lama.modeMaintenance || false)
+    ) {
+      data.modeMaintenance = modeMaintenance;
     }
 
     const logoAwalId =

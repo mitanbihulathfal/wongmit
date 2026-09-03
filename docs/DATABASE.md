@@ -107,12 +107,13 @@ Field identity aplikasi yang dikelola melalui Card Sistem:
 * Sprint 4A: Backend `getSystemSettings(sessionId)` — Admin-only, membaca seluruh field Sistem. SELESAI.
 * Sprint 4B: Card Sistem UI — Display read-only field Sistem pada halaman Pengaturan. SELESAI.
 * Sprint 4C: Edit Card Sistem + Asset Management — SELESAI. Upload/replace/hapus `logo_aplikasi` dan `favicon` (Admin-only; upload ≠ commit; [Simpan] = satu-satunya commit konfigurasi ke Sheet). `mode_maintenance` tetap read-only / belum diaktifkan pada 4C (tanpa toggle).
+* Sprint 4D: Maintenance Mode — SELESAI. `mode_maintenance` dikelola sebagai toggle Admin pada Card Sistem dan dibaca runtime oleh gate server-side (`isMaintenanceMode()`; gate di `checkLogin`/`checkSession`/`checkRole` dengan Admin-only bypass, fail-open). Toggle tetap commit melalui `saveSystemSettings()`.
 
 **Catatan:**
 
 * `logo_aplikasi` dan `favicon` tetap disimpan sebagai File ID pada Sheet `Pengaturan`; format penyimpanan database tidak berubah.
 * URL asset (`logoAplikasiUrl`, `faviconUrl`) merupakan derived/runtime value hasil resolver, bukan perubahan format penyimpanan database.
-* `mode_maintenance` terbaca melalui `getSystemSettings()` dan ditampilkan read-only pada Card Sistem; fungsionalisasi toggle merupakan scope POST-4C (Maintenance Mode).
+* `mode_maintenance` disimpan apa adanya pada Sheet; normalisasi hanya terjadi saat runtime (`isMaintenanceMode()`): hanya `true`/`"true"` (case-insensitive, di-trim) yang dianggap aktif, nilai lain/kosong = OFF, kegagalan baca = fail-open OFF. Sejak Sprint 4D dikelola sebagai toggle Admin pada Card Sistem (read-only hanya pada 4C).
 * Favicon tab browser production mengikuti konfigurasi ini melalui derived URL yang dikirim saat runtime (postMessage bridge dari iframe Apps Script ke root GitHub Pages wrapper); Sheet `Pengaturan` tetap menjadi sumber konfigurasi.
 
 ## AKADEMIK

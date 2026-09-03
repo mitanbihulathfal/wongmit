@@ -174,6 +174,22 @@ Frontend tidak boleh menyimpan data permanen.
 
 ---
 
+# MAINTENANCE MODE GATE
+
+Sprint 4D. Global gate untuk `mode_maintenance` (Sheet `Pengaturan`).
+
+Alur:
+
+- Sumber kebenaran: server-side. Helper `isMaintenanceMode()` (`Sistem.js`) membaca Sheet fresh (fail-open); gate berada di `Auth.js`: `checkLogin()`, `checkSession()`, `checkRole()` — Admin-only bypass.
+- Bootstrap tanpa session: probe `getMaintenanceStatus()` (endpoint publik additive) sebelum menampilkan login — ON → Maintenance Page penuh; OFF/gagal → alur login existing 100% normal.
+- Session/resume non-Admin saat ON: `checkSession()` → `false` → probe → Maintenance Page.
+- Active tab: RPC ditolak `checkRole()` dengan pesan khusus; failure handler navigasi mengarahkan ke Maintenance Page.
+- Maintenance Page (frontend `index.html`) murni presentasi; otoritas tetap server-side.
+- `getAppInfo()` tidak memuat `modeMaintenance`; `doGet()` tidak berubah.
+- Maintenance OFF = perilaku existing 100% normal.
+
+---
+
 # IDENTITY & BRANDING ARCHITECTURE
 
 Identitas aplikasi dan identitas sekolah merupakan dua boundary yang berbeda dan tidak boleh dicampurkan.

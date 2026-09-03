@@ -3499,6 +3499,22 @@
 
             console.error(error);
 
+            /* Sprint 4D micro-fix UX:
+               navigasi saat maintenance
+               -> halaman penuh, bukan
+               toast generik. */
+
+            if (
+              error
+              && String(error.message || "") === "Aplikasi sedang dalam mode maintenance"
+            ) {
+
+              tampilkanMaintenancePage();
+
+              return;
+
+            }
+
             showToast(
               "Gagal memuat halaman",
               "error"
@@ -3591,6 +3607,21 @@
               resetButtonLoading(
                 btn
               );
+
+              /* Sprint 4D micro-fix UX:
+                 non-Admin saat maintenance
+                 mendapat halaman Maintenance
+                 penuh (bukan toast). Handler
+                 lama tetap fallback untuk
+                 kasus lain. */
+
+              if (result.maintenance) {
+
+                tampilkanMaintenancePage();
+
+                return;
+
+              }
 
               showToast(
                 "Username atau Password salah",
@@ -4496,11 +4527,19 @@
 
         if (!sessionId) {
 
-          showLoginPage();
+          /* Sprint 4D global gate:
+             probe maintenance via
+             endpoint publik existing
+             SEBELUM login - non-Admin
+             langsung melihat halaman
+             Maintenance (bukan login
+             lebih dulu). Admin memakai
+             tombol diskret pada halaman
+             tersebut; otoritas tetap
+             server-side checkLogin.
+             Fail-open di helper. */
 
-          loadPage(
-            "page_login"
-          );
+          bootstrapMaintenanceGate();
 
           return;
 
@@ -4522,11 +4561,13 @@
 
               localStorage.clear();
 
-              showLoginPage();
+              /* Sprint 4D micro-fix UX:
+                 probe maintenance agar
+                 halaman penuh tampil
+                 langsung, bukan login
+                 tanpa penjelasan. */
 
-              loadPage(
-                "page_login"
-              );
+              arahkanSessionGagal();
 
             }
 
@@ -4536,11 +4577,7 @@
 
             localStorage.clear();
 
-            showLoginPage();
-
-            loadPage(
-              "page_login"
-            );
+            arahkanSessionGagal();
 
           })
 
@@ -4577,6 +4614,13 @@
       }
 
       function showMainApp() {
+
+        /* Sprint 4D micro-fix UX:
+           Admin bypass - halaman
+           Maintenance ditutup saat
+           Admin masuk aplikasi. */
+
+        sembunyikanMaintenancePage();
 
         /* Tahan branding sidebar bila
            identity masih dimuat agar
@@ -4690,6 +4734,209 @@
       );
 
       let lastMobileState = isMobileLayout();
+
+      /* =========================
+         SPRINT 4D MICRO-FIX UX -
+         HALAMAN MAINTENANCE
+         Non-Admin saat maintenance
+         melihat halaman penuh
+         (bukan toast). Admin bypass
+         tetap lewat showMainApp()
+         yang menyembunyikan
+         halaman ini. Identity dari
+         cachedAppInfo existing -
+         tanpa mekanisme baru.
+      ========================= */
+
+      function tampilkanMaintenancePage() {
+
+        const page =
+          document.getElementById(
+            "maintenancePage"
+          );
+
+        if (!page) {
+
+          return;
+
+        }
+
+        const logo =
+          document.getElementById(
+            "maintenanceLogo"
+          );
+
+        const brand =
+          document.getElementById(
+            "maintenanceBrand"
+          );
+
+        if (logo) {
+
+          const url =
+            (cachedAppInfo && (cachedAppInfo.logoAplikasiUrl || "")) || "";
+
+          if (url) {
+
+            logo.src = url;
+
+            logo.style.display = "";
+
+          } else {
+
+            logo.style.display = "none";
+
+          }
+
+        }
+
+        if (brand) {
+
+          brand.textContent =
+            (cachedAppInfo && cachedAppInfo.namaAplikasi) || "WONG MIT";
+
+        }
+
+        document.body.classList.add(
+          "maintenance-active"
+        );
+
+        page.style.display = "flex";
+
+      }
+
+      function sembunyikanMaintenancePage() {
+
+        const page =
+          document.getElementById(
+            "maintenancePage"
+          );
+
+        if (page) {
+
+          page.style.display = "none";
+
+        }
+
+        document.body.classList.remove(
+          "maintenance-active"
+        );
+
+      }
+
+      /* Tombol diskret Admin pada
+         halaman Maintenance (delegation
+         agar aman terhadap urutan DOM
+         script vs markup). Otoritas
+         tetap server-side: non-Admin
+         yang mencoba login tetap
+         ditolak checkLogin
+         (maintenance:true) dan kembali
+         ke halaman ini. */
+
+      document.addEventListener(
+        "click",
+        function (e) {
+
+          if (
+            e.target &&
+            e.target.id ===
+              "maintenanceAdminLogin"
+          ) {
+
+            sembunyikanMaintenancePage();
+
+            showLoginPage();
+
+            loadPage(
+              "page_login"
+            );
+
+          }
+
+        }
+      );
+
+      /* Session resume gagal (invalid
+         ATAU error RPC): probe state
+         maintenance via endpoint
+         publik additive, lalu
+         halaman Maintenance penuh -
+         selain itu alur login
+         existing 100% sama. */
+
+      function arahkanSessionGagal() {
+
+        google.script.run
+          .withSuccessHandler(function (status) {
+
+            if (status && status.maintenance) {
+
+              tampilkanMaintenancePage();
+
+              return;
+
+            }
+
+            showLoginPage();
+
+            loadPage(
+              "page_login"
+            );
+
+          })
+          .withFailureHandler(function () {
+
+            showLoginPage();
+
+            loadPage(
+              "page_login"
+            );
+
+          })
+          .getMaintenanceStatus();
+
+      }
+
+      /* Bootstrap tanpa session:
+         probe maintenance SEBELUM
+         menampilkan login. OFF atau
+         gagal probe -> alur login
+         existing 100% sama
+         (fail-open). */
+
+      function bootstrapMaintenanceGate() {
+
+        google.script.run
+          .withSuccessHandler(function (status) {
+
+            if (status && status.maintenance) {
+
+              tampilkanMaintenancePage();
+
+              return;
+
+            }
+
+            showLoginPage();
+
+            loadPage(
+              "page_login"
+            );
+
+          })
+          .withFailureHandler(function () {
+
+            showLoginPage();
+
+            loadPage(
+              "page_login"
+            );
+
+          })
+          .getMaintenanceStatus();
+
+      }
 
       function showLoginPage() {
 
@@ -5019,6 +5266,172 @@
 
   </div>
 
+<style>
+  /* =========================
+     SPRINT 4D MICRO-FIX UX -
+     MAINTENANCE PAGE
+     Dual tone: --primary (biru)
+     + --gold (gold) dari :root.
+     Animasi dekoratif halus +
+     prefers-reduced-motion.
+  ========================= */
+  body.maintenance-active #sidebar,
+  body.maintenance-active #contentArea,
+  body.maintenance-active #mobileToggle {
+    display: none !important;
+  }
+  .maintenance-page {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--primary) 0%, #123a80 55%, #1d4e9e 100%);
+    overflow: auto;
+  }
+  .maintenance-card {
+    background: var(--white);
+    border-radius: 18px;
+    border-top: 6px solid var(--gold);
+    box-shadow: 0 24px 60px rgba(4, 18, 48, 0.45);
+    max-width: 460px;
+    width: 100%;
+    padding: 40px 32px 32px;
+    text-align: center;
+  }
+  .maintenance-tools {
+    width: 92px;
+    height: 92px;
+    margin: 0 auto 14px;
+    display: block;
+    animation: maint-float 5.2s ease-in-out infinite;
+  }
+  .maintenance-tools .maint-gear {
+    transform-origin: 78px 42px;
+    animation: maint-spin 7s linear infinite;
+  }
+  .maintenance-tools .maint-wrench {
+    transform-origin: 30px 92px;
+    animation: maint-wiggle 3.4s ease-in-out infinite;
+  }
+  @keyframes maint-spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes maint-wiggle {
+    0%, 100% { transform: rotate(-7deg); }
+    50% { transform: rotate(9deg); }
+  }
+  @keyframes maint-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .maintenance-maaf {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fdf6e3, #f7ead0);
+    border: 2px solid var(--gold);
+    animation: maint-pulse 3.6s ease-in-out infinite;
+  }
+  @keyframes maint-pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.35); }
+    50% { transform: scale(1.06); box-shadow: 0 0 0 8px rgba(212, 175, 55, 0); }
+  }
+  .maintenance-admin-btn {
+    margin-top: 16px;
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+    font-size: 12px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .maintenance-admin-btn:hover {
+    border-color: var(--gold);
+    color: var(--primary);
+  }
+  .maintenance-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    margin: 0 auto 8px;
+    display: block;
+  }
+  .maintenance-brand {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 14px;
+  }
+  .maintenance-title {
+    font-size: clamp(24px, 5vw, 32px);
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0 0 12px;
+  }
+  .maintenance-text {
+    color: #334155;
+    font-size: clamp(14px, 3.4vw, 16px);
+    line-height: 1.65;
+    margin: 0 0 18px;
+  }
+  .maintenance-doa {
+    color: #8a6d1f;
+    font-style: italic;
+    font-weight: 600;
+    font-size: clamp(13px, 3vw, 14px);
+    margin: 0;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .maintenance-tools,
+    .maintenance-tools .maint-gear,
+    .maintenance-tools .maint-wrench,
+    .maintenance-maaf {
+      animation: none;
+    }
+  }
+  @media (max-width: 420px) {
+    .maintenance-card { padding: 32px 20px 26px; }
+  }
+</style>
+
+<div id="maintenancePage" class="maintenance-page" style="display:none" role="alertdialog" aria-live="assertive" aria-labelledby="maintenanceTitle">
+  <div class="maintenance-card">
+    <svg class="maintenance-tools" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+      <g class="maint-gear">
+        <circle cx="78" cy="42" r="26" stroke="#0b2d6b" stroke-width="8" stroke-dasharray="14 9"/>
+        <circle cx="78" cy="42" r="11" stroke="#0b2d6b" stroke-width="7"/>
+      </g>
+      <g class="maint-wrench">
+        <path d="M30 92 L56 66" stroke="#d4af37" stroke-width="10" stroke-linecap="round"/>
+        <path d="M62 44 a13 13 0 1 0 9 22" stroke="#d4af37" stroke-width="9" stroke-linecap="round"/>
+      </g>
+    </svg>
+    <img id="maintenanceLogo" class="maintenance-logo" alt="" style="display:none">
+    <div id="maintenanceBrand" class="maintenance-brand">WONG MIT</div>
+    <div class="maintenance-maaf" aria-hidden="true">&#128591;</div>
+    <h1 id="maintenanceTitle" class="maintenance-title">Nyuwun Ngapunten</h1>
+    <p class="maintenance-text">
+      Aplikasi sedang dalam perbaikan.<br>
+      Mohon tunggu beberapa saat atau hubungi Operator Sekolah / Admin Aplikasi.
+    </p>
+    <p class="maintenance-doa">Barokallahu lana walakum. Amien.</p>
+    <button id="maintenanceAdminLogin" class="maintenance-admin-btn" type="button">Masuk sebagai Admin</button>
+  </div>
+</div>
 </body>
 
 </html>

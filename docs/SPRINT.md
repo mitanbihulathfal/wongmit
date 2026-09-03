@@ -2304,6 +2304,48 @@ Catatan / Batasan
 
 ---
 
+# Sprint 4D — Maintenance Mode
+
+Tujuan: mode Maintenance global yang aman — non-Admin diblokir saat aktif, Admin tetap dapat masuk untuk mematikannya. Minimal, backward-compatible, tanpa mengubah kontrak existing.
+
+Fase:
+
+1. Audit — pemetaan `doGet()` → `getAppInfo()` → login/session → role → page loading; titik gate dipilih di choke point Auth.js (`checkLogin`, `checkSession`, `checkRole`), BUKAN `doGet()` (agar Admin tetap punya jalur masuk).
+2. Implementation — helper `isMaintenanceMode()` (`Sistem.js`: fresh read Sheet `Pengaturan`, fail-open, hanya `true`/"true" yang dianggap aktif) + guard di tiga choke point.
+3. Server-side QA — 41/41 PASS (harness terhadap kode aktual: normalisasi nilai, fail-open, bypass Admin, blokir non-Admin).
+4. clasp push + deploy uji + manual QA production — LOLOS.
+5. Micro-fix UX (bagian dari Sprint 4D, BUKAN sprint baru) — Maintenance Page + Global Bootstrap Gate.
+
+Fitur yang Dihasilkan:
+
+- Maintenance Mode ON/OFF melalui Card Sistem (toggle Admin; commit tetap hanya via [Simpan] `saveSystemSettings`; kontrak `saveSystemSettings()` tidak berubah).
+- Guard server-side:
+  - `checkLogin()` — ON + non-Admin → `{success:false, maintenance:true}`, tanpa session baru (field additive; handler lama tetap kompatibel).
+  - `checkSession()` — kontrak boolean tetap; ON + session non-Admin → `false`.
+  - `checkRole()` — ON + non-Admin → RPC ditolak server-side dengan pesan khusus `"Aplikasi sedang dalam mode maintenance"` (dibedakan dari "Akses ditolak"); menutup tab lama ber-session aktif.
+- Admin-only bypass penuh: login, resume session, Card Sistem, mematikan Maintenance.
+- Maintenance Page full-viewport (dual tone biru + gold, animasi tools halus, ikon permohonan maaf, redaksi "Nyuwun Ngapunten", `prefers-reduced-motion` dihormati) menggantikan toast — non-Admin saat ON tidak melihat login terlebih dahulu.
+- Global bootstrap gate: tanpa session, bootstrap melakukan probe maintenance via endpoint publik additive `getMaintenanceStatus()` (reuse `isMaintenanceMode()`; fail-open ke alur login existing) — non-Admin langsung melihat Maintenance Page; Admin memakai tombol diskret "Masuk sebagai Admin" (otoritas tetap server-side).
+- Active tab: RPC error maintenance diarahkan ke Maintenance Page melalui failure handler `loadPage` (exact-match pesan; tidak crash/blank).
+- `getAppInfo()` TIDAK diubah (tidak memuat `modeMaintenance`); `doGet()` tidak diubah; struktur Sheet/header tidak berubah.
+
+Validasi:
+
+- Server-side QA 41/41 PASS (normalisasi nilai ON/OFF, fail-open, bypass, blokir, anti session baru).
+- `node --check` seluruh script LOLOS; `git diff --check` LOLOS.
+- clasp push + deploy uji GAS + manual QA production: LOLOS (login semua role saat OFF; blokir non-Admin saat ON; session lama; active tab; Admin bypass; regression 4C).
+
+Status: ✅ DONE — CLOSED & LOLOS
+
+Catatan / Batasan:
+
+- Maintenance OFF = perilaku existing 100% identik.
+- Fail-open: kegagalan membaca `mode_maintenance` dianggap OFF (maintenance bukan fitur keamanan; authorization tetap lewat `checkRole`).
+- `getMaintenanceStatus()` publik hanya membocorkan boolean ON/OFF.
+- Backup, Restore, Log Aktivitas tetap sprint berikutnya (4E/4F/4G).
+
+---
+
 # Sprint 4 — Pengaturan Sistem
 
 Status
@@ -2379,12 +2421,12 @@ DONE — production LOLOS.
 
 Status
 
-NEXT
+DONE — CLOSED & LOLOS
 
-- Definisikan gate runtime terlebih dahulu.
-- Tentukan siapa yang tetap boleh masuk saat maintenance.
-- Pastikan fallback/error-safe.
-- Tidak mengaktifkan hard gate sebelum QA.
+- Guard server-side `checkLogin` / `checkSession` / `checkRole` dengan Admin-only bypass.
+- Helper `isMaintenanceMode()` — fresh read, fail-open.
+- Maintenance Page UX + global bootstrap gate (`getMaintenanceStatus()`).
+- Maintenance OFF = perilaku existing 100% normal.
 
 ## 4E — Backup
 

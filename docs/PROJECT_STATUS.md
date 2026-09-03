@@ -577,9 +577,32 @@ Hasil:
 * Production GitHub Pages ter-deploy dan diuji: favicon tab browser BERUBAH mengikuti konfigurasi Card Sistem — LOLOS.
 * Saat `/exec` dibuka langsung: favicon tab tetap favicon bawaan Google Apps Script (batasan platform Apps Script, bukan failure).
 
+✅ Sprint 4D — Maintenance Mode selesai (CLOSED & LOLOS)
+
+Deploy Uji / Manual Test:
+
+LOLOS (clasp push + deploy uji GAS + manual QA production; server-side QA 41/41 PASS)
+
+Fitur:
+
+* Guard server-side Maintenance di choke point `Auth.js`: `checkLogin()` (non-Admin ditolak dengan `{success:false, maintenance:true}`, tanpa session baru), `checkSession()` (kontrak boolean tetap; session non-Admin → `false`), `checkRole()` (RPC non-Admin ditolak dengan pesan khusus) — Admin-only bypass penuh.
+* Helper `isMaintenanceMode()` (`Sistem.js`): fresh read `mode_maintenance`, hanya `true`/"true" yang dianggap aktif, fail-open.
+* Toggle Maintenance Admin pada Card Sistem; commit tetap hanya via [Simpan] (`saveSystemSettings()` tidak berubah).
+* Maintenance Page full-viewport (biru + gold, animasi halus, "Nyuwun Ngapunten", `prefers-reduced-motion`) menggantikan toast; non-Admin saat ON langsung melihat halaman tersebut (tanpa login terlebih dahulu).
+* Global bootstrap gate: probe `getMaintenanceStatus()` (endpoint publik additive) sebelum menampilkan login; tombol diskret "Masuk sebagai Admin" pada Maintenance Page (otoritas tetap server-side).
+* Active tab: RPC error maintenance → Maintenance Page via failure handler `loadPage`; tidak crash/blank.
+* `getAppInfo()` dan `doGet()` tidak diubah; struktur Sheet/header tidak berubah; Maintenance OFF = perilaku existing 100% normal.
+
+Catatan:
+
+Micro-fix UX (Maintenance Page + global gate) didokumentasikan sebagai bagian dari Sprint 4D, bukan sprint terpisah. Backup, Restore, Log Aktivitas tetap sprint berikutnya.
+
 Rencana Sprint Berikutnya:
 
-* POST-4C: Maintenance Mode toggle, Backup, Restore, Log Aktivitas
+* Sprint 4E: Backup (checkpoint berikutnya)
+* Sprint 4F: Restore
+* Sprint 4G: Log Aktivitas
+* Sprint 4H: Final QA & Production
 
 ### Proses Akademik
 

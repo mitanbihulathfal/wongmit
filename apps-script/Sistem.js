@@ -3,6 +3,100 @@
    Sprint 4 — Card Sistem
 ========================= */
 
+/* =========================
+   MAINTENANCE MODE (Sprint 4D)
+   Helper pembacaan mode_maintenance
+   LANGSUNG dari Sheet Pengaturan
+   (fresh read, tanpa cache) agar
+   toggle terasa segera oleh semua
+   gate (checkLogin / checkSession /
+   checkRole di Auth.js).
+   - Fail-open KHUSUS kegagalan
+     pembacaan Maintenance: Sheet
+     tidak ada / error baca ->
+     dianggap OFF, agar kerusakan
+     infrastruktur tidak mengunci
+     seluruh pengguna.
+   - Normalisasi eksplisit: hanya
+     true / "true" / "on"
+     (case-insensitive) yang aktif;
+     kosong/tidak valid -> OFF.
+   - Tidak men-swallow error
+     authentication/authorization;
+     fungsi ini TIDAK memanggil
+     checkRole (bebas rekursi).
+========================= */
+
+function isMaintenanceMode() {
+
+  try {
+
+    const sheet =
+      SS.getSheetByName("Pengaturan");
+
+    if (!sheet) {
+      return false;
+    }
+
+    const data =
+      sheet.getDataRange().getValues();
+
+    for (let i = 1; i < data.length; i++) {
+
+      const key =
+        String(data[i][0] || "").trim();
+
+      if (key === "mode_maintenance") {
+
+        const nilai =
+          data[i][1];
+
+        return (
+          nilai === true ||
+          String(nilai).trim().toLowerCase() === "true" ||
+          String(nilai).trim().toLowerCase() === "on"
+        );
+
+      }
+
+    }
+
+    return false;
+
+  } catch (err) {
+
+    console.warn(
+      "isMaintenanceMode: gagal membaca mode_maintenance, dianggap OFF",
+      err
+    );
+
+    return false;
+
+  }
+
+}
+
+/* Sprint 4D micro-fix UX - endpoint
+   publik ADDITIVE: bridge state
+   maintenance ke frontend untuk
+   menampilkan halaman Maintenance
+   penuh saat session resume gagal.
+   checkSession() tetap boolean
+   (kontrak utuh), getAppInfo()
+   tidak berubah. Reuse
+   isMaintenanceMode() (fail-open).
+   Tanpa data sensitif. */
+
+function getMaintenanceStatus() {
+
+  return {
+
+    maintenance: isMaintenanceMode()
+
+  };
+
+}
+
 function getSystemSettings(sessionId) {
 
   if (!checkRole(sessionId, ["Admin"])) {

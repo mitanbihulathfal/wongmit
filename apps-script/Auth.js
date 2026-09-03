@@ -17,6 +17,34 @@ function checkLogin(username, password) {
       status === "Aktif"
     ) {
 
+      /* Sprint 4D - Maintenance gate:
+         saat mode_maintenance aktif
+         hanya Admin yang boleh masuk.
+         Session TIDAK dibuat untuk
+         non-Admin. Field maintenance
+         bersifat ADDITIVE - handler
+         lama yang hanya membaca
+         result.success tetap
+         kompatibel. Fail-open di
+         isMaintenanceMode(). */
+
+      if (
+        isMaintenanceMode() &&
+        String(data[i][4])
+          .split(",")
+          .indexOf("Admin") === -1
+      ) {
+
+        return {
+
+          success: false,
+
+          maintenance: true
+
+        };
+
+      }
+
       const sessionId =
         createSession(
           data[i][0],
@@ -97,6 +125,26 @@ function checkSession(sessionId) {
       "Aktif"
 
     ) {
+
+      /* Sprint 4D - Maintenance gate:
+         session valid + maintenance
+         aktif + non-Admin -> false
+         (kontrak boolean TETAP;
+         frontend existing otomatis
+         mengarahkan ke login page).
+         Admin tetap true. Fail-open
+         di isMaintenanceMode(). */
+
+      if (
+        isMaintenanceMode() &&
+        String(
+          getRoleBySession(sessionId) || ""
+        ).split(",").indexOf("Admin") === -1
+      ) {
+
+        return false;
+
+      }
 
       return true;
 
@@ -228,6 +276,29 @@ function checkRole(
   if (!role) {
 
     return false;
+
+  }
+
+  /* Sprint 4D - Maintenance gate:
+     saat mode_maintenance aktif,
+     RPC non-Admin ditolak
+     SERVER-SIDE (menutup tab lama
+     yang masih terbuka dengan
+     session aktif). Admin bypass.
+     Pesan error Maintenance
+     DIBEDAKAN dari "Akses ditolak"
+     agar caller dapat
+     membedakannya. Fail-open di
+     isMaintenanceMode(). */
+
+  if (
+    isMaintenanceMode() &&
+    role.split(",").indexOf("Admin") === -1
+  ) {
+
+    throw new Error(
+      "Aplikasi sedang dalam mode maintenance"
+    );
 
   }
 
